@@ -1,0 +1,61 @@
+/* ===== vUI: header/menu unified premium layout ===== */
+:root{
+  --bg:#f6f5f3;--surface:#fff;--border:#e6e6e6;--border-strong:#d6d6d6;
+  --text:#0b1220;--muted:#6b6b6b;--faint:#9a9a9a;--accent:#ff9b00;--primary:#ff9b00;--card:#fff;
+  --shadow:0 18px 44px rgba(15,23,42,.07);--shadow-sm:0 8px 18px rgba(15,23,42,.055);
+  --r:18px;--rs:12px;
+}
+body{
+  background:
+    radial-gradient(circle at 12% -6%,rgba(115,115,115,.10),transparent 30%),
+    radial-gradient(circle at 88% 0%,rgba(255,155,0,.12),transparent 26%),
+    linear-gradient(180deg,#fffdf9 0%,#f6f5f3 48%,#f2f0ee 100%);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+.app-hero{
+  position:relative;top:auto;z-index:auto;height:auto;margin:20px auto 12px;padding:0 22px;border:0;background:transparent;display:block;max-width:1680px;
+}
+.app-hero-inner{
+  min-height:68px;border-radius:22px;padding:16px 26px;display:flex;align-items:center;gap:20px;overflow:hidden;position:relative;color:#fff;
+  background:linear-gradient(135deg,#ffb238 0%,#ff9b00 55%,#f57c00 100%);
+  box-shadow:0 22px 54px rgba(255,155,0,.28);border:1px solid rgba(255,255,255,.22);
+}
+.app-hero-inner:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,.08),transparent 42%);pointer-events:none}
+.app-hero-inner:after{content:"";position:absolute;right:-70px;top:-120px;width:310px;height:310px;border-radius:50%;background:rgba(255,255,255,.10)}
+.app-brand{display:flex;flex-direction:column;align-items:flex-start;gap:6px;position:relative;z-index:1}
+.app-logo{height:28px;width:auto;display:block}
+.app-brand h1{font-size:14px;font-weight:700;letter-spacing:.01em;line-height:1;color:rgba(255,255,255,.95);margin:0}
+.app-main-nav{
+  position:sticky;top:10px;z-index:200;max-width:calc(1680px - 44px);margin:0 auto 12px;padding:7px 14px;display:flex;gap:7px;flex-wrap:wrap;
+  background:rgba(255,255,255,.88);border:1px solid rgba(226,232,240,.95);border-radius:20px;box-shadow:0 12px 30px rgba(15,23,42,.07);backdrop-filter:blur(10px);
+  box-sizing:border-box;
+}
+.app-main-nav .media-group-tab{border:0;border-radius:14px;background:transparent;color:#595959;padding:11px 18px;font-size:14px;font-weight:900;transition:.15s ease;line-height:1.35}
+.app-main-nav .media-group-tab:hover:not(.disabled){background:#f1f5f9;color:#111827}
+.app-main-nav .media-group-tab.active{background:#101828;color:#fff;box-shadow:0 10px 20px rgba(15,23,42,.16)}
+.container{max-width:1680px;padding:0 22px 46px}
+.card,.table-card,.alert-section,.cpc-chart-card,.cpc-metric,.metric{border-color:var(--border);border-radius:18px;box-shadow:var(--shadow-sm);background:rgba(255,255,255,.96)}
+.main-tabs{background:rgba(255,255,255,.92);border:1px solid var(--border);border-radius:20px;padding:7px;margin-bottom:8px;box-shadow:var(--shadow-sm);align-items:center;gap:4px;flex-wrap:wrap;position:sticky;top:70px;z-index:150;backdrop-filter:blur(10px)}
+.main-tab{border:0;border-radius:14px;padding:10px 16px;margin:0;color:#595959;background:transparent;font-weight:850;border-bottom:0;transition:.15s ease}
+.main-tab:hover{background:#f1f5f9;color:#111827}
+.main-tab.active,.main-tab.alert.active{background:#101828;color:#fff;border-bottom:0;box-shadow:0 8px 16px rgba(15,23,42,.13)}
+.metric,.cpc-metric{padding:1rem 1.125rem;background:linear-gradient(180deg,#fff,#f8fafc)}
+.metric-value,.cpc-metric .val,.alert-kpi-val{font-variant-numeric:tabular-nums}
+.table-header{background:#fff;padding:1rem 1.25rem}
+thead th{background:#f8fafc;color:#475569;font-weight:800}
+tbody tr:hover td{background:#eef6ff}
+.filter-row input,.filter-row select,.tab-btn{border-color:var(--border-strong);border-radius:12px}
+.cpc-dtab{border-color:var(--border-strong)}
+button.run,.dl{box-shadow:none}
+.status{margin-left:auto}
+#daily-table-card{overflow:visible !important}
+#daily-table-card>div[style*="overflow-x"]{overflow-x:auto;overflow-y:visible}
+#daily-table th:first-child,#daily-table td:first-child{position:sticky;left:0;z-index:2;background:#f8fafc}
+#daily-table thead th{position:sticky;top:0;z-index:3;background:#f8fafc}
+#daily-table thead th:first-child{z-index:4}
+@media(max-width:900px){
+  .app-hero{margin-top:14px;padding:0 14px}.app-hero-inner{padding:18px 20px}.app-logo{height:22px}.app-brand h1{font-size:12px}
+  .app-main-nav{margin-left:14px;margin-right:14px;padding:7px;overflow:auto;flex-wrap:nowrap}.app-main-nav .media-group-tab{white-space:nowrap}
+  .container{padding-left:14px;padding-right:14px}
+}

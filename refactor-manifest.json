@@ -1,0 +1,16 @@
+{
+  "source": "index(2).html",
+  "generatedAt": "2026-09-01T13:00:52.534Z",
+  "files": [
+    "index.html",
+    "css/base.css",
+    "css/components.css",
+    "css/layout.css",
+    "js/data/mappings.js",
+    "js/core.js",
+    "js/insights.js",
+    "js/keyword.js",
+    "js/app.js",
+    "js/display.js"
+  ]
+}

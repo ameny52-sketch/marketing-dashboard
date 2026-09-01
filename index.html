@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>마케팅 성과 모니터링</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link rel="stylesheet" href="./css/base.css">
+  <link rel="stylesheet" href="./css/components.css">
+  <link rel="stylesheet" href="./css/layout.css">
+</head>
+<body>
+<header class="app-hero">
+  <div class="app-hero-inner">
+    <div class="app-brand">
+      <img class="app-logo" src="data:image/png;base64,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" alt="GoodRich">
+      <h1>Marketing Performance Monitor</h1>
+    </div>
+    <button id="refresh-data-btn" onclick="refreshAllData(this)" style="margin-left:auto;position:relative;z-index:1;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.16);color:#fff;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;display:flex;align-items:center;gap:6px">↻ 데이터 새로고침</button>
+  </div>
+</header>
+
+<nav class="media-group-tabs app-main-nav" aria-label="광고 매체 메뉴">
+  <button class="media-group-tab active" onclick="switchMediaGroup('all',this)">전체</button>
+  <button class="media-group-tab" onclick="switchMediaGroup('pc_content',this)">파워컨텐츠</button>
+  <button class="media-group-tab" onclick="switchMediaGroup('keyword',this)">키워드</button>
+  <button class="media-group-tab" onclick="switchMediaGroup('display',this)">디스플레이</button>
+</nav>
+
+<div id="sheet-load-warning" style="display:none;background:#fef3c7;border-bottom:1px solid #fbbf24;color:#92400e;font-size:13px;padding:10px 24px;text-align:center;font-weight:500"></div>
+
+<div class="container">
+  <!-- 전체 탭용 서브메뉴 -->
+  <div class="main-tabs" id="subtabs-all">
+    <button class="main-tab active" onclick="switchTab('daily',this)">📅 Daily DB 현황</button>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+      <select id="month-select-all" style="display:none" onchange="onMonthChange()"></select>
+      <span class="status" id="status-all" style="font-size:12px;display:none"></span>
+    </div>
+  </div>
+
+  <!-- 파워컨텐츠 탭용 서브메뉴 -->
+  <div class="main-tabs" id="subtabs-pc" style="display:none">
+    <button class="main-tab active" onclick="switchTab('insight',this)">성과 진단</button>
+    <button class="main-tab alert" onclick="switchTab('alert',this)">효율 순위</button>
+    <button class="main-tab" onclick="switchTab('cpc',this)">CPC 분석</button>
+    <button class="main-tab" onclick="switchTab('data',this)">데이터 현황</button>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+      <div id="pc-month-sel-wrap" style="display:none;align-items:center;gap:4px">
+        <button class="month-step" onclick="_stepMonthSelect('month-select',-1)" title="이전 달">◀</button>
+        <select id="month-select" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 10px;font-size:13px;font-family:inherit;color:var(--text);background:var(--surface);outline:none;cursor:pointer" onchange="onMonthChange()">
+        </select>
+        <button class="month-step" onclick="_stepMonthSelect('month-select',1)" title="다음 달">▶</button>
+      </div>
+      <span class="status" id="status" style="font-size:12px;display:none"></span>
+    </div>
+  </div>
+
+  <!-- 키워드 매체 탭용 서브메뉴 -->
+  <div class="main-tabs" id="subtabs-kw" style="display:none">
+    <button class="main-tab active" onclick="switchTab('kw-insight',this)">성과 진단</button>
+    <button class="main-tab" onclick="switchTab('kw-main',this)">데이터 현황</button>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+      <div id="kw-month-sel-wrap" style="display:none;align-items:center;gap:4px">
+        <button class="month-step" onclick="_stepMonthSelect('month-select-kw',-1)" title="이전 달">◀</button>
+        <select id="month-select-kw" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 10px;font-size:13px;font-family:inherit;color:var(--text);background:var(--surface);outline:none;cursor:pointer" onchange="onMonthChange()">
+        </select>
+        <button class="month-step" onclick="_stepMonthSelect('month-select-kw',1)" title="다음 달">▶</button>
+      </div>
+      <span class="status" id="status-kw" style="font-size:12px;display:none"></span>
+    </div>
+  </div>
+
+  <!-- 키워드 성과 진단 패널 -->
+  <div class="tab-panel" id="panel-kw-insight">
+    <!-- 한줄 요약 배너 -->
+    <div id="kw-insight-banner" style="background:linear-gradient(135deg,#2e2e2e 0%,#4a4a4a 100%);border-radius:12px;padding:1.5rem 2rem;margin-bottom:1.25rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:1rem">
+        <div style="font-size:11px;color:rgba(255,255,255,.5)">오늘의 한줄 요약</div>
+        <select id="kw-insight-range" onchange="renderKwInsight()" style="border:1px solid rgba(255,255,255,.25);border-radius:var(--rs);padding:5px 10px;font-size:11px;font-family:inherit;color:#fff;background:rgba(255,255,255,.08);outline:none;cursor:pointer">
+          <option value="yesterday">오늘 vs 어제</option>
+          <option value="week">이번 7일 vs 이전 7일</option>
+          <option value="7days">최근 7일 추이</option>
+        </select>
+      </div>
+      <div id="kw-insight-summary-text" style="font-size:20px;font-weight:700;color:#fff;margin-bottom:12px;line-height:1.4"></div>
+      <div id="kw-insight-badges" style="display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px"></div>
+    </div>
+
+    <!-- KPI 카드 -->
+    <div id="kw-insight-cards" style="display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:1.5rem"></div>
+
+    <!-- 상세 분석 영역 -->
+    <div id="kw-insight-detail-section" style="display:none;margin-bottom:1.25rem">
+      <!-- 타이틀 + 기기 필터 -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
+        <div style="font-size:13px;font-weight:700;color:var(--text)">키워드별 DB단가 변화 TOP</div>
+        <div class="tab-bar" id="kw-insight-device-filter">
+          <button class="tab-btn active" onclick="setKwInsightDevice('all',this)">전체</button>
+          <button class="tab-btn pc" onclick="setKwInsightDevice('PC',this)">PC</button>
+          <button class="tab-btn mo" onclick="setKwInsightDevice('모바일',this)">모바일</button>
+        </div>
+      </div>
+      <div class="table-card" style="margin-bottom:1.25rem">
+        <div style="padding:.5rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:flex-end">
+          <span style="font-size:11px;color:var(--faint)" id="kw-insight-catmedia-label">DB단가 변화율 절대값 순</span>
+        </div>
+        <div class="table-wrap">
+          <table style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap">
+            <thead>
+              <tr style="background:#fafaf8">
+                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">키워드</th>
+                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">기기</th>
+                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB단가 변화</th>
+                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">CPC 변화</th>
+                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB전환율 변화</th>
+                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB수 변화</th>
+                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:center">판단</th>
+              </tr>
+            </thead>
+            <tbody id="kw-insight-catmedia-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="table-card">
+          <div class="table-header" style="padding:.75rem 1.25rem">
+            <h2 style="color:#16a34a">✅ 효율 개선 키워드 TOP5</h2>
+            <span style="font-size:11px;color:var(--faint)">DB단가 하락률 순</span>
+          </div>
+          <div class="table-wrap">
+            <table style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap">
+              <thead>
+                <tr style="background:#f0fdf4">
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">키워드</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">기기</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB단가</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">CPC</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">전환율</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB수</th>
+                </tr>
+              </thead>
+              <tbody id="kw-insight-good-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-header" style="padding:.75rem 1.25rem">
+            <h2 style="color:#dc2626">⚠️ 효율 악화 키워드 TOP5</h2>
+            <span style="font-size:11px;color:var(--faint)">DB단가 상승률 순</span>
+          </div>
+          <div class="table-wrap">
+            <table style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap">
+              <thead>
+                <tr style="background:#fef2f2">
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">키워드</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">기기</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB단가</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">CPC</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">전환율</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB수</th>
+                </tr>
+              </thead>
+              <tbody id="kw-insight-bad-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7일 추이 -->
+    <div id="kw-insight-trend" style="display:none">
+      <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:.75rem">📈 최근 7일 추이</div>
+      <div class="table-card">
+        <div class="table-wrap" style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap">
+            <thead id="kw-insight-trend-thead"></thead>
+            <tbody id="kw-insight-trend-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="kw-insight-no-data" style="display:block;padding:3rem;text-align:center;color:var(--faint);font-size:14px">
+      데이터를 불러오면 이 영역에 결과가 표시됩니다.
+    </div>
+  </div>
+
+  <!-- 키워드 성과 패널 -->
+  <div class="tab-panel" id="panel-kw-main">
+    <!-- 요약 지표 -->
+    <div id="kw-metrics" class="kpi-grid"></div>
+
+    <!-- 일별 추이 차트 (매체별 누적) -->
+    <div class="cpc-chart-card" style="margin-bottom:1rem">
+      <div class="cpc-chart-title"><span id="kw-chart-title-text">일별 광고비 추이 (매체별)</span></div>
+      <div class="tab-bar" id="kw-chart-tabs" style="margin:0 0 .75rem">
+        <button class="tab-btn active" onclick="switchKwChartMetric('db',this)">DB수</button>
+        <button class="tab-btn" onclick="switchKwChartMetric('cost',this)">광고비</button>
+        <button class="tab-btn" onclick="switchKwChartMetric('cpd',this)">DB단가</button>
+        <button class="tab-btn" onclick="switchKwChartMetric('ctr',this)">CTR</button>
+        <button class="tab-btn" onclick="switchKwChartMetric('dbcvr',this)">DB전환율</button>
+      </div>
+      <div style="position:relative;height:260px"><canvas id="kw-chart-single"></canvas></div>
+      <div style="font-size:11px;color:var(--faint);margin-top:6px">그래프의 날짜를 클릭하면 그 날의 매체별(네이버/구글/다음) 데이터를 볼 수 있습니다</div>
+    </div>
+
+    <!-- 테이블 -->
+    <div class="table-card">
+      <div class="table-header">
+        <h2>광고 키워드별 성과</h2>
+      </div>
+      <div style="padding:.75rem 1.25rem 0;border-bottom:0px;display:flex;flex-direction:column;gap:8px">
+        <div class="tab-bar" id="kw-table-cum-toggle" style="margin-bottom:0">
+          <button class="tab-btn active" onclick="setKwTableCumMode(false,this)">당월</button>
+          <button class="tab-btn" onclick="setKwTableCumMode(true,this)">누적</button>
+        </div>
+        <div class="tab-bar" id="kw-device-tabs" style="margin-bottom:0">
+          <button class="tab-btn active" onclick="setKwFilter('device','all',this)">전체</button>
+          <button class="tab-btn pc" onclick="setKwFilter('device','PC',this)">PC</button>
+          <button class="tab-btn mobile" onclick="setKwFilter('device','모바일',this)">모바일</button>
+        </div>
+        <div class="tab-bar" id="kw-media-tabs" style="margin-bottom:0">
+          <button class="tab-btn active" onclick="setKwFilter('media','all',this)">전체</button>
+          <button class="tab-btn" onclick="setKwFilter('media','네이버',this)">네이버</button>
+          <button class="tab-btn" onclick="setKwFilter('media','구글',this)">구글</button>
+          <button class="tab-btn" onclick="setKwFilter('media','다음',this)">다음</button>
+        </div>
+        <div class="tab-bar" id="kw-cat-tabs" style="margin-bottom:0">
+          <button class="tab-btn active" onclick="setKwFilter('cat','all',this)">전체</button>
+          <button class="tab-btn cat" onclick="setKwFilter('cat','보험',this)">보험</button>
+          <button class="tab-btn cat" onclick="setKwFilter('cat','실비',this)">실비보험</button>
+          <button class="tab-btn cat" onclick="setKwFilter('cat','암보험',this)">암보험</button>
+          <button class="tab-btn cat" onclick="setKwFilter('cat','어린이보험',this)">어린이보험</button>
+          <button class="tab-btn cat" onclick="setKwFilter('cat','치아보험',this)">치아보험</button>
+          <button class="tab-btn cat" onclick="setKwFilter('cat','치매/간병',this)">치매보험</button>
+          <button class="tab-btn cat" onclick="setKwFilter('cat','운전자보험',this)">운전자보험</button>
+          <button class="tab-btn cat" onclick="setKwFilter('cat','보장분석',this)">보장분석</button>
+          <button class="tab-btn cat" onclick="setKwFilter('cat','기타',this)">기타</button>
+        </div>
+      </div>
+      <div class="filter-row">
+        <label>검색</label>
+        <input type="text" id="kw-search" placeholder="키워드/인타입 검색..." oninput="kwPage=1;renderKwTable()">
+        <label>ROAS</label>
+        <select id="kw-roas-filter" onchange="kwPage=1;renderKwTable()">
+          <option value="all">전체</option>
+          <option value="high">고효율 (300% 이하)</option>
+          <option value="mid">중간 (300~1000%)</option>
+          <option value="low">저효율 (1000% 초과)</option>
+          <option value="na">미매칭</option>
+        </select>
+        <label>DB단가</label>
+        <select id="kw-cpd-filter" onchange="kwPage=1;renderKwTable()">
+          <option value="all">전체</option>
+          <option value="high">고효율 (5만원 이하)</option>
+          <option value="mid">중간 (5~10만원)</option>
+          <option value="low">저효율 (10만원 초과)</option>
+          <option value="nodb">DB없음 제외</option>
+          <option value="na">광고비만 (DB 0)</option>
+        </select>
+        <span class="row-count" id="kw-row-count"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead id="kw-thead"></thead>
+          <tbody id="kw-tbody"></tbody>
+        </table>
+      </div>
+      <div id="kw-page-nav"></div>
+    </div>
+
+    <div id="kw-no-data" style="display:none;padding:3rem;text-align:center;color:var(--faint);font-size:14px">
+      데이터를 불러오면 이 영역에 결과가 표시됩니다.
+    </div>
+  </div>
+
+  <!-- 디스플레이(뉴미디어) 패널 -->
+  <div class="tab-panel" id="panel-display">
+    <div class="main-tabs" id="display-media-tabs" style="display:flex">
+      <button class="main-tab active" onclick="switchDisplayInsight(this)">성과 진단</button>
+      <button class="main-tab" onclick="switchDisplayMedia('카카오페이',this)">카카오페이</button>
+      <button class="main-tab" onclick="switchDisplayMedia('T멤버십',this)">T멤버십</button>
+      <button class="main-tab" onclick="switchDisplayMedia('가스락',this)">가스락</button>
+      <button class="main-tab" onclick="switchDisplayMedia('KT PASS',this)">KT PASS</button>
+      <button class="main-tab" onclick="switchDisplayReport(this)">리포트</button>
+      <span id="display-month-sel-wrap" style="display:none;margin-left:auto;align-items:center;gap:4px">
+        <button class="month-step" onclick="_stepMonthSelect('display-month-sel',-1)" title="이전 달">◀</button>
+        <select id="display-month-sel" onchange="renderDisplayTab()" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 10px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);outline:none">
+          <option value="">전체 월</option>
+        </select>
+        <button class="month-step" onclick="_stepMonthSelect('display-month-sel',1)" title="다음 달">▶</button>
+      </span>
+    </div>
+
+    <div id="display-pending" style="display:none;padding:3rem;text-align:center;color:var(--faint);font-size:13px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r)"></div>
+
+    <div id="display-insight">
+      <div id="display-insight-body"></div>
+    </div>
+
+    <div id="display-content" style="display:none">
+      <div id="display-summary" class="kpi-grid kpi-grid-9"></div>
+      <div class="cpc-chart-card" style="margin-bottom:1rem">
+        <div class="cpc-chart-title">
+          <span id="display-chart-title-text">영역별 광고비 추이</span>
+        </div>
+        <div class="tab-bar" id="display-chart-tabs" style="margin:0 0 .75rem">
+          <button class="tab-btn active" onclick="switchDisplayChartMetric('db',this)">DB수</button>
+          <button class="tab-btn" onclick="switchDisplayChartMetric('cost',this)">광고비</button>
+          <button class="tab-btn" onclick="switchDisplayChartMetric('cpd',this)">DB단가</button>
+          <button class="tab-btn" onclick="switchDisplayChartMetric('ctr',this)">CTR</button>
+          <button class="tab-btn" onclick="switchDisplayChartMetric('dbcvr',this)">DB전환율</button>
+        </div>
+        <div style="position:relative;height:280px"><canvas id="display-chart-single"></canvas></div>
+      </div>
+      <div class="table-card">
+        <div class="table-header">
+          <h2>영역별 성과 <span style="font-size:11px;font-weight:400;color:var(--faint)">(행 클릭 → 소재별 상세)</span></h2>
+          <button onclick="downloadMediaCsv(_displayMedia)" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 12px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);cursor:pointer;white-space:nowrap">↓ 소재별 효율 CSV</button>
+        </div>
+        <div style="padding:.75rem 1.25rem">
+          <div class="tab-bar" id="display-area-cum-toggle" style="margin-bottom:0">
+            <button class="tab-btn active" onclick="setDisplayAreaCumMode(false,this)">당월</button>
+            <button class="tab-btn" onclick="setDisplayAreaCumMode(true,this)">누적</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead id="display-thead"></thead>
+            <tbody id="display-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 커스텀 리포트: 매체/행/열/지표를 직접 골라서 표+CSV로 뽑는 빌더 -->
+    <div id="display-report" style="display:none">
+      <div class="table-card" style="padding:1.25rem;margin-bottom:1rem">
+        <div style="display:flex;flex-wrap:wrap;gap:1.5rem 2rem">
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px">매체</div>
+            <div id="report-media-filter" style="display:flex;gap:10px;flex-wrap:wrap"></div>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px">행 기준 (여러 개 선택 시 겹쳐서 묶임)</div>
+            <div id="report-row-axis" style="display:flex;gap:10px;flex-wrap:wrap"></div>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px">열 기준</div>
+            <select id="report-col-axis" onchange="onReportAxisChange()" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 10px;font-size:13px;font-family:inherit">
+              <option value="영역">영역(상품)</option>
+              <option value="소재">소재</option>
+              <option value="월" selected>월</option>
+              <option value="매체">매체</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px">지표 (여러 개 선택 가능)</div>
+            <div id="report-metrics" style="display:flex;gap:10px;flex-wrap:wrap"></div>
+          </div>
+        </div>
+      </div>
+      <div class="table-card">
+        <div class="table-header">
+          <h2>커스텀 리포트</h2>
+          <button class="dl" onclick="downloadReportCsv()">⬇ CSV 다운로드</button>
+        </div>
+        <div class="table-wrap" style="overflow-x:auto">
+          <table id="report-table" style="width:100%;border-collapse:collapse;font-size:12.5px"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 성과 분석 패널 -->
+  <div class="tab-panel" id="panel-insight">
+    <div id="insight-banner" style="background:linear-gradient(135deg,#2e2e2e 0%,#4a4a4a 100%);border-radius:12px;padding:1.5rem 2rem;margin-bottom:1.25rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:1rem">
+        <div style="font-size:11px;color:rgba(255,255,255,.55)">오늘의 한줄 요약</div>
+        <select id="insight-range" onchange="renderInsight()" style="border:1px solid rgba(255,255,255,.25);border-radius:var(--rs);padding:5px 10px;font-size:11px;font-family:inherit;color:#fff;background:rgba(255,255,255,.08);outline:none;cursor:pointer">
+          <option value="yesterday">오늘 vs 어제</option>
+          <option value="week">이번주 vs 지난주</option>
+          <option value="7days">최근 7일 추이</option>
+        </select>
+      </div>
+      <div id="insight-summary-text" style="font-size:20px;font-weight:700;color:#fff;line-height:1.4;margin-bottom:14px">
+        데이터 로딩 중...
+      </div>
+      <div id="insight-badges" style="display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px"></div>
+    </div>
+
+    <!-- 지표 카드 -->
+    <div id="insight-cards" style="display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:1.5rem"></div>
+
+    <!-- 상세 분석 영역 (보종·기기별 / 개선·악화 그룹) -->
+    <div id="insight-detail-section" style="display:none;margin-bottom:1.25rem">
+
+      <!-- 1. 보종·기기별 변화 TOP -->
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:.6rem">📊 보종·기기별 DB단가 변화</div>
+      <div class="table-card" style="margin-bottom:1.25rem">
+        <div class="table-header" style="padding:.75rem 1.25rem">
+          <h2>보종·기기별 변화 TOP</h2>
+          <span style="font-size:11px;color:var(--faint)" id="insight-catmedia-label">DB단가 변화율 절대값 순</span>
+        </div>
+        <div class="table-wrap">
+          <table style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap">
+            <thead>
+              <tr style="background:#fafaf8">
+                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">보종·기기</th>
+                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB단가 변화</th>
+                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">CPC 변화</th>
+                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB전환율 변화</th>
+                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB수 변화</th>
+                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:center">판단</th>
+              </tr>
+            </thead>
+            <tbody id="insight-catmedia-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 2 & 3. 효율 개선 / 악화 그룹 TOP5 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="table-card">
+          <div class="table-header" style="padding:.75rem 1.25rem">
+            <h2 style="color:#16a34a">✅ 효율 개선 그룹 TOP5</h2>
+            <span style="font-size:11px;color:var(--faint)">DB단가 하락률 순</span>
+          </div>
+          <div class="table-wrap">
+            <table style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap">
+              <thead>
+                <tr style="background:#f0fdf4">
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">광고그룹</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">보종</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">기기</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB단가</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">CPC</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">전환율</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB수</th>
+                </tr>
+              </thead>
+              <tbody id="insight-good-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-header" style="padding:.75rem 1.25rem">
+            <h2 style="color:#dc2626">⚠️ 효율 악화 그룹 TOP5</h2>
+            <span style="font-size:11px;color:var(--faint)">DB단가 상승률 순</span>
+          </div>
+          <div class="table-wrap">
+            <table style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap">
+              <thead>
+                <tr style="background:#fef2f2">
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">광고그룹</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">보종</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">기기</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB단가</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">CPC</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">전환율</th>
+                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB수</th>
+                </tr>
+              </thead>
+              <tbody id="insight-bad-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 최근 7일 추이 테이블 -->
+    <div id="insight-trend" style="display:none">
+      <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:.75rem">📈 최근 7일 추이</div>
+      <div class="table-card">
+        <div class="table-wrap" style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap">
+            <thead id="insight-trend-thead"></thead>
+            <tbody id="insight-trend-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="insight-no-data" style="display:none;padding:3rem;text-align:center;color:var(--faint);font-size:14px">
+      데이터를 불러오면 이 영역에 결과가 표시됩니다.
+    </div>
+  </div>
+
+  <!-- 광고정보 패널 -->
+  <!-- 성과 알림판 패널 -->
+  <div class="tab-panel" id="panel-alert">
+    <!-- 보종 필터 -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.25rem;margin-bottom:1rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:11px;color:var(--faint);font-weight:500">보종 / 캠페인</div>
+        <button id="alert-key-btn" onclick="toggleKeyFilter('alert')" style="padding:4px 12px;font-size:11px;border:1px solid var(--border);border-radius:20px;background:var(--surface);color:var(--muted);cursor:pointer;font-family:inherit">⭐ 주요그룹만</button>
+      </div>
+      <div class="tab-bar" id="alert-cat-tabs">
+        <button class="tab-btn active" onclick="setAlertCat('all',this)">전체</button>
+        <button class="tab-btn cat" onclick="setAlertCat('보험',this)">보험</button>
+        <button class="tab-btn cat" onclick="setAlertCat('실비보험',this)">실비보험</button>
+        <button class="tab-btn cat" onclick="setAlertCat('암보험',this)">암보험</button>
+        <button class="tab-btn cat" onclick="setAlertCat('어린이보험',this)">어린이보험</button>
+        <button class="tab-btn cat" onclick="setAlertCat('치아보험',this)">치아보험</button>
+        <button class="tab-btn cat" onclick="setAlertCat('치매보험',this)">치매보험</button>
+        <button class="tab-btn cat" onclick="setAlertCat('운전자보험',this)">운전자보험</button>
+        <button class="tab-btn cat" onclick="setAlertCat('보장분석',this)">보장분석</button>
+      </div>
+    </div>
+    <!-- DB단가 섹션 -->
+    <div style="margin-bottom:.5rem;font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase">DB단가 순위</div>
+    <div class="alert-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:1.5rem">
+      <div class="alert-section">
+        <div class="alert-section-head"><div class="dot green"></div><h3>🟢 고효율 · PC</h3><span class="cnt" id="cnt-cpd-good-pc"></span></div>
+        <div id="list-cpd-good-pc"></div>
+      </div>
+      <div class="alert-section">
+        <div class="alert-section-head"><div class="dot green"></div><h3>🟢 고효율 · 모바일</h3><span class="cnt" id="cnt-cpd-good-mo"></span></div>
+        <div id="list-cpd-good-mo"></div>
+      </div>
+      <div class="alert-section">
+        <div class="alert-section-head"><div class="dot red"></div><h3>🔴 저효율 · PC</h3><span class="cnt" id="cnt-cpd-bad-pc"></span></div>
+        <div id="list-cpd-bad-pc"></div>
+      </div>
+      <div class="alert-section">
+        <div class="alert-section-head"><div class="dot red"></div><h3>🔴 저효율 · 모바일</h3><span class="cnt" id="cnt-cpd-bad-mo"></span></div>
+        <div id="list-cpd-bad-mo"></div>
+      </div>
+    </div>
+    <!-- ROAS 섹션 -->
+    <div style="margin-bottom:.5rem;font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase">ROAS 순위</div>
+    <div class="alert-grid" style="grid-template-columns:repeat(4,1fr)">
+      <div class="alert-section">
+        <div class="alert-section-head"><div class="dot green"></div><h3>🟢 고효율 · PC</h3><span class="cnt" id="cnt-roas-good-pc"></span></div>
+        <div id="list-roas-good-pc"></div>
+      </div>
+      <div class="alert-section">
+        <div class="alert-section-head"><div class="dot green"></div><h3>🟢 고효율 · 모바일</h3><span class="cnt" id="cnt-roas-good-mo"></span></div>
+        <div id="list-roas-good-mo"></div>
+      </div>
+      <div class="alert-section">
+        <div class="alert-section-head"><div class="dot red"></div><h3>🔴 저효율 · PC</h3><span class="cnt" id="cnt-roas-bad-pc"></span></div>
+        <div id="list-roas-bad-pc"></div>
+      </div>
+      <div class="alert-section">
+        <div class="alert-section-head"><div class="dot red"></div><h3>🔴 저효율 · 모바일</h3><span class="cnt" id="cnt-roas-bad-mo"></span></div>
+        <div id="list-roas-bad-mo"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 전체 데이터 패널 -->
+  <div class="tab-panel" id="panel-data">
+  <div id="file-info" style="display:none"></div>
+
+  <div class="results" id="results">
+    <div class="kpi-grid" id="metrics"></div>
+    <div class="cpc-chart-card" style="margin-bottom:1rem">
+      <div class="cpc-chart-title"><span id="data-chart-title-text">일별 광고비 추이</span></div>
+      <div class="tab-bar" id="data-chart-tabs" style="margin:0 0 .75rem">
+        <button class="tab-btn active" onclick="switchDataChartMetric('db',this)">DB수</button>
+        <button class="tab-btn" onclick="switchDataChartMetric('cost',this)">광고비</button>
+        <button class="tab-btn" onclick="switchDataChartMetric('cpd',this)">DB단가</button>
+        <button class="tab-btn" onclick="switchDataChartMetric('ctr',this)">CTR</button>
+        <button class="tab-btn" onclick="switchDataChartMetric('dbcvr',this)">DB전환율</button>
+      </div>
+      <div style="position:relative;height:260px"><canvas id="data-chart-single"></canvas></div>
+      <div style="font-size:11px;color:var(--faint);margin-top:6px">그래프의 날짜를 클릭하면 그 날의 광고그룹별 데이터를 볼 수 있습니다</div>
+    </div>
+    <div class="table-card">
+      <div class="table-header">
+        <h2 id="pc-table-title">광고그룹별 성과 <span style="font-size:11px;font-weight:400;color:var(--faint)">(행 클릭 → 일별 상세)</span></h2>
+        <div class="table-actions">
+          <span id="pc-key-legend" style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;margin-right:4px">⭐ 메인키워드 중요그룹</span>
+          <button class="dl" onclick="downloadCSV()" title="현재 화면에 보이는 표를 CSV로 저장">⬇ CSV</button>
+          <button class="dl" onclick="downloadXLSX()" title="현재 화면에 보이는 표를 엑셀로 저장">⬇ 엑셀</button>
+        </div>
+      </div>
+      <!-- 표시 단위 / PC·모바일 / 보종 탭 -->
+      <div style="padding:.75rem 1.25rem 0;border-bottom:0px;display:flex;flex-direction:column;gap:8px">
+        <div class="tab-bar" id="pc-view-tabs" style="margin-bottom:0">
+          <button class="tab-btn" onclick="setPcViewMode('campaign',this)">캠페인별</button>
+          <button class="tab-btn active" onclick="setPcViewMode('group',this)">광고그룹별</button>
+          <button class="tab-btn" onclick="setPcViewMode('keyword',this)">키워드별</button>
+        </div>
+        <div class="tab-bar" id="pc-table-cum-toggle" style="margin-bottom:0">
+          <button class="tab-btn active" onclick="setPcTableCumMode(false,this)">당월</button>
+          <button class="tab-btn" onclick="setPcTableCumMode(true,this)">누적</button>
+        </div>
+        <div class="tab-bar" id="media-tabs" style="margin-bottom:0">
+          <button class="tab-btn active" onclick="setMediaFilter('all',this)">전체</button>
+          <button class="tab-btn pc" onclick="setMediaFilter('PC',this)">PC</button>
+          <button class="tab-btn mobile" onclick="setMediaFilter('모바일',this)">모바일</button>
+        </div>
+        <div class="tab-bar" id="cat-tabs" style="margin-bottom:0">
+          <button class="tab-btn active" onclick="setCatFilter('all',this)">전체</button>
+          <button class="tab-btn cat" onclick="setCatFilter('보험',this)">보험</button>
+          <button class="tab-btn cat" onclick="setCatFilter('실비보험',this)">실비보험</button>
+          <button class="tab-btn cat" onclick="setCatFilter('암보험',this)">암보험</button>
+          <button class="tab-btn cat" onclick="setCatFilter('어린이보험',this)">어린이보험</button>
+          <button class="tab-btn cat" onclick="setCatFilter('치아보험',this)">치아보험</button>
+          <button class="tab-btn cat" onclick="setCatFilter('치매보험',this)">치매보험</button>
+          <button class="tab-btn cat" onclick="setCatFilter('운전자보험',this)">운전자보험</button>
+          <button class="tab-btn cat" onclick="setCatFilter('보장분석',this)">보장분석</button>
+          <button class="tab-btn cat" onclick="setCatFilter('미매핑',this)" style="border-color:#fca5a5;color:#991b1b">미매핑</button>
+        </div>
+      </div>
+      <div class="filter-row">
+        <label>검색</label>
+        <input type="text" id="search-input" placeholder="광고그룹 / 인타입..." oninput="applyFilter()">
+        <label>ROAS</label>
+        <select id="roas-filter" onchange="applyFilter()">
+          <option value="all">전체</option>
+          <option value="high">고효율 (300% 이하)</option>
+          <option value="mid">중간 (300~1000%)</option>
+          <option value="low">저효율 (1000% 초과)</option>
+          <option value="na">미매칭</option>
+        </select>
+        <label>DB단가</label>
+        <select id="cpd-filter" onchange="applyFilter()">
+          <option value="all">전체</option>
+          <option value="high">고효율 (5만원 이하)</option>
+          <option value="mid">중간 (5~10만원)</option>
+          <option value="low">저효율 (10만원 초과)</option>
+          <option value="nodb">DB없음 제외</option>
+          <option value="na">광고비만 (DB 0)</option>
+        </select>
+        <button id="data-key-btn" onclick="toggleKeyFilter('data')" style="padding:4px 12px;font-size:11px;border:1px solid var(--border);border-radius:20px;background:var(--surface);color:var(--muted);cursor:pointer;font-family:inherit">⭐ 주요그룹만</button>
+        <button id="data-renewal-btn" onclick="toggleRenewalFilter()" style="padding:4px 12px;font-size:11px;border:1px solid var(--border);border-radius:20px;background:var(--surface);color:var(--muted);cursor:pointer;font-family:inherit">🔴 교체임박만</button>
+        <span class="row-count" id="row-count"></span>
+      </div>
+      <div class="table-wrap">
+        <table><thead id="thead"></thead><tbody id="tbody"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Daily DB 현황 패널 ===== -->
+<div class="tab-panel" id="panel-daily">
+  <div class="table-card" id="daily-table-card" style="overflow:visible">
+    <!-- 카드 헤더: 당월/누적(왼쪽) + 월선택·CSV(오른쪽) -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px">
+      <div class="tab-bar" id="daily-table-cum-toggle" style="margin-bottom:0">
+        <button class="tab-btn active" onclick="setDailyTableCumMode(false,this)">당월</button>
+        <button class="tab-btn" onclick="setDailyTableCumMode(true,this)">누적</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
+        <button class="month-step" onclick="_stepMonthSelect('daily-month-sel',-1)" title="이전 달">◀</button>
+        <select id="daily-month-sel" onchange="renderDaily()" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 10px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);outline:none">
+          <option value="">전체 월</option>
+        </select>
+        <button class="month-step" onclick="_stepMonthSelect('daily-month-sel',1)" title="다음 달">▶</button>
+        <button onclick="downloadDailyCsv()" style="margin-left:6px;border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 12px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);cursor:pointer;white-space:nowrap">↓ CSV</button>
+      </div>
+    </div>
+    <div id="daily-media-toggle" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 16px;border-bottom:1px solid var(--border)"></div>
+    <!-- 테이블: 양방향 스크롤, sticky thead 작동 -->
+    <div style="overflow:auto;max-height:calc(100vh - 220px)">
+      <table id="daily-table" style="width:100%;border-collapse:collapse;font-size:11.5px">
+        <thead id="daily-thead"></thead>
+        <tbody id="daily-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="daily-no-data" style="display:none;padding:3rem;text-align:center;color:var(--faint);font-size:14px">
+    ▶ 데이터를 불러오는 중이거나 해당 월 데이터가 없습니다.
+  </div>
+</div>
+
+<!-- ===== 예상 CPC 대시보드 패널 ===== -->
+<div class="tab-panel" id="panel-cpc">
+  <!-- 컨트롤 통합 한 줄 -->
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem;flex-wrap:wrap">
+    <div class="cpc-device-tabs" id="cpc-period-tabs">
+      <button class="cpc-dtab act-all" id="cpc-period-month" onclick="cpcPeriod('month')">당월</button>
+      <button class="cpc-dtab" id="cpc-period-90" onclick="cpcPeriod('90d')">최근 90일</button>
+      <button class="cpc-dtab" id="cpc-period-all" onclick="cpcPeriod('all')">전체 기간</button>
+    </div>
+    <div style="width:1px;height:20px;background:var(--border);margin:0 4px"></div>
+    <div class="cpc-device-tabs">
+      <button class="cpc-dtab act-all" id="cpc-tab-all" onclick="cpcDevice('전체')">전체</button>
+      <button class="cpc-dtab" id="cpc-tab-pc" onclick="cpcDevice('PC')">PC</button>
+      <button class="cpc-dtab" id="cpc-tab-mo" onclick="cpcDevice('모바일')">모바일</button>
+    </div>
+    <div style="width:1px;height:20px;background:var(--border);margin:0 4px"></div>
+    <select id="cpc-cat" onchange="renderCpc()" style="height:32px;box-sizing:border-box;border:1px solid var(--border-strong);border-radius:var(--rs);padding:0 10px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);outline:none">
+      <option value="all">전체 보종</option>
+    </select>
+    <input type="text" id="cpc-search" placeholder="광고그룹 검색..." oninput="renderCpc()" style="height:32px;box-sizing:border-box;border:1px solid var(--border-strong);border-radius:var(--rs);padding:0 10px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);outline:none;width:160px">
+    <button id="cpc-key-btn" onclick="toggleKeyFilter('cpc')" style="height:32px;box-sizing:border-box;padding:0 14px;font-size:11px;border:1px solid var(--border);border-radius:20px;background:var(--surface);color:var(--muted);cursor:pointer;font-family:inherit">⭐ 주요그룹만</button>
+  </div>
+
+  <!-- 기간별 CPC 멘트 -->
+  <div id="cpc-period-banner" style="background:#0F2744;border-radius:var(--r);padding:14px 18px;margin-bottom:1rem;display:none">
+    <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px">CPC 분석 기준</div>
+    <div id="cpc-period-text" style="font-size:14px;font-weight:700;color:#fff;line-height:1.6"></div>
+  </div>
+
+  <!-- 요약 지표 -->
+  <div class="cpc-summary" id="cpc-summary"></div>
+
+  <!-- 차트 2개 -->
+  <div class="cpc-chart-row">
+    <div class="cpc-chart-card">
+      <div class="cpc-chart-title">
+        <span>순위별 평균 CPC</span>
+        <div class="cpc-legend">
+          <span><span class="cpc-leg-dot" style="background:#595959"></span>PC</span>
+          <span><span class="cpc-leg-dot" style="background:#166534"></span>모바일</span>
+        </div>
+      </div>
+      <div style="position:relative;height:200px"><canvas id="cpc-rank-chart" role="img" aria-label="순위별 평균 CPC 막대차트">순위별 CPC 데이터</canvas></div>
+    </div>
+    <div class="cpc-chart-card">
+      <div class="cpc-chart-title">
+        <span>평균노출순위 vs 실제 CPC</span>
+        <div class="cpc-legend">
+          <span><span class="cpc-leg-dot" style="background:#595959"></span>PC</span>
+          <span><span class="cpc-leg-dot" style="background:#166534"></span>모바일</span>
+        </div>
+      </div>
+      <div style="position:relative;height:200px"><canvas id="cpc-scatter-chart" role="img" aria-label="노출순위 대비 CPC 산점도">순위 vs CPC 산점도</canvas></div>
+    </div>
+  </div>
+
+  <!-- 상세 테이블 -->
+  <div class="table-card cpc-tbl" id="cpc-table-card">
+    <div class="table-header">
+      <h2>그룹별 순위별 예상 CPC</h2>
+      <div class="table-actions">
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead id="cpc-thead">
+          <tr>
+            <th style="min-width:150px" onclick="cpcSort('group')">광고그룹 <span id="cpc-sort-group"></span></th>
+            <th style="width:60px" onclick="cpcSort('media')">기기 <span id="cpc-sort-media"></span></th>
+            <th style="width:65px" onclick="cpcSort('cat')">보종 <span id="cpc-sort-cat"></span></th>
+            <th class="r" style="width:75px" onclick="cpcSort('rank')">평균순위 <span id="cpc-sort-rank">▲</span></th>
+            <th class="r" style="width:85px" onclick="cpcSort('cpc')">실제 CPC <span id="cpc-sort-cpc"></span></th>
+            <th class="r" style="width:85px" onclick="cpcSort('r1')" title="1위 노출 시 예상 CPC">1위 예상 <span id="cpc-sort-r1"></span></th>
+            <th class="r" style="width:85px" onclick="cpcSort('r2')" title="2위 노출 시 예상 CPC">2위 예상 <span id="cpc-sort-r2"></span></th>
+            <th class="r" style="width:85px" onclick="cpcSort('r3')" title="3위 노출 시 예상 CPC">3위 예상 <span id="cpc-sort-r3"></span></th>
+            <th class="r" style="width:85px" onclick="cpcSort('r4')" title="4위 노출 시 예상 CPC">4위 예상 <span id="cpc-sort-r4"></span></th>
+            <th class="r" style="width:85px" onclick="cpcSort('r5')" title="5위+ 노출 시 예상 CPC">5위+ 예상 <span id="cpc-sort-r5"></span></th>
+            <th style="min-width:130px">CPC 수준</th>
+          </tr>
+        </thead>
+        <tbody id="cpc-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="cpc-no-data" style="display:none;padding:3rem;text-align:center;color:var(--faint);font-size:14px">
+    ▶ 상단 <strong>불러오기</strong> 버튼을 눌러 데이터를 먼저 로드해 주세요.
+  </div>
+</div>
+
+<!-- 키워드 드릴다운 모달 -->
+<div class="modal-bg" id="kw-modal-bg" onclick="closeKwModal(event)" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;display:none;align-items:center;justify-content:center">
+  <div class="modal" style="width:1300px;max-width:95vw;max-height:85vh;overflow-y:auto">
+    <div class="modal-head">
+      <h3 id="kw-modal-title">인타입 상세</h3>
+      <button class="close-btn" onclick="document.getElementById('kw-modal-bg').style.display='none'">✕</button>
+    </div>
+    <div class="modal-body" id="kw-modal-body"></div>
+  </div>
+</div>
+
+<!-- 디스플레이 소재 크리에이티브 모달 -->
+<div class="modal-bg" id="creative-modal-bg" onclick="if(event.target===this)document.getElementById('creative-modal-bg').style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center">
+  <div class="modal" style="width:820px;max-width:95vw;max-height:85vh;overflow-y:auto">
+    <div class="modal-head">
+      <h3 id="creative-modal-title">소재 크리에이티브</h3>
+      <button class="close-btn" onclick="document.getElementById('creative-modal-bg').style.display='none'">✕</button>
+    </div>
+    <div class="modal-body" id="creative-modal-body" style="text-align:center"></div>
+  </div>
+</div>
+
+<!-- 대시보드 전체 기준값 초과 알림 팝업 -->
+<div class="modal-bg" id="dashboard-alert-modal-bg" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;align-items:center;justify-content:center">
+  <div class="modal" style="width:480px;max-width:95vw;max-height:85vh;overflow-y:auto">
+    <div class="modal-head">
+      <h3>⚠️ 확인이 필요한 항목이 있습니다</h3>
+      <button class="close-btn" onclick="_closeAlertPopup()">✕</button>
+    </div>
+    <div class="modal-body" id="dashboard-alert-modal-body"></div>
+    <div style="padding:1rem 1.25rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer">
+        <input type="checkbox" id="dashboard-alert-dismiss-cb"> 오늘은 다시 표시하지 않기
+      </label>
+      <button onclick="_closeAlertPopup()" style="padding:6px 16px;border:none;border-radius:var(--rs);background:var(--accent);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- 보종·기기별 변화 원인(기여 그룹) 모달 -->
+<div class="modal-bg" id="catmedia-detail-modal-bg" onclick="if(event.target===this)document.getElementById('catmedia-detail-modal-bg').style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1500;align-items:center;justify-content:center">
+  <div class="modal" style="width:640px;max-width:95vw;max-height:85vh;overflow-y:auto">
+    <div class="modal-head">
+      <h3 id="catmedia-detail-title">원인 분석</h3>
+      <button class="close-btn" onclick="document.getElementById('catmedia-detail-modal-bg').style.display='none'">✕</button>
+    </div>
+    <div class="modal-body" id="catmedia-detail-body"></div>
+  </div>
+</div>
+
+<!-- 데이터현황 일별 차트 → 날짜 클릭 시 광고그룹별 상세 모달 -->
+<div class="modal-bg" id="daily-group-modal-bg" onclick="if(event.target===this)document.getElementById('daily-group-modal-bg').style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1500;align-items:center;justify-content:center">
+  <div class="modal" style="width:760px;max-width:95vw;max-height:85vh;overflow-y:auto">
+    <div class="modal-head">
+      <h3 id="daily-group-modal-title">일별 광고그룹 상세</h3>
+      <button class="close-btn" onclick="document.getElementById('daily-group-modal-bg').style.display='none'">✕</button>
+    </div>
+    <div class="modal-body" id="daily-group-modal-body"></div>
+  </div>
+</div>
+
+<!-- 성과 분석 상세 모달 -->
+<div id="insight-detail-modal" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center">
+  <div style="background:var(--surface);border-radius:12px;width:360px;max-width:90vw;box-shadow:0 8px 32px rgba(0,0,0,.2);overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid var(--border)">
+      <h3 id="insight-detail-title" style="font-size:15px;font-weight:700;color:var(--text);margin:0"></h3>
+      <button onclick="document.getElementById('insight-detail-modal').style.display='none'" style="border:none;background:none;font-size:18px;cursor:pointer;color:var(--muted)">✕</button>
+    </div>
+    <div id="insight-detail-body" style="padding:0"></div>
+  </div>
+</div>
+
+<!-- 일별 드릴다운 모달 -->
+<div class="modal-bg" id="modal-bg" onclick="closeModal(event)">
+  <div class="modal" style="width:90%;max-width:1400px">
+    <div class="modal-head">
+      <h3 id="modal-title">일별 상세</h3>
+      <button class="close-btn" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-metrics" id="modal-metrics"></div>
+      <!-- 소재 섹션 -->
+      <div id="modal-content-links" style="margin-bottom:1rem"></div>
+      <!-- 키워드 섹션 -->
+      <div id="modal-keywords" style="margin-bottom:1rem"></div>
+      <div class="day-table-wrap">
+        <table><thead id="modal-thead"></thead><tbody id="modal-tbody"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="./js/data/mappings.js"></script>
+<script src="./js/core.js"></script>
+<script src="./js/insights.js"></script>
+<script src="./js/keyword.js"></script>
+<script src="./js/app.js"></script>
+<script src="./js/display.js"></script>
+
+<div id="loading-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;align-items:center;justify-content:center;flex-direction:column">
+  <div style="background:#fff;border-radius:12px;padding:2rem 2.5rem;max-width:360px;width:90%;text-align:center">
+    <div style="font-size:15px;font-weight:600;color:#1a1a18;margin-bottom:8px">데이터 로드 중</div>
+    <div class="lo-msg" style="font-size:13px;color:#6b6b66;margin-bottom:16px">구글 시트 연결 중...</div>
+    <div style="background:#e2e2de;border-radius:6px;height:8px;overflow:hidden">
+      <div class="lo-bar-fill" style="background:#ff9b00;height:100%;width:0%;transition:width .3s ease;border-radius:6px"></div>
+    </div>
+    <div style="font-size:11px;color:#9e9e99;margin-top:8px">데이터 크기에 따라 30~60초 소요될 수 있습니다</div>
+  </div>
+</div>
+</body>
+</html>

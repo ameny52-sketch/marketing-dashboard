@@ -33,7 +33,7 @@
   <!-- 전체 탭용 서브메뉴 -->
   <div class="main-tabs" id="subtabs-all">
     <button class="main-tab active" onclick="switchTab('daily',this)">📅 Daily DB 현황</button>
-    <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+    <div class="tab-actions">
       <select id="month-select-all" style="display:none" onchange="onMonthChange()"></select>
       <span class="status" id="status-all" style="font-size:12px;display:none"></span>
     </div>
@@ -45,8 +45,8 @@
     <button class="main-tab alert" onclick="switchTab('alert',this)">효율 순위</button>
     <button class="main-tab" onclick="switchTab('cpc',this)">CPC 분석</button>
     <button class="main-tab" onclick="switchTab('data',this)">데이터 현황</button>
-    <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
-      <div id="pc-month-sel-wrap" style="display:none;align-items:center;gap:4px">
+    <div class="tab-actions">
+      <div id="pc-month-sel-wrap" class="month-picker" style="display:none">
         <button class="month-step" onclick="_stepMonthSelect('month-select',-1)" title="이전 달">◀</button>
         <select id="month-select" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 10px;font-size:13px;font-family:inherit;color:var(--text);background:var(--surface);outline:none;cursor:pointer" onchange="onMonthChange()">
         </select>
@@ -60,8 +60,8 @@
   <div class="main-tabs" id="subtabs-kw" style="display:none">
     <button class="main-tab active" onclick="switchTab('kw-insight',this)">성과 진단</button>
     <button class="main-tab" onclick="switchTab('kw-main',this)">데이터 현황</button>
-    <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
-      <div id="kw-month-sel-wrap" style="display:none;align-items:center;gap:4px">
+    <div class="tab-actions">
+      <div id="kw-month-sel-wrap" class="month-picker" style="display:none">
         <button class="month-step" onclick="_stepMonthSelect('month-select-kw',-1)" title="이전 달">◀</button>
         <select id="month-select-kw" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 10px;font-size:13px;font-family:inherit;color:var(--text);background:var(--surface);outline:none;cursor:pointer" onchange="onMonthChange()">
         </select>
@@ -74,27 +74,27 @@
   <!-- 키워드 성과 진단 패널 -->
   <div class="tab-panel" id="panel-kw-insight">
     <!-- 한줄 요약 배너 -->
-    <div id="kw-insight-banner" style="background:linear-gradient(135deg,#2e2e2e 0%,#4a4a4a 100%);border-radius:12px;padding:1.5rem 2rem;margin-bottom:1.25rem">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:1rem">
-        <div style="font-size:11px;color:rgba(255,255,255,.5)">오늘의 한줄 요약</div>
-        <select id="kw-insight-range" onchange="renderKwInsight()" style="border:1px solid rgba(255,255,255,.25);border-radius:var(--rs);padding:5px 10px;font-size:11px;font-family:inherit;color:#fff;background:rgba(255,255,255,.08);outline:none;cursor:pointer">
+    <div id="kw-insight-banner" class="insight-hero">
+      <div class="insight-hero__top">
+        <div class="insight-hero__label">오늘의 한줄 요약</div>
+        <select id="kw-insight-range" class="insight-hero__select" onchange="renderKwInsight()">
           <option value="yesterday">오늘 vs 어제</option>
           <option value="week">이번 7일 vs 이전 7일</option>
           <option value="7days">최근 7일 추이</option>
         </select>
       </div>
-      <div id="kw-insight-summary-text" style="font-size:20px;font-weight:700;color:#fff;margin-bottom:12px;line-height:1.4"></div>
-      <div id="kw-insight-badges" style="display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px"></div>
+      <div id="kw-insight-summary-text" class="insight-hero__summary"></div>
+      <div id="kw-insight-badges" class="insight-hero__badges"></div>
     </div>
 
     <!-- KPI 카드 -->
-    <div id="kw-insight-cards" style="display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:1.5rem"></div>
+    <div id="kw-insight-cards" class="insight-kpi-grid"></div>
 
     <!-- 상세 분석 영역 -->
     <div id="kw-insight-detail-section" style="display:none;margin-bottom:1.25rem">
       <!-- 타이틀 + 기기 필터 -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
-        <div style="font-size:13px;font-weight:700;color:var(--text)">키워드별 DB단가 변화 TOP</div>
+      <div class="section-toolbar">
+        <div class="section-heading">키워드별 DB단가 변화 TOP</div>
         <div class="tab-bar" id="kw-insight-device-filter">
           <button class="tab-btn active" onclick="setKwInsightDevice('all',this)">전체</button>
           <button class="tab-btn pc" onclick="setKwInsightDevice('PC',this)">PC</button>
@@ -211,7 +211,7 @@
       <div class="table-header">
         <h2>광고 키워드별 성과</h2>
       </div>
-      <div style="padding:.75rem 1.25rem 0;border-bottom:0px;display:flex;flex-direction:column;gap:8px">
+      <div class="table-filter-groups">
         <div class="tab-bar" id="kw-table-cum-toggle" style="margin-bottom:0">
           <button class="tab-btn active" onclick="setKwTableCumMode(false,this)">당월</button>
           <button class="tab-btn" onclick="setKwTableCumMode(true,this)">누적</button>
@@ -285,7 +285,7 @@
       <button class="main-tab" onclick="switchDisplayMedia('가스락',this)">가스락</button>
       <button class="main-tab" onclick="switchDisplayMedia('KT PASS',this)">KT PASS</button>
       <button class="main-tab" onclick="switchDisplayReport(this)">리포트</button>
-      <span id="display-month-sel-wrap" style="display:none;margin-left:auto;align-items:center;gap:4px">
+      <span id="display-month-sel-wrap" class="month-picker month-picker--push" style="display:none">
         <button class="month-step" onclick="_stepMonthSelect('display-month-sel',-1)" title="이전 달">◀</button>
         <select id="display-month-sel" onchange="renderDisplayTab()" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 10px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);outline:none">
           <option value="">전체 월</option>
@@ -318,9 +318,9 @@
       <div class="table-card">
         <div class="table-header">
           <h2>영역별 성과 <span style="font-size:11px;font-weight:400;color:var(--faint)">(행 클릭 → 소재별 상세)</span></h2>
-          <button onclick="downloadMediaCsv(_displayMedia)" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 12px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);cursor:pointer;white-space:nowrap">↓ 소재별 효율 CSV</button>
+          <button class="dl" onclick="downloadMediaCsv(_displayMedia)">↓ 소재별 효율 CSV</button>
         </div>
-        <div style="padding:.75rem 1.25rem">
+        <div class="table-filter-groups table-filter-groups--compact">
           <div class="tab-bar" id="display-area-cum-toggle" style="margin-bottom:0">
             <button class="tab-btn active" onclick="setDisplayAreaCumMode(false,this)">당월</button>
             <button class="tab-btn" onclick="setDisplayAreaCumMode(true,this)">누적</button>
@@ -337,18 +337,18 @@
 
     <!-- 커스텀 리포트: 매체/행/열/지표를 직접 골라서 표+CSV로 뽑는 빌더 -->
     <div id="display-report" style="display:none">
-      <div class="table-card" style="padding:1.25rem;margin-bottom:1rem">
-        <div style="display:flex;flex-wrap:wrap;gap:1.5rem 2rem">
+      <div class="table-card report-builder">
+        <div class="report-builder__grid">
           <div>
-            <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px">매체</div>
+            <div class="report-builder__label">매체</div>
             <div id="report-media-filter" style="display:flex;gap:10px;flex-wrap:wrap"></div>
           </div>
           <div>
-            <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px">행 기준 (여러 개 선택 시 겹쳐서 묶임)</div>
+            <div class="report-builder__label">행 기준 (여러 개 선택 시 겹쳐서 묶임)</div>
             <div id="report-row-axis" style="display:flex;gap:10px;flex-wrap:wrap"></div>
           </div>
           <div>
-            <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px">열 기준</div>
+            <div class="report-builder__label">열 기준</div>
             <select id="report-col-axis" onchange="onReportAxisChange()" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 10px;font-size:13px;font-family:inherit">
               <option value="영역">영역(상품)</option>
               <option value="소재">소재</option>
@@ -357,7 +357,7 @@
             </select>
           </div>
           <div>
-            <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px">지표 (여러 개 선택 가능)</div>
+            <div class="report-builder__label">지표 (여러 개 선택 가능)</div>
             <div id="report-metrics" style="display:flex;gap:10px;flex-wrap:wrap"></div>
           </div>
         </div>
@@ -376,29 +376,29 @@
 
   <!-- 성과 분석 패널 -->
   <div class="tab-panel" id="panel-insight">
-    <div id="insight-banner" style="background:linear-gradient(135deg,#2e2e2e 0%,#4a4a4a 100%);border-radius:12px;padding:1.5rem 2rem;margin-bottom:1.25rem">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:1rem">
-        <div style="font-size:11px;color:rgba(255,255,255,.55)">오늘의 한줄 요약</div>
-        <select id="insight-range" onchange="renderInsight()" style="border:1px solid rgba(255,255,255,.25);border-radius:var(--rs);padding:5px 10px;font-size:11px;font-family:inherit;color:#fff;background:rgba(255,255,255,.08);outline:none;cursor:pointer">
+    <div id="insight-banner" class="insight-hero">
+      <div class="insight-hero__top">
+        <div class="insight-hero__label">오늘의 한줄 요약</div>
+        <select id="insight-range" class="insight-hero__select" onchange="renderInsight()">
           <option value="yesterday">오늘 vs 어제</option>
           <option value="week">이번주 vs 지난주</option>
           <option value="7days">최근 7일 추이</option>
         </select>
       </div>
-      <div id="insight-summary-text" style="font-size:20px;font-weight:700;color:#fff;line-height:1.4;margin-bottom:14px">
+      <div id="insight-summary-text" class="insight-hero__summary">
         데이터 로딩 중...
       </div>
-      <div id="insight-badges" style="display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px"></div>
+      <div id="insight-badges" class="insight-hero__badges"></div>
     </div>
 
     <!-- 지표 카드 -->
-    <div id="insight-cards" style="display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:1.5rem"></div>
+    <div id="insight-cards" class="insight-kpi-grid"></div>
 
     <!-- 상세 분석 영역 (보종·기기별 / 개선·악화 그룹) -->
     <div id="insight-detail-section" style="display:none;margin-bottom:1.25rem">
 
       <!-- 1. 보종·기기별 변화 TOP -->
-      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:.6rem">📊 보종·기기별 DB단가 변화</div>
+      <div class="section-heading section-heading--standalone">보종·기기별 DB단가 변화</div>
       <div class="table-card" style="margin-bottom:1.25rem">
         <div class="table-header" style="padding:.75rem 1.25rem">
           <h2>보종·기기별 변화 TOP</h2>
@@ -492,10 +492,10 @@
   <!-- 성과 알림판 패널 -->
   <div class="tab-panel" id="panel-alert">
     <!-- 보종 필터 -->
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.25rem;margin-bottom:1rem">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+    <div class="filter-panel">
+      <div class="section-toolbar">
         <div style="font-size:11px;color:var(--faint);font-weight:500">보종 / 캠페인</div>
-        <button id="alert-key-btn" onclick="toggleKeyFilter('alert')" style="padding:4px 12px;font-size:11px;border:1px solid var(--border);border-radius:20px;background:var(--surface);color:var(--muted);cursor:pointer;font-family:inherit">⭐ 주요그룹만</button>
+        <button id="alert-key-btn" class="quiet-toggle" onclick="toggleKeyFilter('alert')">⭐ 주요그룹만</button>
       </div>
       <div class="tab-bar" id="alert-cat-tabs">
         <button class="tab-btn active" onclick="setAlertCat('all',this)">전체</button>
@@ -579,7 +579,7 @@
         </div>
       </div>
       <!-- 표시 단위 / PC·모바일 / 보종 탭 -->
-      <div style="padding:.75rem 1.25rem 0;border-bottom:0px;display:flex;flex-direction:column;gap:8px">
+      <div class="table-filter-groups">
         <div class="tab-bar" id="pc-view-tabs" style="margin-bottom:0">
           <button class="tab-btn" onclick="setPcViewMode('campaign',this)">캠페인별</button>
           <button class="tab-btn active" onclick="setPcViewMode('group',this)">광고그룹별</button>
@@ -627,8 +627,8 @@
           <option value="nodb">DB없음 제외</option>
           <option value="na">광고비만 (DB 0)</option>
         </select>
-        <button id="data-key-btn" onclick="toggleKeyFilter('data')" style="padding:4px 12px;font-size:11px;border:1px solid var(--border);border-radius:20px;background:var(--surface);color:var(--muted);cursor:pointer;font-family:inherit">⭐ 주요그룹만</button>
-        <button id="data-renewal-btn" onclick="toggleRenewalFilter()" style="padding:4px 12px;font-size:11px;border:1px solid var(--border);border-radius:20px;background:var(--surface);color:var(--muted);cursor:pointer;font-family:inherit">🔴 교체임박만</button>
+        <button id="data-key-btn" class="quiet-toggle" onclick="toggleKeyFilter('data')">⭐ 주요그룹만</button>
+        <button id="data-renewal-btn" class="quiet-toggle" onclick="toggleRenewalFilter()">🔴 교체임박만</button>
         <span class="row-count" id="row-count"></span>
       </div>
       <div class="table-wrap">
@@ -642,21 +642,21 @@
 <div class="tab-panel" id="panel-daily">
   <div class="table-card" id="daily-table-card" style="overflow:visible">
     <!-- 카드 헤더: 당월/누적(왼쪽) + 월선택·CSV(오른쪽) -->
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px">
+    <div class="table-toolbar">
       <div class="tab-bar" id="daily-table-cum-toggle" style="margin-bottom:0">
         <button class="tab-btn active" onclick="setDailyTableCumMode(false,this)">당월</button>
         <button class="tab-btn" onclick="setDailyTableCumMode(true,this)">누적</button>
       </div>
-      <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
+      <div class="table-toolbar__actions">
         <button class="month-step" onclick="_stepMonthSelect('daily-month-sel',-1)" title="이전 달">◀</button>
         <select id="daily-month-sel" onchange="renderDaily()" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 10px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);outline:none">
           <option value="">전체 월</option>
         </select>
         <button class="month-step" onclick="_stepMonthSelect('daily-month-sel',1)" title="다음 달">▶</button>
-        <button onclick="downloadDailyCsv()" style="margin-left:6px;border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 12px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);cursor:pointer;white-space:nowrap">↓ CSV</button>
+        <button class="dl" onclick="downloadDailyCsv()">↓ CSV</button>
       </div>
     </div>
-    <div id="daily-media-toggle" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 16px;border-bottom:1px solid var(--border)"></div>
+    <div id="daily-media-toggle" class="inline-filter-bar"></div>
     <!-- 테이블: 양방향 스크롤, sticky thead 작동 -->
     <div style="overflow:auto;max-height:calc(100vh - 220px)">
       <table id="daily-table" style="width:100%;border-collapse:collapse;font-size:11.5px">
@@ -674,30 +674,30 @@
 <!-- ===== 예상 CPC 대시보드 패널 ===== -->
 <div class="tab-panel" id="panel-cpc">
   <!-- 컨트롤 통합 한 줄 -->
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem;flex-wrap:wrap">
+  <div class="analysis-toolbar">
     <div class="cpc-device-tabs" id="cpc-period-tabs">
       <button class="cpc-dtab act-all" id="cpc-period-month" onclick="cpcPeriod('month')">당월</button>
       <button class="cpc-dtab" id="cpc-period-90" onclick="cpcPeriod('90d')">최근 90일</button>
       <button class="cpc-dtab" id="cpc-period-all" onclick="cpcPeriod('all')">전체 기간</button>
     </div>
-    <div style="width:1px;height:20px;background:var(--border);margin:0 4px"></div>
+    <div class="toolbar-divider"></div>
     <div class="cpc-device-tabs">
       <button class="cpc-dtab act-all" id="cpc-tab-all" onclick="cpcDevice('전체')">전체</button>
       <button class="cpc-dtab" id="cpc-tab-pc" onclick="cpcDevice('PC')">PC</button>
       <button class="cpc-dtab" id="cpc-tab-mo" onclick="cpcDevice('모바일')">모바일</button>
     </div>
-    <div style="width:1px;height:20px;background:var(--border);margin:0 4px"></div>
-    <select id="cpc-cat" onchange="renderCpc()" style="height:32px;box-sizing:border-box;border:1px solid var(--border-strong);border-radius:var(--rs);padding:0 10px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);outline:none">
+    <div class="toolbar-divider"></div>
+    <select id="cpc-cat" class="compact-control" onchange="renderCpc()">
       <option value="all">전체 보종</option>
     </select>
-    <input type="text" id="cpc-search" placeholder="광고그룹 검색..." oninput="renderCpc()" style="height:32px;box-sizing:border-box;border:1px solid var(--border-strong);border-radius:var(--rs);padding:0 10px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);outline:none;width:160px">
-    <button id="cpc-key-btn" onclick="toggleKeyFilter('cpc')" style="height:32px;box-sizing:border-box;padding:0 14px;font-size:11px;border:1px solid var(--border);border-radius:20px;background:var(--surface);color:var(--muted);cursor:pointer;font-family:inherit">⭐ 주요그룹만</button>
+    <input type="text" id="cpc-search" class="compact-control compact-control--search" placeholder="광고그룹 검색..." oninput="renderCpc()">
+    <button id="cpc-key-btn" class="quiet-toggle" onclick="toggleKeyFilter('cpc')">⭐ 주요그룹만</button>
   </div>
 
   <!-- 기간별 CPC 멘트 -->
-  <div id="cpc-period-banner" style="background:#0F2744;border-radius:var(--r);padding:14px 18px;margin-bottom:1rem;display:none">
-    <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px">CPC 분석 기준</div>
-    <div id="cpc-period-text" style="font-size:14px;font-weight:700;color:#fff;line-height:1.6"></div>
+  <div id="cpc-period-banner" class="context-note" style="display:none">
+    <div class="context-note__label">CPC 분석 기준</div>
+    <div id="cpc-period-text" class="context-note__text"></div>
   </div>
 
   <!-- 요약 지표 -->
@@ -791,7 +791,7 @@
       <button class="close-btn" onclick="_closeAlertPopup()">✕</button>
     </div>
     <div class="modal-body" id="dashboard-alert-modal-body"></div>
-    <div style="padding:1rem 1.25rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <div class="modal-footer">
       <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer">
         <input type="checkbox" id="dashboard-alert-dismiss-cb"> 오늘은 다시 표시하지 않기
       </label>
@@ -824,8 +824,8 @@
 
 <!-- 성과 분석 상세 모달 -->
 <div id="insight-detail-modal" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center">
-  <div style="background:var(--surface);border-radius:12px;width:360px;max-width:90vw;box-shadow:0 8px 32px rgba(0,0,0,.2);overflow:hidden">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid var(--border)">
+  <div class="compact-modal">
+    <div class="compact-modal__head">
       <h3 id="insight-detail-title" style="font-size:15px;font-weight:700;color:var(--text);margin:0"></h3>
       <button onclick="document.getElementById('insight-detail-modal').style.display='none'" style="border:none;background:none;font-size:18px;cursor:pointer;color:var(--muted)">✕</button>
     </div>

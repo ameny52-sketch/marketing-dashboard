@@ -365,6 +365,16 @@ function _buildCreativeRankingThisMonth(){
     }
   });
 
+  // 강제 보정 코드: 오타로 확인된 특정 인타입을 지정된 영역/소재로 정상 코드처럼 편입 (renderDisplayTab과 동일한 안전망)
+  Object.entries(DISPLAY_INTYPE_FORCE_MAP).forEach(([code, map])=>{
+    const key = `${map.media}||${map.area}`;
+    if(!areas[key]) areas[key] = {media:map.media, area:map.area, kws:{}, codeLabelCost:{}};
+    const a = areas[key];
+    if(!a.kws[map.kw]) a.kws[map.kw] = {kw:map.kw, cost:0, imp:0, clk:0, db:0, contracts:0, perf:0, codes:new Set()};
+    a.kws[map.kw].codes.add(code);
+    a.codeLabelCost[code] = {[map.kw]: 1}; // 소유권 판정용 더미 비용(실제 집계엔 미반영)
+  });
+
   // 코드 하나는 소재 하나에만 귀속 (실제 광고비가 찍힌 소재 우선 — renderDisplayTab과 동일 로직)
   const codeToKw = {}; // code -> {areaKey, kw}
   Object.entries(areas).forEach(([areaKey,a])=>{
@@ -515,6 +525,16 @@ function _buildCreativeHistoryMatrix(media){
       if(!a.codeLabelCost[code]) a.codeLabelCost[code] = {};
       a.codeLabelCost[code][kw] = (a.codeLabelCost[code][kw]||0) + rowCost;
     }
+  });
+
+  // 강제 보정 코드: 오타로 확인된 특정 인타입을 지정된 영역/소재로 정상 코드처럼 편입 (renderDisplayTab과 동일한 안전망)
+  Object.entries(DISPLAY_INTYPE_FORCE_MAP).forEach(([code, map])=>{
+    if(map.media !== media) return;
+    if(!areas[map.area]) areas[map.area] = {kws:{}, codeLabelCost:{}};
+    const a = areas[map.area];
+    if(!a.kws[map.kw]) a.kws[map.kw] = {kw:map.kw, codes:new Set(), months:{}};
+    a.kws[map.kw].codes.add(code);
+    a.codeLabelCost[code] = {[map.kw]: 1}; // 소유권 판정용 더미 비용(실제 집계엔 미반영)
   });
 
   const codeToArea = {}; // code -> {area, kw}
@@ -753,6 +773,17 @@ function _buildMediaExportSums(media){
       if(!a.codeLabelCost[code]) a.codeLabelCost[code] = {};
       a.codeLabelCost[code][kw] = (a.codeLabelCost[code][kw]||0) + rowCost;
     }
+  });
+
+  // 강제 보정 코드: 오타로 확인된 특정 인타입을 지정된 영역/소재로 정상 코드처럼 편입 (renderDisplayTab과 동일한 안전망 —
+  // 여기 안 넣으면 이 코드들이 리포트/엑셀 내보내기에서만 "미확인"으로 잘못 잡힌다)
+  Object.entries(DISPLAY_INTYPE_FORCE_MAP).forEach(([code, map])=>{
+    if(map.media !== media) return;
+    if(!areas[map.area]) areas[map.area] = {kws:{}, codeLabelCost:{}};
+    const a = areas[map.area];
+    if(!a.kws[map.kw]) a.kws[map.kw] = {kw:map.kw, codes:new Set(), months:{}};
+    a.kws[map.kw].codes.add(code);
+    a.codeLabelCost[code] = {[map.kw]: 1}; // 소유권 판정용 더미 비용(실제 집계엔 미반영) — 강제 보정 소재가 확실히 owner가 되게 함
   });
 
   const codeToArea = {};
@@ -1546,7 +1577,10 @@ function renderDisplayTab(){
     a.codes.add(code);
     if(!a.kws[map.kw]) a.kws[map.kw] = {kw:map.kw, cost:0, imp:0, clk:0, snd:0, codes:new Set(), monthCodes:new Set()};
     a.kws[map.kw].codes.add(code);
-    if(!a.codeLabelCost[code]) a.codeLabelCost[code] = {};
+    // 더미 비용을 실제 라벨(map.kw)에 걸어둬야 소재 소유권 판정에서 이 코드가 그 소재로 확정된다 —
+    // 빈 객체({})로 두면 아래 codeOwner 판정에서 owner가 없어져(undefined) 이 코드가 모든 소재에서
+    // 빠지고, 영역 합계(a.db)에만 잡힌 채 소재별 표에는 안 보이는 "숨은 DB"가 된다
+    a.codeLabelCost[code] = {[map.kw]: 1};
     const inSelMonth = crmRows.some(r=>(r['인타입']||'').trim()===code && (!monSel || _normDS(r['상담등록일']||'').startsWith(monSel)));
     if(inSelMonth){ a.monthCodes.add(code); a.kws[map.kw].monthCodes.add(code); }
   });

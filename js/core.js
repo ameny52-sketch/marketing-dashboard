@@ -587,7 +587,7 @@ function _fmtMonCum(mVal, cVal, hasCum){
 // 카드 하나 = 라벨 + (당월)핵심 숫자 + 단위 + 누적/설명 보조줄. data-value가 있는 값만 카운트업 애니메이션 대상.
 const _KPI_LAST = {};
 function _kpiCard(containerId, idx, label, value, opts={}){
-  const {unit='', decimals=0, color='default', sub='', subVal=null, subUnit=''} = opts;
+  const {unit='', decimals=0, color='default', sub='', subVal=null, subUnit='', onclick=''} = opts;
   const key = `${containerId}#${idx}`;
   const hasVal = value!==null && value!==undefined && !Number.isNaN(value);
   const valueHtml = hasVal
@@ -596,7 +596,8 @@ function _kpiCard(containerId, idx, label, value, opts={}){
   const subText = (subVal!==null && subVal!==undefined)
     ? `누적 <strong>${(typeof subVal==='number'?subVal.toLocaleString():subVal)}${subUnit}</strong>`
     : sub;
-  return `<div class="kpi-card kpi-${color}"><div class="kpi-label">${label}</div>${valueHtml}<div class="kpi-sub">${subText||''}</div></div>`;
+  const clickAttr = onclick ? ` onclick="${onclick}" style="cursor:pointer"` : '';
+  return `<div class="kpi-card kpi-${color}"${clickAttr}><div class="kpi-label">${label}</div>${valueHtml}<div class="kpi-sub">${subText||''}</div></div>`;
 }
 // 카드 렌더 직후 호출 — 처음 보는 값이면 0→목표값 카운트업(약 820ms), 이전과 값이 같으면 즉시 표시(반복 재생 방지)
 function _kpiFinish(containerId){

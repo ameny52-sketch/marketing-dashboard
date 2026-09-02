@@ -1,6 +1,7 @@
 /* ===== KPI 카드 2.0 (통합/키워드/디스플레이 요약 카드) ===== */
 .kpi-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:8px;margin-bottom:1rem}
 .kpi-grid.kpi-grid-9{grid-template-columns:repeat(9,minmax(0,1fr))}
+.kpi-grid.kpi-grid-7{grid-template-columns:repeat(7,minmax(0,1fr))}
 .kpi-card{--kpi-accent:#d6d6d6;position:relative;display:flex;min-width:0;height:104px;align-items:center;justify-content:center;flex-direction:column;padding:12px 8px 10px;overflow:hidden;border:1px solid var(--border);border-radius:16px;background:rgba(255,255,255,.96);text-align:center;box-shadow:var(--shadow-sm)}
 .kpi-card:before{content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--kpi-accent)}
 .kpi-card.kpi-accent{--kpi-accent:var(--accent)}
@@ -14,8 +15,8 @@
 .kpi-unit{color:var(--faint);font-size:10px;font-weight:700}
 .kpi-sub{min-height:13px;margin-top:8px;color:var(--faint);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;font-variant-numeric:tabular-nums}
 .kpi-sub strong{color:var(--muted);font-weight:700}
-@media(max-width:1200px){.kpi-grid,.kpi-grid.kpi-grid-9{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media(max-width:680px){.kpi-grid,.kpi-grid.kpi-grid-9{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:1200px){.kpi-grid,.kpi-grid.kpi-grid-9,.kpi-grid.kpi-grid-7{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:680px){.kpi-grid,.kpi-grid.kpi-grid-9,.kpi-grid.kpi-grid-7{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
 .table-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid var(--border)}
 .table-header h2{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}

@@ -97,20 +97,20 @@ function renderKwInsight(){
   document.getElementById('kw-insight-badges').innerHTML = badges.map(t=>`<span style="${badgeStyle}">${t}</span>`).join('');
 
   const metrics=[
-    {label:'광고비',   val:Math.round(cur.cost/10000)+'만원',     chgEl:fmtChg(chg(cur.cost,prev.cost),false)},
-    {label:'DB수',     val:cur.db+'건',                           chgEl:fmtChg(dbChg,false)},
-    {label:'DB단가',   val:cur.cpd.toLocaleString()+'원',         chgEl:fmtChg(cpdChg,true)},
-    {label:'CTR',      val:cur.ctr.toFixed(2)+'%',               chgEl:fmtPtChg(cur.ctr,prev.ctr||0,false)},
-    {label:'CPC',      val:cur.cpc.toLocaleString()+'원',         chgEl:fmtChg(cpcChg,true)},
-    {label:'DB전환율', val:cur.dbcvr.toFixed(1)+'%',             chgEl:fmtPtChg(cur.dbcvr,prev.dbcvr||0,false)},
-    {label:'키워드 수',val:data.length.toLocaleString()+'개',     chgEl:''},
+    {key:'cost',   label:'광고비',   value:Math.round(cur.cost/10000), unit:'만원', color:'default', chgEl:fmtChg(chg(cur.cost,prev.cost),false)},
+    {key:'db',     label:'DB수',     value:cur.db, unit:'건', color:'accent', chgEl:fmtChg(dbChg,false)},
+    {key:'cpd',    label:'DB단가',   value:cur.cpd, unit:'원', color:'purple', chgEl:fmtChg(cpdChg,true)},
+    {key:'ctr',    label:'CTR',      value:cur.ctr, unit:'%', decimals:2, color:'red', chgEl:fmtPtChg(cur.ctr,prev.ctr||0,false)},
+    {key:'cpc',    label:'CPC',      value:cur.cpc, unit:'원', color:'amber', chgEl:fmtChg(cpcChg,true)},
+    {key:'dbcvr',  label:'DB전환율', value:cur.dbcvr, unit:'%', decimals:1, color:'red', chgEl:fmtPtChg(cur.dbcvr,prev.dbcvr||0,false)},
+    {key:'count',  label:'키워드 수', value:data.length, unit:'개', color:'accent', chgEl:''},
   ];
-  cards.innerHTML=metrics.map(m=>`
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.125rem">
-      <div style="font-size:11px;color:var(--faint);margin-bottom:6px">${m.label}</div>
-      <div style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:4px">${m.val}</div>
-      <div style="font-size:12px;min-height:18px">${m.chgEl||'<span style="color:var(--faint)">-</span>'}</div>
-    </div>`).join('');
+  const cid='kw-insight-cards';
+  cards.innerHTML = metrics.map((m,i)=>_kpiCard(cid,i,m.label,m.value,{
+    unit:m.unit, decimals:m.decimals||0, color:m.color,
+    sub:m.chgEl||'<span style="color:var(--faint)">-</span>',
+  })).join('');
+  _kpiFinish(cid);
 
   // 상세 분석
   renderKwInsightDetail(range, dates, dm);
@@ -401,21 +401,25 @@ function renderInsight(){
 
   // ── 지표 카드 ─────────────────────────────────────────────
   const metrics = [
-    { key:'cost',  label:'광고비',   val:Math.round(cur.cost/10000)+'만원',  chgEl: fmtChg(costChg, false) },
-    { key:'db',    label:'DB수',     val:cur.db+'건',                         chgEl: fmtChg(dbChg, false)   },
-    { key:'cpd',   label:'DB단가',   val:cur.cpd.toLocaleString()+'원',       chgEl: fmtChg(cpdChg, true)   },
-    { key:'ctr',   label:'CTR',      val:cur.ctr.toFixed(2)+'%',              chgEl: fmtPtChg(cur.ctr,prev.ctr||0,false) },
-    { key:'cpc',   label:'CPC',      val:cur.cpc.toLocaleString()+'원',       chgEl: fmtChg(cpcChg, true)   },
-    { key:'dbcvr', label:'DB전환율', val:cur.dbcvr.toFixed(1)+'%',            chgEl: fmtPtChg(cur.dbcvr,prev.dbcvr||0,false) },
-    { key:'rank',  label:'평균순위', val:cur.rank>0?cur.rank.toFixed(1)+'위':'-', chgEl: cur.rank>0&&prev.rank>0?`<span style="color:${rankChg<0?'#22c55e':'#ef4444'};font-size:13px;font-weight:600">${rankChg<0?'▲':'▼'} ${Math.abs(rankChg)}</span>`:'' },
+    { key:'cost',  label:'광고비',   value:Math.round(cur.cost/10000), unit:'만원', color:'default', chgEl: fmtChg(costChg, false) },
+    { key:'db',    label:'DB수',     value:cur.db, unit:'건', color:'accent', chgEl: fmtChg(dbChg, false)   },
+    { key:'cpd',   label:'DB단가',   value:cur.cpd, unit:'원', color:'purple', chgEl: fmtChg(cpdChg, true)   },
+    { key:'ctr',   label:'CTR',      value:cur.ctr, unit:'%', decimals:2, color:'red', chgEl: fmtPtChg(cur.ctr,prev.ctr||0,false) },
+    { key:'cpc',   label:'CPC',      value:cur.cpc, unit:'원', color:'amber', chgEl: fmtChg(cpcChg, true)   },
+    { key:'dbcvr', label:'DB전환율', value:cur.dbcvr, unit:'%', decimals:1, color:'red', chgEl: fmtPtChg(cur.dbcvr,prev.dbcvr||0,false) },
+    { key:'rank',  label:'평균순위', value:cur.rank>0?cur.rank:null, unit:'위', decimals:1, color:'accent',
+      chgEl: cur.rank>0&&prev.rank>0?`<span style="color:${rankChg<0?'#22c55e':'#ef4444'};font-size:13px;font-weight:600">${rankChg<0?'▲':'▼'} ${Math.abs(rankChg)}</span>`:'' },
   ];
 
-  document.getElementById('insight-cards').innerHTML = metrics.map(m=>`
-    <div onclick="showInsightDetail('${m.key}')" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.125rem;cursor:pointer" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.1)'" onmouseout="this.style.boxShadow=''">
-      <div style="font-size:11px;color:var(--faint);margin-bottom:6px">${m.label}</div>
-      <div style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:4px">${m.val}</div>
-      <div style="font-size:12px;min-height:18px">${m.chgEl||'<span style="color:var(--faint)">-</span>'}</div>
-    </div>`).join('');
+  {
+    const cid='insight-cards';
+    document.getElementById(cid).innerHTML = metrics.map((m,i)=>_kpiCard(cid,i,m.label,m.value,{
+      unit:m.unit, decimals:m.decimals||0, color:m.color,
+      sub:m.chgEl||'<span style="color:var(--faint)">-</span>',
+      onclick:`showInsightDetail('${m.key}')`,
+    })).join('');
+    _kpiFinish(cid);
+  }
 
   // ── 상세 분석 (보종·기기별 / 개선·악화 그룹) ──────────────
   renderInsightDetail(range, dates);

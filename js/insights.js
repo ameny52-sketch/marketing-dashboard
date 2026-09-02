@@ -159,7 +159,8 @@ function renderKwInsightDetail(range, dates, dm){
   } else {
     curDates=last7;prevDates=prev7;rangeLabel=range==='week'?'이번 7일 vs 이전 7일':'최근 7일 vs 이전 7일';
   }
-  if(!prevDates.length){section.style.display='none';return;}
+  // prevDates가 비어도(월초라 비교할 전날 데이터가 아직 없는 경우 등) 섹션을 숨기지 않는다 —
+  // 아래 각 테이블은 비교 대상이 없으면 "비교 데이터 부족"을 자체적으로 표시한다
   section.style.display='block';
   document.getElementById('kw-insight-catmedia-label').textContent=rangeLabel+' · DB단가 변화율 절대값 순';
 
@@ -481,7 +482,8 @@ function renderInsightDetail(range, dates){
   } else {
     curDates=last7; prevDates=prev7; rangeLabel=range==='week'?'이번 7일 vs 이전 7일':'최근 7일 vs 이전 7일';
   }
-  if(!prevDates.length){ section.style.display='none'; return; }
+  // prevDates가 비어도(월초라 비교할 전날 데이터가 아직 없는 경우 등) 섹션을 숨기지 않는다 —
+  // 아래 각 테이블은 비교 대상이 없으면 "비교 데이터 부족"을 자체적으로 표시한다
   section.style.display='block';
   document.getElementById('insight-catmedia-label').textContent = rangeLabel+' · DB단가 변화율 절대값 순';
 

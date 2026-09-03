@@ -53,7 +53,7 @@ button.dl:hover,button.month-step:hover,.tab-btn:hover{color:var(--text);backgro
 .cpc-device-tabs{gap:4px}
 .cpc-dtab,.cpc-dtab:first-child,.cpc-dtab:last-child{height:34px;padding:0 12px;border:1px solid var(--border);border-radius:8px}
 .cpc-dtab+.cpc-dtab{border-left:1px solid var(--border)}
-.cpc-dtab.act-pc,.cpc-dtab.act-mo,.cpc-dtab.act-all{color:var(--text);background:var(--bg);border-color:var(--border-strong)}
+.cpc-dtab.act-pc,.cpc-dtab.act-mo,.cpc-dtab.act-all{color:var(--amber);background:var(--accent-bg);border-color:#efc98e}
 
 /* Reusable page controls */
 .tab-actions{display:flex;align-items:center;gap:8px;margin-left:auto}
@@ -63,13 +63,14 @@ button.dl:hover,button.month-step:hover,.tab-btn:hover{color:var(--text);backgro
 .section-heading--standalone{margin:24px 0 12px}
 .table-toolbar__actions,.inline-filter-bar,.analysis-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .analysis-toolbar{margin-bottom:14px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:12px}
+.inline-filter-bar{margin-bottom:14px;padding:10px 16px;background:#fafafa;border-bottom:1px solid var(--border);border-radius:0}
 .toolbar-divider{width:1px;height:20px;background:var(--border)}
 .compact-control{height:34px;padding:0 10px;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:8px}
 .compact-control--search{width:min(260px,100%)}
 .quiet-toggle{min-height:32px;padding:0 10px;color:var(--muted)!important;background:var(--surface)!important;border:1px solid var(--border)!important;border-radius:8px!important;font-size:11px!important;font-weight:600!important;box-shadow:none!important}
 .quiet-toggle:hover{color:var(--text)!important;background:var(--bg)!important;border-color:var(--border-strong)!important}
-.table-filter-groups{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 16px;background:#fafafa;border-bottom:1px solid var(--border)}
-.table-filter-groups--compact{padding:8px 0;background:transparent;border:0}
+.table-filter-groups{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:12px 16px;background:#fafafa;border-bottom:1px solid var(--border)}
+.table-filter-groups--compact{flex-direction:row;align-items:center;flex-wrap:wrap;padding:8px 0;background:transparent;border:0}
 .filter-panel{margin-bottom:16px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:12px}
 
 /* Cards */
@@ -184,7 +185,7 @@ div[style*="box-shadow"]{box-shadow:none!important}
 .cr-btn-primary{color:#fff!important;background:var(--accent)!important;border-color:var(--accent)!important}
 .cr-btn-primary:hover{background:#dc7c00!important}
 
-.cr-workspace{display:grid;grid-template-columns:340px minmax(0,1fr);gap:14px;align-items:start}
+.cr-workspace{display:grid;grid-template-columns:340px minmax(0,1fr);gap:14px;align-items:stretch}
 .cr-settings{position:sticky;top:14px;padding:0!important;overflow:hidden}
 .cr-step{padding:16px 17px;border-bottom:1px solid var(--border)}
 .cr-step:last-child{border-bottom:0}
@@ -220,11 +221,11 @@ div[style*="box-shadow"]{box-shadow:none!important}
 .cr-order-remove:hover{color:var(--red);background:var(--red-bg)}
 .cr-order-empty{display:flex;align-items:center;min-height:30px;color:var(--faint);font-size:10px}
 
-.cr-preview{min-width:0}
+.cr-preview{min-width:0;display:flex;flex-direction:column}
 .cr-notice{display:flex;align-items:center;gap:14px;padding:10px 18px;margin:0 0 14px;color:var(--muted);background:var(--accent-bg);border-bottom:1px solid #f2dfc0;font-size:11px}
 .cr-notice strong{color:var(--amber);font-weight:750;margin-right:2px}
 .cr-notice.warning{background:var(--amber-bg)}
-.cr-table-wrap{max-height:680px}
+.cr-table-wrap{flex:1 1 auto;min-height:120px}
 #cr-table{width:100%;min-width:820px;border-collapse:separate;border-spacing:0;font-size:11px}
 #cr-table th,#cr-table td{padding:9px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);white-space:nowrap}
 #cr-table th:last-child,#cr-table td:last-child{border-right:0}

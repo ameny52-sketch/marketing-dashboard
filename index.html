@@ -27,47 +27,47 @@
   <button class="media-group-tab" onclick="switchMediaGroup('display',this)">디스플레이</button>
 </nav>
 
-<div id="sheet-load-warning" style="display:none;background:#fef3c7;border-bottom:1px solid #fbbf24;color:#92400e;font-size:13px;padding:10px 24px;text-align:center;font-weight:500"></div>
+<div id="sheet-load-warning" class="sheet-load-warning is-hidden"></div>
 
 <div class="container">
   <!-- 전체 탭용 서브메뉴 -->
   <div class="main-tabs" id="subtabs-all">
     <button class="main-tab active" onclick="switchTab('daily',this)">📅 Daily DB 현황</button>
     <div class="tab-actions">
-      <select id="month-select-all" style="display:none" onchange="onMonthChange()"></select>
-      <span class="status" id="status-all" style="font-size:12px;display:none"></span>
+      <select id="month-select-all" class="is-hidden" onchange="onMonthChange()"></select>
+      <span class="status is-hidden" id="status-all"></span>
     </div>
   </div>
 
   <!-- 파워컨텐츠 탭용 서브메뉴 -->
-  <div class="main-tabs" id="subtabs-pc" style="display:none">
+  <div class="main-tabs is-hidden" id="subtabs-pc">
     <button class="main-tab active" onclick="switchTab('insight',this)">성과 진단</button>
     <button class="main-tab alert" onclick="switchTab('alert',this)">효율 순위</button>
     <button class="main-tab" onclick="switchTab('cpc',this)">CPC 분석</button>
     <button class="main-tab" onclick="switchTab('data',this)">데이터 현황</button>
     <div class="tab-actions">
-      <div id="pc-month-sel-wrap" class="month-picker" style="display:none">
+      <div id="pc-month-sel-wrap" class="month-picker is-hidden">
         <button class="month-step" onclick="_stepMonthSelect('month-select',-1)" title="이전 달">◀</button>
         <select id="month-select" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 10px;font-size:13px;font-family:inherit;color:var(--text);background:var(--surface);outline:none;cursor:pointer" onchange="onMonthChange()">
         </select>
         <button class="month-step" onclick="_stepMonthSelect('month-select',1)" title="다음 달">▶</button>
       </div>
-      <span class="status" id="status" style="font-size:12px;display:none"></span>
+      <span class="status is-hidden" id="status"></span>
     </div>
   </div>
 
   <!-- 키워드 매체 탭용 서브메뉴 -->
-  <div class="main-tabs" id="subtabs-kw" style="display:none">
+  <div class="main-tabs is-hidden" id="subtabs-kw">
     <button class="main-tab active" onclick="switchTab('kw-insight',this)">성과 진단</button>
     <button class="main-tab" onclick="switchTab('kw-main',this)">데이터 현황</button>
     <div class="tab-actions">
-      <div id="kw-month-sel-wrap" class="month-picker" style="display:none">
+      <div id="kw-month-sel-wrap" class="month-picker is-hidden">
         <button class="month-step" onclick="_stepMonthSelect('month-select-kw',-1)" title="이전 달">◀</button>
         <select id="month-select-kw" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 10px;font-size:13px;font-family:inherit;color:var(--text);background:var(--surface);outline:none;cursor:pointer" onchange="onMonthChange()">
         </select>
         <button class="month-step" onclick="_stepMonthSelect('month-select-kw',1)" title="다음 달">▶</button>
       </div>
-      <span class="status" id="status-kw" style="font-size:12px;display:none"></span>
+      <span class="status is-hidden" id="status-kw"></span>
     </div>
   </div>
 
@@ -91,7 +91,7 @@
     <div id="kw-insight-cards" class="kpi-grid kpi-grid-7"></div>
 
     <!-- 상세 분석 영역 -->
-    <div id="kw-insight-detail-section" style="display:none;margin-bottom:1.25rem">
+    <div id="kw-insight-detail-section" class="is-hidden" style="margin-bottom:1.25rem">
       <!-- 타이틀 + 기기 필터 -->
       <div class="section-toolbar">
         <div class="section-heading">키워드별 DB단가 변화 TOP</div>
@@ -103,19 +103,19 @@
       </div>
       <div class="table-card" style="margin-bottom:1.25rem">
         <div style="padding:.5rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:flex-end">
-          <span style="font-size:11px;color:var(--faint)" id="kw-insight-catmedia-label">DB단가 변화율 절대값 순</span>
+          <span class="text-faint-sm" id="kw-insight-catmedia-label">DB단가 변화율 절대값 순</span>
         </div>
         <div class="table-wrap">
-          <table style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap">
+          <table class="stat-table">
             <thead>
-              <tr style="background:#fafaf8">
-                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">키워드</th>
-                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">기기</th>
-                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB단가 변화</th>
-                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">CPC 변화</th>
-                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB전환율 변화</th>
-                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB수 변화</th>
-                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:center">판단</th>
+              <tr>
+                <th>키워드</th>
+                <th>기기</th>
+                <th class="num">DB단가 변화</th>
+                <th class="num">CPC 변화</th>
+                <th class="num">DB전환율 변화</th>
+                <th class="num">DB수 변화</th>
+                <th class="ta-center">판단</th>
               </tr>
             </thead>
             <tbody id="kw-insight-catmedia-tbody"></tbody>
@@ -126,19 +126,19 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div class="table-card">
           <div class="table-header" style="padding:.75rem 1.25rem">
-            <h2 style="color:#16a34a">✅ 효율 개선 키워드 TOP5</h2>
-            <span style="font-size:11px;color:var(--faint)">DB단가 하락률 순</span>
+            <h2 class="text-good">✅ 효율 개선 키워드 TOP5</h2>
+            <span class="text-faint-sm">DB단가 하락률 순</span>
           </div>
           <div class="table-wrap">
-            <table style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap">
+            <table class="stat-table stat-table--tight">
               <thead>
-                <tr style="background:#f0fdf4">
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">키워드</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">기기</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB단가</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">CPC</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">전환율</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB수</th>
+                <tr>
+                  <th>키워드</th>
+                  <th>기기</th>
+                  <th class="num">DB단가</th>
+                  <th class="num">CPC</th>
+                  <th class="num">전환율</th>
+                  <th class="num">DB수</th>
                 </tr>
               </thead>
               <tbody id="kw-insight-good-tbody"></tbody>
@@ -147,19 +147,19 @@
         </div>
         <div class="table-card">
           <div class="table-header" style="padding:.75rem 1.25rem">
-            <h2 style="color:#dc2626">⚠️ 효율 악화 키워드 TOP5</h2>
-            <span style="font-size:11px;color:var(--faint)">DB단가 상승률 순</span>
+            <h2 class="text-bad">⚠️ 효율 악화 키워드 TOP5</h2>
+            <span class="text-faint-sm">DB단가 상승률 순</span>
           </div>
           <div class="table-wrap">
-            <table style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap">
+            <table class="stat-table stat-table--tight">
               <thead>
-                <tr style="background:#fef2f2">
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">키워드</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">기기</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB단가</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">CPC</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">전환율</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB수</th>
+                <tr>
+                  <th>키워드</th>
+                  <th>기기</th>
+                  <th class="num">DB단가</th>
+                  <th class="num">CPC</th>
+                  <th class="num">전환율</th>
+                  <th class="num">DB수</th>
                 </tr>
               </thead>
               <tbody id="kw-insight-bad-tbody"></tbody>
@@ -170,11 +170,11 @@
     </div>
 
     <!-- 7일 추이 -->
-    <div id="kw-insight-trend" style="display:none">
+    <div id="kw-insight-trend" class="is-hidden">
       <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:.75rem">📈 최근 7일 추이</div>
       <div class="table-card">
-        <div class="table-wrap" style="overflow-x:auto">
-          <table style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap">
+        <div class="table-wrap">
+          <table class="tbl-tight">
             <thead id="kw-insight-trend-thead"></thead>
             <tbody id="kw-insight-trend-tbody"></tbody>
           </table>
@@ -271,7 +271,7 @@
       <div id="kw-page-nav"></div>
     </div>
 
-    <div id="kw-no-data" style="display:none;padding:3rem;text-align:center;color:var(--faint);font-size:14px">
+    <div id="kw-no-data" class="no-data-placeholder is-hidden">
       데이터를 불러오면 이 영역에 결과가 표시됩니다.
     </div>
   </div>
@@ -285,7 +285,7 @@
       <button class="main-tab" onclick="switchDisplayMedia('가스락',this)">가스락</button>
       <button class="main-tab" onclick="switchDisplayMedia('KT PASS',this)">KT PASS</button>
       <button class="main-tab" onclick="switchDisplayReport(this)">리포트</button>
-      <span id="display-month-sel-wrap" class="month-picker month-picker--push" style="display:none">
+      <span id="display-month-sel-wrap" class="month-picker month-picker--push is-hidden">
         <button class="month-step" onclick="_stepMonthSelect('display-month-sel',-1)" title="이전 달">◀</button>
         <select id="display-month-sel" onchange="renderDisplayTab()" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 10px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);outline:none">
           <option value="">전체 월</option>
@@ -294,13 +294,13 @@
       </span>
     </div>
 
-    <div id="display-pending" style="display:none;padding:3rem;text-align:center;color:var(--faint);font-size:13px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r)"></div>
+    <div id="display-pending" class="display-pending-box is-hidden"></div>
 
     <div id="display-insight">
       <div id="display-insight-body"></div>
     </div>
 
-    <div id="display-content" style="display:none">
+    <div id="display-content" class="is-hidden">
       <div id="display-summary" class="kpi-grid kpi-grid-9"></div>
       <div class="cpc-chart-card" style="margin-bottom:1rem">
         <div class="cpc-chart-title">
@@ -336,7 +336,7 @@
     </div>
 
     <!-- 커스텀 리포트: 매체/행/열/지표를 직접 골라서 표+CSV로 뽑는 빌더 -->
-    <div id="display-report" style="display:none">
+    <div id="display-report" class="is-hidden">
       <div class="table-card report-builder">
         <div class="report-builder__grid">
           <div>
@@ -367,8 +367,8 @@
           <h2>커스텀 리포트</h2>
           <button class="dl" onclick="downloadReportCsv()">⬇ CSV 다운로드</button>
         </div>
-        <div class="table-wrap" style="overflow-x:auto">
-          <table id="report-table" style="width:100%;border-collapse:collapse;font-size:12.5px"></table>
+        <div class="table-wrap">
+          <table id="report-table"></table>
         </div>
       </div>
     </div>
@@ -395,25 +395,25 @@
     <div id="insight-cards" class="kpi-grid kpi-grid-7"></div>
 
     <!-- 상세 분석 영역 (보종·기기별 / 개선·악화 그룹) -->
-    <div id="insight-detail-section" style="display:none;margin-bottom:1.25rem">
+    <div id="insight-detail-section" class="is-hidden" style="margin-bottom:1.25rem">
 
       <!-- 1. 보종·기기별 변화 TOP -->
       <div class="section-heading section-heading--standalone">보종·기기별 DB단가 변화</div>
       <div class="table-card" style="margin-bottom:1.25rem">
         <div class="table-header" style="padding:.75rem 1.25rem">
           <h2>보종·기기별 변화 TOP</h2>
-          <span style="font-size:11px;color:var(--faint)" id="insight-catmedia-label">DB단가 변화율 절대값 순</span>
+          <span class="text-faint-sm" id="insight-catmedia-label">DB단가 변화율 절대값 순</span>
         </div>
         <div class="table-wrap">
-          <table style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap">
+          <table class="stat-table">
             <thead>
-              <tr style="background:#fafaf8">
-                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">보종·기기</th>
-                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB단가 변화</th>
-                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">CPC 변화</th>
-                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB전환율 변화</th>
-                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB수 변화</th>
-                <th style="padding:8px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:center">판단</th>
+              <tr>
+                <th>보종·기기</th>
+                <th class="num">DB단가 변화</th>
+                <th class="num">CPC 변화</th>
+                <th class="num">DB전환율 변화</th>
+                <th class="num">DB수 변화</th>
+                <th class="ta-center">판단</th>
               </tr>
             </thead>
             <tbody id="insight-catmedia-tbody"></tbody>
@@ -425,20 +425,20 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div class="table-card">
           <div class="table-header" style="padding:.75rem 1.25rem">
-            <h2 style="color:#16a34a">✅ 효율 개선 그룹 TOP5</h2>
-            <span style="font-size:11px;color:var(--faint)">DB단가 하락률 순</span>
+            <h2 class="text-good">✅ 효율 개선 그룹 TOP5</h2>
+            <span class="text-faint-sm">DB단가 하락률 순</span>
           </div>
           <div class="table-wrap">
-            <table style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap">
+            <table class="stat-table stat-table--tight">
               <thead>
-                <tr style="background:#f0fdf4">
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">광고그룹</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">보종</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">기기</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB단가</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">CPC</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">전환율</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB수</th>
+                <tr>
+                  <th>광고그룹</th>
+                  <th>보종</th>
+                  <th>기기</th>
+                  <th class="num">DB단가</th>
+                  <th class="num">CPC</th>
+                  <th class="num">전환율</th>
+                  <th class="num">DB수</th>
                 </tr>
               </thead>
               <tbody id="insight-good-tbody"></tbody>
@@ -447,20 +447,20 @@
         </div>
         <div class="table-card">
           <div class="table-header" style="padding:.75rem 1.25rem">
-            <h2 style="color:#dc2626">⚠️ 효율 악화 그룹 TOP5</h2>
-            <span style="font-size:11px;color:var(--faint)">DB단가 상승률 순</span>
+            <h2 class="text-bad">⚠️ 효율 악화 그룹 TOP5</h2>
+            <span class="text-faint-sm">DB단가 상승률 순</span>
           </div>
           <div class="table-wrap">
-            <table style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap">
+            <table class="stat-table stat-table--tight">
               <thead>
-                <tr style="background:#fef2f2">
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">광고그룹</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">보종</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">기기</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB단가</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">CPC</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">전환율</th>
-                  <th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">DB수</th>
+                <tr>
+                  <th>광고그룹</th>
+                  <th>보종</th>
+                  <th>기기</th>
+                  <th class="num">DB단가</th>
+                  <th class="num">CPC</th>
+                  <th class="num">전환율</th>
+                  <th class="num">DB수</th>
                 </tr>
               </thead>
               <tbody id="insight-bad-tbody"></tbody>
@@ -471,11 +471,11 @@
     </div>
 
     <!-- 최근 7일 추이 테이블 -->
-    <div id="insight-trend" style="display:none">
+    <div id="insight-trend" class="is-hidden">
       <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:.75rem">📈 최근 7일 추이</div>
       <div class="table-card">
-        <div class="table-wrap" style="overflow-x:auto">
-          <table style="width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap">
+        <div class="table-wrap">
+          <table class="tbl-tight">
             <thead id="insight-trend-thead"></thead>
             <tbody id="insight-trend-tbody"></tbody>
           </table>
@@ -483,7 +483,7 @@
       </div>
     </div>
 
-    <div id="insight-no-data" style="display:none;padding:3rem;text-align:center;color:var(--faint);font-size:14px">
+    <div id="insight-no-data" class="no-data-placeholder is-hidden">
       데이터를 불러오면 이 영역에 결과가 표시됩니다.
     </div>
   </div>
@@ -553,7 +553,7 @@
 
   <!-- 전체 데이터 패널 -->
   <div class="tab-panel" id="panel-data">
-  <div id="file-info" style="display:none"></div>
+  <div id="file-info" class="is-hidden"></div>
 
   <div class="results" id="results">
     <div class="kpi-grid" id="metrics"></div>
@@ -658,15 +658,15 @@
     </div>
     <div id="daily-media-toggle" class="inline-filter-bar"></div>
     <!-- 테이블: 양방향 스크롤, sticky thead 작동 -->
-    <div style="overflow:auto;max-height:calc(100vh - 220px)">
-      <table id="daily-table" style="width:100%;border-collapse:collapse;font-size:11.5px">
+    <div class="daily-table-scroll">
+      <table id="daily-table">
         <thead id="daily-thead"></thead>
         <tbody id="daily-tbody"></tbody>
       </table>
     </div>
   </div>
 
-  <div id="daily-no-data" style="display:none;padding:3rem;text-align:center;color:var(--faint);font-size:14px">
+  <div id="daily-no-data" class="no-data-placeholder is-hidden">
     ▶ 데이터를 불러오는 중이거나 해당 월 데이터가 없습니다.
   </div>
 </div>
@@ -695,7 +695,7 @@
   </div>
 
   <!-- 기간별 CPC 멘트 -->
-  <div id="cpc-period-banner" class="context-note" style="display:none">
+  <div id="cpc-period-banner" class="context-note is-hidden">
     <div class="context-note__label">CPC 분석 기준</div>
     <div id="cpc-period-text" class="context-note__text"></div>
   </div>
@@ -756,13 +756,13 @@
     </div>
   </div>
 
-  <div id="cpc-no-data" style="display:none;padding:3rem;text-align:center;color:var(--faint);font-size:14px">
+  <div id="cpc-no-data" class="no-data-placeholder is-hidden">
     ▶ 상단 <strong>불러오기</strong> 버튼을 눌러 데이터를 먼저 로드해 주세요.
   </div>
 </div>
 
 <!-- 키워드 드릴다운 모달 -->
-<div class="modal-bg" id="kw-modal-bg" onclick="closeKwModal(event)" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;display:none;align-items:center;justify-content:center">
+<div class="modal-bg modal-bg--layer1" id="kw-modal-bg" onclick="closeKwModal(event)">
   <div class="modal" style="width:1300px;max-width:95vw;max-height:85vh;overflow-y:auto">
     <div class="modal-head">
       <h3 id="kw-modal-title">인타입 상세</h3>
@@ -773,7 +773,7 @@
 </div>
 
 <!-- 디스플레이 소재 크리에이티브 모달 -->
-<div class="modal-bg" id="creative-modal-bg" onclick="if(event.target===this)document.getElementById('creative-modal-bg').style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center">
+<div class="modal-bg modal-bg--layer1" id="creative-modal-bg" onclick="if(event.target===this)document.getElementById('creative-modal-bg').style.display='none'">
   <div class="modal" style="width:820px;max-width:95vw;max-height:85vh;overflow-y:auto">
     <div class="modal-head">
       <h3 id="creative-modal-title">소재 크리에이티브</h3>
@@ -784,7 +784,7 @@
 </div>
 
 <!-- 대시보드 전체 기준값 초과 알림 팝업 -->
-<div class="modal-bg" id="dashboard-alert-modal-bg" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;align-items:center;justify-content:center">
+<div class="modal-bg modal-bg--layer3" id="dashboard-alert-modal-bg">
   <div class="modal" style="width:480px;max-width:95vw;max-height:85vh;overflow-y:auto">
     <div class="modal-head">
       <h3>⚠️ 확인이 필요한 항목이 있습니다</h3>
@@ -801,7 +801,7 @@
 </div>
 
 <!-- 보종·기기별 변화 원인(기여 그룹) 모달 -->
-<div class="modal-bg" id="catmedia-detail-modal-bg" onclick="if(event.target===this)document.getElementById('catmedia-detail-modal-bg').style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1500;align-items:center;justify-content:center">
+<div class="modal-bg modal-bg--layer2" id="catmedia-detail-modal-bg" onclick="if(event.target===this)document.getElementById('catmedia-detail-modal-bg').style.display='none'">
   <div class="modal" style="width:640px;max-width:95vw;max-height:85vh;overflow-y:auto">
     <div class="modal-head">
       <h3 id="catmedia-detail-title">원인 분석</h3>
@@ -812,7 +812,7 @@
 </div>
 
 <!-- 데이터현황 일별 차트 → 날짜 클릭 시 광고그룹별 상세 모달 -->
-<div class="modal-bg" id="daily-group-modal-bg" onclick="if(event.target===this)document.getElementById('daily-group-modal-bg').style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1500;align-items:center;justify-content:center">
+<div class="modal-bg modal-bg--layer2" id="daily-group-modal-bg" onclick="if(event.target===this)document.getElementById('daily-group-modal-bg').style.display='none'">
   <div class="modal" style="width:760px;max-width:95vw;max-height:85vh;overflow-y:auto">
     <div class="modal-head">
       <h3 id="daily-group-modal-title">일별 광고그룹 상세</h3>
@@ -823,7 +823,7 @@
 </div>
 
 <!-- 성과 분석 상세 모달 -->
-<div id="insight-detail-modal" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center">
+<div class="modal-bg modal-bg--layer1" id="insight-detail-modal" onclick="if(event.target===this)this.style.display='none'">
   <div class="compact-modal">
     <div class="compact-modal__head">
       <h3 id="insight-detail-title" style="font-size:15px;font-weight:700;color:var(--text);margin:0"></h3>
@@ -860,7 +860,7 @@
 <script src="./js/app.js"></script>
 <script src="./js/display.js"></script>
 
-<div id="loading-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;align-items:center;justify-content:center;flex-direction:column">
+<div id="loading-overlay" class="loading-overlay is-hidden">
   <div style="background:#fff;border-radius:12px;padding:2rem 2.5rem;max-width:360px;width:90%;text-align:center">
     <div style="font-size:15px;font-weight:600;color:#1a1a18;margin-bottom:8px">데이터 로드 중</div>
     <div class="lo-msg" style="font-size:13px;color:#6b6b66;margin-bottom:16px">구글 시트 연결 중...</div>

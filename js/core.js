@@ -1139,6 +1139,7 @@ function switchMediaGroup(group, btn){
 
   if(group === 'all'){
     subtabsAll.style.display = '';
+    subtabsAll.classList.remove('is-hidden');
     document.getElementById('panel-daily').classList.add('show');
     // CRM 데이터 없으면 자동 로드
     if(Object.keys(CRM_DATA).length === 0){
@@ -1154,11 +1155,13 @@ function switchMediaGroup(group, btn){
     }
   } else if(group === 'pc_content'){
     subtabsPc.style.display = '';
+    subtabsPc.classList.remove('is-hidden');
     const activeTab = document.querySelector('#subtabs-pc .main-tab.active');
     const tabName = activeTab ? activeTab.getAttribute('onclick').match(/'(\w+)'/)?.[1] : 'insight';
     showPcPanel(tabName);
   } else if(group === 'keyword'){
     subtabsKw.style.display = '';
+    subtabsKw.classList.remove('is-hidden');
     const activeKwTab = document.querySelector('#subtabs-kw .main-tab.active');
     const kwTabName = activeKwTab ? activeKwTab.getAttribute('onclick').match(/'([\w-]+)'/)?.[1] : 'kw-insight';
     document.getElementById('panel-kw-insight').classList.remove('show');

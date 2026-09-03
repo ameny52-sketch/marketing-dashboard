@@ -132,6 +132,9 @@ tbody td.num,.cpc-tbl td.r{color:var(--muted);font-variant-numeric:tabular-nums}
 #daily-table th:first-child,#daily-table td:first-child{position:sticky;left:0;z-index:2;background:var(--surface)}
 #daily-table thead th{position:sticky;top:0;z-index:3;background:var(--bg)}
 #daily-table thead th:first-child{z-index:4;background:var(--bg)}
+#daily-table{font-size:11.5px}
+.daily-table-scroll{overflow:auto;max-height:calc(100vh - 220px)}
+#report-table{font-size:12.5px}
 
 /* Status and ranking */
 .badge,.cpc-rank-badge,.cpc-media-pill{border-radius:5px;font-weight:600}
@@ -148,7 +151,7 @@ tbody td.num,.cpc-tbl td.r{color:var(--muted);font-variant-numeric:tabular-nums}
 .alert-kpi-val.red{color:var(--red)}.alert-kpi-val.green{color:var(--green)}.alert-kpi-val.amber{color:var(--amber)}.alert-kpi-val.blue{color:var(--text)}
 
 /* Modals */
-.modal-bg,#insight-detail-modal{background:rgba(17,20,24,.48)!important;backdrop-filter:blur(2px)}
+.modal-bg{background:rgba(17,20,24,.48)!important;backdrop-filter:blur(2px)}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:0 20px 60px rgba(17,20,24,.16)}
 .modal-head{padding:14px 16px}.modal-head h3{font-size:14px;font-weight:650}.modal-body{padding:18px}
 .modal-metric{padding:12px 14px;background:var(--bg);border-radius:8px}.modal-metric .val{font-size:17px;font-weight:700}
@@ -167,7 +170,7 @@ button[style*="border:1px solid var(--border-strong)"]{border-color:var(--border
 div[style*="border-radius:var(--r)"],section[style*="border-radius:var(--r)"]{border-radius:12px!important;box-shadow:none!important}
 div[style*="box-shadow"]{box-shadow:none!important}
 #sheet-load-warning{position:relative;z-index:30;border:0!important;border-bottom:1px solid #efd78e!important;background:#fff8d8!important;color:var(--amber)!important}
-.status{color:var(--faint)}.status.ok{color:var(--green)}.status.err{color:var(--red)}
+.status{color:var(--faint);font-size:12px}.status.ok{color:var(--green)}.status.err{color:var(--red)}
 
 @media(max-width:1200px){.kpi-grid,.kpi-grid.kpi-grid-9,.kpi-grid.kpi-grid-7{grid-template-columns:repeat(4,minmax(0,1fr))}.metrics-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.alert-grid[style*="repeat(4"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}#insight-cards,#kw-insight-cards{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
 @media(max-width:900px){
@@ -180,3 +183,6 @@ div[style*="box-shadow"]{box-shadow:none!important}
 }
 @media(max-width:680px){.kpi-grid,.kpi-grid.kpi-grid-9,.kpi-grid.kpi-grid-7,.metrics-grid,.cpc-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi-card{height:94px}.modal-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.insight-hero{padding:18px!important}.insight-hero:before{display:none}.alert-grid[style*="repeat(4"]{grid-template-columns:1fr!important}#insight-cards,#kw-insight-cards{grid-template-columns:repeat(2,minmax(0,1fr))!important}.insight-kpi-grid>div:nth-child(2n){border-right:0!important}}
 @media(max-width:480px){#refresh-data-btn{font-size:0!important;width:34px;padding:0!important;justify-content:center}.container{padding-left:12px;padding-right:12px}.kpi-grid,.kpi-grid.kpi-grid-9,.kpi-grid.kpi-grid-7,.metrics-grid,.cpc-summary{grid-template-columns:1fr 1fr}.kpi-card{padding:13px 14px}}
+
+/* 표시/숨김 토글 — 이 파일이 마지막에 로드되므로, 같은 우선순위의 display 규칙(.main-tabs, .month-picker, .context-note 등)보다 항상 뒤에 와서 숨김 상태가 확실히 이긴다 */
+.is-hidden{display:none}

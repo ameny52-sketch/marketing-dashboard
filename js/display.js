@@ -34,6 +34,7 @@ function switchDisplayMedia(media, btn){
   _displayMedia = media;
   document.getElementById('display-insight').style.display = 'none';
   document.getElementById('display-content').style.display = '';
+  document.getElementById('display-content').classList.remove('is-hidden');
   document.getElementById('display-report').style.display = 'none';
   document.getElementById('display-month-sel-wrap').style.display = 'flex';
   renderDisplayTab();
@@ -47,6 +48,7 @@ function switchDisplayInsight(btn){
   document.getElementById('display-report').style.display = 'none';
   document.getElementById('display-month-sel-wrap').style.display = 'none';
   document.getElementById('display-insight').style.display = '';
+  document.getElementById('display-insight').classList.remove('is-hidden');
   renderDisplayInsight();
 }
 
@@ -58,6 +60,7 @@ function switchDisplayReport(btn){
   document.getElementById('display-content').style.display = 'none';
   document.getElementById('display-month-sel-wrap').style.display = 'none';
   document.getElementById('display-report').style.display = '';
+  document.getElementById('display-report').classList.remove('is-hidden');
   initDisplayReport();
 }
 
@@ -1443,11 +1446,11 @@ async function loadDisplayData(){
   const content = document.getElementById('display-content');
   if(!SHEETS_URLS.display_report){
     pending.textContent = '▶ 광고 리포트 데이터 연결 대기 중입니다. (구글시트 URL 등록 필요)';
-    pending.style.display=''; content.style.display='none';
+    pending.style.display=''; pending.classList.remove('is-hidden'); content.style.display='none';
     return;
   }
   pending.textContent = '▶ 데이터 로드 중...';
-  pending.style.display=''; content.style.display='none';
+  pending.style.display=''; pending.classList.remove('is-hidden'); content.style.display='none';
   try{
     // 준비 단계라 시트가 자주 바뀌므로 display_report/display_intype는 캐싱 없이 매번 새로 받는다
     const [reportText, intypeText, s] = await Promise.all([
@@ -1460,12 +1463,12 @@ async function loadDisplayData(){
     _displayCrmRaw = (s.raw||[]).filter(r=>(r['광고매체세부']||'').trim()==='애드온컴퍼니');
   }catch(e){
     pending.textContent = '▶ 데이터 로드 실패: ' + e.message;
-    pending.style.display=''; content.style.display='none';
+    pending.style.display=''; pending.classList.remove('is-hidden'); content.style.display='none';
     return;
   }
   if(!_displayData.length){
     pending.textContent = '▶ 광고 리포트 데이터가 아직 없습니다.';
-    pending.style.display=''; content.style.display='none';
+    pending.style.display=''; pending.classList.remove('is-hidden'); content.style.display='none';
     return;
   }
   pending.style.display='none';
@@ -1473,9 +1476,11 @@ async function loadDisplayData(){
   if(_isDisplayInsightActive()){
     content.style.display='none';
     document.getElementById('display-insight').style.display='';
+    document.getElementById('display-insight').classList.remove('is-hidden');
     renderDisplayInsight();
   } else {
     content.style.display='';
+    content.classList.remove('is-hidden');
     renderDisplayTab();
   }
 }

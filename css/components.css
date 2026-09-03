@@ -1,3 +1,9 @@
+/* 표시/숨김 토글 (JS가 style.display를 직접 설정하는 요소들의 초기 숨김 상태) */
+.no-data-placeholder{padding:3rem;text-align:center;color:var(--faint);font-size:14px}
+.sheet-load-warning{background:#fef3c7;border-bottom:1px solid #fbbf24;color:#92400e;font-size:13px;padding:10px 24px;text-align:center;font-weight:500}
+.display-pending-box{padding:3rem;text-align:center;color:var(--faint);font-size:13px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r)}
+.loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;align-items:center;justify-content:center;flex-direction:column}
+
 /* ===== KPI 카드 2.0 (통합/키워드/디스플레이 요약 카드) ===== */
 .kpi-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:8px;margin-bottom:1rem}
 .kpi-grid.kpi-grid-9{grid-template-columns:repeat(9,minmax(0,1fr))}
@@ -51,9 +57,23 @@ tbody td.intype-cell{font-family:'SF Mono','Fira Code',monospace;font-size:11px;
 .badge.mid{background:var(--amber-bg);color:var(--amber)}
 .badge.low{background:var(--red-bg);color:var(--red)}
 .badge.na{background:var(--bg);color:var(--faint)}
+
+/* 통계 소표 (성과진단 TOP/변화 표) */
+.stat-table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}
+.stat-table th{padding:8px 14px}
+.stat-table.stat-table--tight th{padding:7px 10px}
+.tbl-tight{font-size:12px;white-space:nowrap}
+.ta-center{text-align:center}
+.text-good{color:#16a34a}
+.text-bad{color:#dc2626}
+.text-faint-sm{font-size:11px;color:var(--faint)}
+
 /* 모달 */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;align-items:center;justify-content:center}
 .modal-bg.show{display:flex}
+.modal-bg--layer1{z-index:1000}
+.modal-bg--layer2{z-index:1500}
+.modal-bg--layer3{z-index:2000}
 .modal{background:var(--surface);border-radius:var(--r);width:90%;max-width:900px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden}
 .modal-head{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid var(--border)}
 .modal-head h3{font-size:15px;font-weight:600}

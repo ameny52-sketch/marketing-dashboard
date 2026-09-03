@@ -9,7 +9,9 @@ async function _loadGroupContentUrls(){
   try{
     let rows = await _getCached('group_content', _TTL_DYNAMIC);
     if(!rows){
-      const text = await fetch(SHEETS_URLS.group_content).then(r=>r.text());
+      // 이 시트가 응답 없으면 여길 기다리는 거의 모든 탭(파워컨텐츠/키워드/디스플레이/Daily)이
+      // 같이 멈추므로 타임아웃을 걸고, 실패해도 빈 매핑으로 계속 진행한다
+      const text = await _fetchWithTimeout(SHEETS_URLS.group_content, 8000).then(r=>r.text());
       rows = _pCSV(text) || [];
       await _setCached('group_content', rows);
     }

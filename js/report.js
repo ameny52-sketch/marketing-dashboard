@@ -298,10 +298,12 @@ function _crRenderOrders(){
 }
 function _crRenderOrder(kind, wrap){
   const arr = _crState[kind];
-  wrap.innerHTML = arr.length ? arr.map(a=>
+  wrap.innerHTML = arr.length ? arr.map((a,i)=>
     `<div class="cr-order-item" draggable="true" data-kind="${kind}" data-axis="${a}">
       <span class="cr-drag-handle" aria-hidden="true">⠿</span>
       <span class="cr-order-label">${a}</span>
+      <button class="cr-order-move" type="button" data-dir="up" ${i===0?'disabled':''} aria-label="${a} 위로">▲</button>
+      <button class="cr-order-move" type="button" data-dir="down" ${i===arr.length-1?'disabled':''} aria-label="${a} 아래로">▼</button>
       <button class="cr-order-remove" type="button" aria-label="${a} 제거">×</button>
     </div>`
   ).join('') : `<div class="cr-order-empty">${kind==='rows'?'행':'열'} 기준을 선택하세요.</div>`;
@@ -314,6 +316,16 @@ function _crRenderOrder(kind, wrap){
       e.preventDefault();
       if(!_crDragged || _crDragged.kind!==item.dataset.kind) return;
       _crMoveAxis(_crDragged.kind, _crDragged.axis, item.dataset.axis);
+    });
+    item.querySelector('[data-dir="up"]').addEventListener('click', e=>{
+      e.stopPropagation();
+      const list = _crState[item.dataset.kind], i = list.indexOf(item.dataset.axis);
+      if(i>0) _crMoveAxis(item.dataset.kind, item.dataset.axis, list[i-1]);
+    });
+    item.querySelector('[data-dir="down"]').addEventListener('click', e=>{
+      e.stopPropagation();
+      const list = _crState[item.dataset.kind], i = list.indexOf(item.dataset.axis);
+      if(i<list.length-1) _crMoveAxis(item.dataset.kind, item.dataset.axis, list[i+1]);
     });
     item.querySelector('.cr-order-remove').addEventListener('click', e=>{
       e.stopPropagation();

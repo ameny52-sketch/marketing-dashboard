@@ -240,17 +240,15 @@ function renderDisplayInsight(){
   _displayInsightRows = tableRows;
 
   body.innerHTML = `
-    <div style="background:linear-gradient(135deg,#2e2e2e 0%,#4a4a4a 100%);border-radius:12px;padding:1.5rem 2rem;margin-bottom:1.25rem">
-      <div style="font-size:11px;color:rgba(255,255,255,.6);margin-bottom:14px;letter-spacing:.03em">📋 오늘의 요약 · 전체 매체 합산 최신 이틀 비교</div>
-      <div style="display:flex;flex-direction:column;gap:18px">
-        ${blocks.map(b=>`
-          <div>
-            <div style="font-size:15px;color:#fff;margin-bottom:8px">${b.sentence}</div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap">
-              ${b.badges.map(t=>`<span style="padding:6px 14px;border-radius:20px;background:rgba(255,255,255,0.12);color:#fff;font-size:12px;font-weight:500">${t}</span>`).join('')}
-            </div>
-          </div>`).join('')}
+    <div class="insight-hero">
+      <div class="insight-hero__top">
+        <div class="insight-hero__label">오늘의 요약 · 전체 매체 합산 최신 이틀 비교</div>
       </div>
+      ${blocks.map(b=>`
+        <div class="insight-hero__summary">${b.sentence}</div>
+        <div class="insight-hero__badges">
+          ${b.badges.map(t=>`<span style="padding:6px 14px;border-radius:20px;background:rgba(255,255,255,0.12);color:#fff;font-size:12px;font-weight:500">${t}</span>`).join('')}
+        </div>`).join('')}
     </div>
     <div class="table-card" style="margin-bottom:1.25rem">
       <div class="table-header">

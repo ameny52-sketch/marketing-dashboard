@@ -1133,7 +1133,7 @@ function switchMediaGroup(group, btn){
   subtabsKw.style.display  = 'none';
 
   // 모든 패널 숨김
-  ['panel-alert','panel-cpc','panel-data','panel-daily','panel-kw-main','panel-kw-insight','panel-insight','panel-display'].forEach(id=>{
+  ['panel-alert','panel-cpc','panel-data','panel-daily','panel-kw-main','panel-kw-insight','panel-insight','panel-display','panel-custom-report'].forEach(id=>{
     const el = document.getElementById(id); if(el) el.classList.remove('show');
   });
 
@@ -1201,6 +1201,9 @@ function switchMediaGroup(group, btn){
   } else if(group === 'display'){
     document.getElementById('panel-display').classList.add('show');
     initDisplayTab();
+  } else if(group === 'custom_report'){
+    document.getElementById('panel-custom-report').classList.add('show');
+    initCustomReportTab();
   }
 }
 

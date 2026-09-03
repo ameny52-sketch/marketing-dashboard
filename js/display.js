@@ -35,7 +35,6 @@ function switchDisplayMedia(media, btn){
   document.getElementById('display-insight').style.display = 'none';
   document.getElementById('display-content').style.display = '';
   document.getElementById('display-content').classList.remove('is-hidden');
-  document.getElementById('display-report').style.display = 'none';
   document.getElementById('display-month-sel-wrap').style.display = 'flex';
   renderDisplayTab();
 }
@@ -45,23 +44,10 @@ function switchDisplayInsight(btn){
   btn.classList.add('active');
   document.getElementById('display-pending').style.display = 'none';
   document.getElementById('display-content').style.display = 'none';
-  document.getElementById('display-report').style.display = 'none';
   document.getElementById('display-month-sel-wrap').style.display = 'none';
   document.getElementById('display-insight').style.display = '';
   document.getElementById('display-insight').classList.remove('is-hidden');
   renderDisplayInsight();
-}
-
-function switchDisplayReport(btn){
-  document.querySelectorAll('#display-media-tabs .main-tab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('display-pending').style.display = 'none';
-  document.getElementById('display-insight').style.display = 'none';
-  document.getElementById('display-content').style.display = 'none';
-  document.getElementById('display-month-sel-wrap').style.display = 'none';
-  document.getElementById('display-report').style.display = '';
-  document.getElementById('display-report').classList.remove('is-hidden');
-  initDisplayReport();
 }
 
 // 매체 전체 기준, 최근 이틀 변화 감지 (매체마다 데이터 입력 시차가 있을 수 있어
@@ -920,21 +906,10 @@ function _csvCell(v){
   return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s;
 }
 
-// ===== 디스플레이 커스텀 리포트 빌더 =====
-// 매체/행/열/지표를 직접 골라서 표+CSV로 뽑는다. 매체별로 이미 검증된 _buildMediaExportSums()의
-// 영역↔소재↔인타입 매칭 결과를 4개 매체 모두에 대해 모아 "매체,영역,소재,월,노출,클릭,DB,광고비"
-// 형태의 롱포맷 행 목록으로 만들고, 그 위에서 사용자가 고른 행/열 기준으로 다시 묶는다.
+// ===== 디스플레이 롱포맷 집계 (커스텀 보고서 탭의 디스플레이 어댑터가 재사용) =====
+// 매체별로 이미 검증된 _buildMediaExportSums()의 영역↔소재↔인타입 매칭 결과를 4개 매체 모두에 대해
+// 모아 "매체,영역,소재,월" 단위 롱포맷 행 목록으로 만든다 (노출/클릭/DB/광고비 + 계약수/평가업적, 당월+누적).
 const DISPLAY_REPORT_MEDIAS = ['카카오페이','T멤버십','가스락','KT PASS'];
-const REPORT_AXES = ['영역','소재','월','매체'];
-const REPORT_METRICS = [
-  {key:'imp',  label:'노출수'},
-  {key:'clk',  label:'클릭수'},
-  {key:'ctr',  label:'클릭률(%)'},
-  {key:'db',   label:'DB수'},
-  {key:'dbcvr',label:'DB전환율(%)'},
-  {key:'cost', label:'광고비'},
-  {key:'cpd',  label:'DB단가'},
-];
 let _reportLongRowsCache = null;
 function _buildAllDisplayLongRows(){
   if(_reportLongRowsCache) return _reportLongRowsCache;
@@ -945,7 +920,10 @@ function _buildAllDisplayLongRows(){
       Object.values(a.kws).forEach(k=>{
         Object.entries(k.months).forEach(([ym,m])=>{
           if(!m.imp && !m.clk && !m.db && !m.cost) return;
-          long.push({매체:media, 영역:area, 소재:k.kw, 월:ym, imp:m.imp, clk:m.clk, db:m.db, cost:m.cost});
+          long.push({매체:media, 영역:area, 소재:k.kw, 월:ym,
+            imp:m.imp, clk:m.clk, db:m.db, cost:m.cost,
+            contracts:m.contracts||0, perf:m.perf||0,
+            contracts_cum:m.contracts_cum||0, perf_cum:m.perf_cum||0});
         });
       });
     });
@@ -956,184 +934,6 @@ function _buildAllDisplayLongRows(){
 function _reportMonthLabel(ym){
   const mm = ym.match(/^(\d{4})-(\d{2})$/);
   return mm ? `${mm[1]}년 ${parseInt(mm[2])}월` : ym;
-}
-function _reportDeriveMetric(sum, key){
-  if(key==='imp')  return sum.imp;
-  if(key==='clk')  return sum.clk;
-  if(key==='db')   return sum.db;
-  if(key==='cost') return sum.cost;
-  if(key==='ctr')   return sum.imp>0 ? Math.round(sum.clk/sum.imp*10000)/100 : null;
-  if(key==='dbcvr') return sum.clk>0 ? Math.round(sum.db/sum.clk*1000)/10 : null;
-  if(key==='cpd')   return sum.db>0 ? Math.round(sum.cost/sum.db) : null;
-  return null;
-}
-let _reportSelectedMetrics = ['imp','clk','db','cost'];
-const REPORT_AXIS_LABELS = {영역:'영역(상품)', 소재:'소재', 월:'월', 매체:'매체'};
-function initDisplayReport(){
-  const mediaWrap = document.getElementById('report-media-filter');
-  if(!mediaWrap.dataset.built){
-    mediaWrap.innerHTML = DISPLAY_REPORT_MEDIAS.map(m=>
-      `<label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="checkbox" value="${m}" checked onchange="renderDisplayReport()">${m}</label>`
-    ).join('');
-    mediaWrap.dataset.built = '1';
-  }
-  const rowWrap = document.getElementById('report-row-axis');
-  if(!rowWrap.dataset.built){
-    rowWrap.innerHTML = REPORT_AXES.map(a=>
-      `<label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="checkbox" value="${a}" ${a==='영역'?'checked':''} onchange="onReportAxisChange()">${REPORT_AXIS_LABELS[a]}</label>`
-    ).join('');
-    rowWrap.dataset.built = '1';
-  }
-  const metricWrap = document.getElementById('report-metrics');
-  if(!metricWrap.dataset.built){
-    metricWrap.innerHTML = REPORT_METRICS.map(m=>
-      `<label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="checkbox" value="${m.key}" ${_reportSelectedMetrics.includes(m.key)?'checked':''} onchange="renderDisplayReport()">${m.label}</label>`
-    ).join('');
-    metricWrap.dataset.built = '1';
-  }
-  onReportAxisChange();
-}
-// 행 기준 체크박스는 REPORT_AXES 고정 순서(영역>소재>월>매체)로 계층을 만든다 — 체크한 순서와 무관하게 항상 같은 중첩 순서
-function _getReportRowAxes(){
-  const checked = new Set([...document.querySelectorAll('#report-row-axis input:checked')].map(c=>c.value));
-  return REPORT_AXES.filter(a=>checked.has(a));
-}
-function onReportAxisChange(){
-  // 열 기준은 행에 이미 쓰인 축을 고를 수 없다 — 겹치면 남은 축 중 하나로 자동 변경하고, 해당 옵션은 비활성화
-  const rowAxes = _getReportRowAxes();
-  const colSel = document.getElementById('report-col-axis');
-  [...colSel.options].forEach(o=>{ o.disabled = rowAxes.includes(o.value); });
-  if(rowAxes.includes(colSel.value)){
-    const other = REPORT_AXES.find(a=>!rowAxes.includes(a));
-    if(other) colSel.value = other;
-  }
-  renderDisplayReport();
-}
-// 체크한 축이 여러 개면(예: 영역+소재) 계층형으로 묶어서, 상위 축 값이 같은 행끼리 왼쪽 칸을 세로로 합친다(rowspan)
-function _computeRowGroupSpans(combos, levelCount){
-  const meta = combos.map(()=>Array(levelCount).fill(null));
-  for(let lvl=0; lvl<levelCount; lvl++){
-    let i=0;
-    while(i<combos.length){
-      let j=i+1;
-      const prefix = combos[i].slice(0,lvl+1).join('');
-      while(j<combos.length && combos[j].slice(0,lvl+1).join('')===prefix) j++;
-      meta[i][lvl] = j-i;
-      for(let k=i+1;k<j;k++) meta[k][lvl] = 0; // 0 = 이전 rowspan에 이미 포함됨(칸 생략)
-      i=j;
-    }
-  }
-  return meta;
-}
-function renderDisplayReport(){
-  const rowAxes = _getReportRowAxes();
-  const colAxis = document.getElementById('report-col-axis').value;
-  const mediaChecked = [...document.querySelectorAll('#report-media-filter input:checked')].map(c=>c.value);
-  const metricKeys = [...document.querySelectorAll('#report-metrics input:checked')].map(c=>c.value);
-  _reportSelectedMetrics = metricKeys;
-  const metrics = REPORT_METRICS.filter(m=>metricKeys.includes(m.key));
-
-  if(!rowAxes.length || !metrics.length){
-    document.getElementById('report-table').innerHTML = `<tr><td style="padding:2rem;color:var(--faint);text-align:center">${!rowAxes.length?'행 기준을':'지표를'} 1개 이상 선택하세요.</td></tr>`;
-    _reportTableData = null;
-    return;
-  }
-
-  const long = _buildAllDisplayLongRows().filter(r=>mediaChecked.includes(r.매체));
-  const label = (axis,v) => axis==='월' ? _reportMonthLabel(v) : v;
-  const sortVals = (axis,arr) => arr.sort((a,b)=>axis==='월'?a.localeCompare(b):String(a).localeCompare(String(b),'ko'));
-
-  const comboSet = new Map(); // key: 축값들 join -> 축값 배열
-  long.forEach(r=>{
-    const combo = rowAxes.map(a=>r[a]);
-    comboSet.set(combo.join(''), combo);
-  });
-  const combos = [...comboSet.values()].sort((a,b)=>{
-    for(let i=0;i<rowAxes.length;i++){
-      const av=a[i], bv=b[i];
-      const cmp = rowAxes[i]==='월' ? av.localeCompare(bv) : String(av).localeCompare(String(bv),'ko');
-      if(cmp) return cmp;
-    }
-    return 0;
-  });
-  const colVals = sortVals(colAxis, [...new Set(long.map(r=>r[colAxis]))]);
-
-  const cellSums = {};
-  long.forEach(r=>{
-    const key = rowAxes.map(a=>r[a]).join('')+'||'+r[colAxis];
-    if(!cellSums[key]) cellSums[key] = {imp:0,clk:0,db:0,cost:0};
-    cellSums[key].imp += r.imp; cellSums[key].clk += r.clk; cellSums[key].db += r.db; cellSums[key].cost += r.cost;
-  });
-
-  _reportTableData = {rowAxes, colAxis, combos, colVals, metrics, cellSums, label};
-
-  if(!combos.length){
-    document.getElementById('report-table').innerHTML = '<tr><td style="padding:2rem;color:var(--faint);text-align:center">선택한 매체에 해당하는 데이터가 없습니다.</td></tr>';
-    return;
-  }
-
-  const fmt = (v,key) => {
-    if(v===null||v===undefined) return '-';
-    if(key==='cost'||key==='cpd') return v.toLocaleString()+'원';
-    if(key==='ctr'||key==='dbcvr') return v+'%';
-    return v.toLocaleString();
-  };
-  const th = s => `<th style="padding:7px 10px;text-align:right;background:#f8fafc;border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0">${s}</th>`;
-  const thead = '<thead><tr>'+rowAxes.map(a=>th(REPORT_AXIS_LABELS[a])).join('')+th('지표')+colVals.map(cv=>th(label(colAxis,cv))).join('')+th('합계')+'</tr></thead>';
-
-  const spans = _computeRowGroupSpans(combos, rowAxes.length);
-  const tbody = combos.map((combo,ci)=>{
-    return metrics.map((m,mi)=>{
-      let levelCells = '';
-      if(mi===0){
-        levelCells = rowAxes.map((a,lvl)=>{
-          const span = spans[ci][lvl];
-          if(!span) return ''; // 상위 rowspan에 이미 포함
-          return `<td rowspan="${span*metrics.length}" style="padding:7px 10px;font-weight:700;background:#f2f2f2;border-bottom:1px solid var(--border);vertical-align:middle">${label(a,combo[lvl])}</td>`;
-        }).join('');
-      }
-      const rowKey = combo.join('');
-      let sumAll = {imp:0,clk:0,db:0,cost:0};
-      const cells = colVals.map(cv=>{
-        const s = cellSums[rowKey+'||'+cv] || {imp:0,clk:0,db:0,cost:0};
-        sumAll.imp+=s.imp; sumAll.clk+=s.clk; sumAll.db+=s.db; sumAll.cost+=s.cost;
-        const v = _reportDeriveMetric(s, m.key);
-        return `<td style="padding:6px 10px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap">${fmt(v,m.key)}</td>`;
-      }).join('');
-      const totalV = _reportDeriveMetric(sumAll, m.key);
-      const totalCell = `<td style="padding:6px 10px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap;font-weight:700;background:#fff9e6">${fmt(totalV,m.key)}</td>`;
-      return `<tr>${levelCells}<td style="padding:6px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--muted)">${m.label}</td>${cells}${totalCell}</tr>`;
-    }).join('');
-  }).join('');
-
-  document.getElementById('report-table').innerHTML = thead+'<tbody>'+tbody+'</tbody>';
-}
-let _reportTableData = null;
-function downloadReportCsv(){
-  if(!_reportTableData || !_reportTableData.metrics.length){ alert('다운로드할 데이터가 없습니다.'); return; }
-  const {rowAxes, colAxis, combos, colVals, metrics, cellSums, label} = _reportTableData;
-  const header = [...rowAxes.map(a=>REPORT_AXIS_LABELS[a]), '지표', ...colVals.map(cv=>label(colAxis,cv)), '합계'];
-  const lines = [header];
-  combos.forEach(combo=>{
-    const rowKey = combo.join('');
-    metrics.forEach(m=>{
-      let sumAll = {imp:0,clk:0,db:0,cost:0};
-      const rowVals2 = colVals.map(cv=>{
-        const s = cellSums[rowKey+'||'+cv] || {imp:0,clk:0,db:0,cost:0};
-        sumAll.imp+=s.imp; sumAll.clk+=s.clk; sumAll.db+=s.db; sumAll.cost+=s.cost;
-        const v = _reportDeriveMetric(s, m.key);
-        return v===null||v===undefined ? '' : v;
-      });
-      const totalV = _reportDeriveMetric(sumAll, m.key);
-      lines.push([...combo.map((v,i)=>label(rowAxes[i],v)), m.label, ...rowVals2, totalV===null||totalV===undefined?'':totalV]);
-    });
-  });
-  const csv = lines.map(r=>r.map(_csvCell).join(',')).join('\n');
-  const blob = new Blob(['﻿'+csv], {type:'text/csv;charset=utf-8'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `디스플레이_커스텀리포트_${rowAxes.join('+')}x${colAxis}.csv`;
-  a.click();
 }
 
 function downloadMediaCsv(media){

@@ -25,6 +25,7 @@
   <button class="media-group-tab" onclick="switchMediaGroup('pc_content',this)">파워컨텐츠</button>
   <button class="media-group-tab" onclick="switchMediaGroup('keyword',this)">키워드</button>
   <button class="media-group-tab" onclick="switchMediaGroup('display',this)">디스플레이</button>
+  <button class="media-group-tab" onclick="switchMediaGroup('custom_report',this)">커스텀 보고서</button>
 </nav>
 
 <div id="sheet-load-warning" class="sheet-load-warning is-hidden"></div>
@@ -284,7 +285,6 @@
       <button class="main-tab" onclick="switchDisplayMedia('T멤버십',this)">T멤버십</button>
       <button class="main-tab" onclick="switchDisplayMedia('가스락',this)">가스락</button>
       <button class="main-tab" onclick="switchDisplayMedia('KT PASS',this)">KT PASS</button>
-      <button class="main-tab" onclick="switchDisplayReport(this)">리포트</button>
       <span id="display-month-sel-wrap" class="month-picker month-picker--push is-hidden">
         <button class="month-step" onclick="_stepMonthSelect('display-month-sel',-1)" title="이전 달">◀</button>
         <select id="display-month-sel" onchange="renderDisplayTab()" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 10px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);outline:none">
@@ -331,44 +331,6 @@
             <thead id="display-thead"></thead>
             <tbody id="display-tbody"></tbody>
           </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- 커스텀 리포트: 매체/행/열/지표를 직접 골라서 표+CSV로 뽑는 빌더 -->
-    <div id="display-report" class="is-hidden">
-      <div class="table-card report-builder">
-        <div class="report-builder__grid">
-          <div>
-            <div class="report-builder__label">매체</div>
-            <div id="report-media-filter" style="display:flex;gap:10px;flex-wrap:wrap"></div>
-          </div>
-          <div>
-            <div class="report-builder__label">행 기준 (여러 개 선택 시 겹쳐서 묶임)</div>
-            <div id="report-row-axis" style="display:flex;gap:10px;flex-wrap:wrap"></div>
-          </div>
-          <div>
-            <div class="report-builder__label">열 기준</div>
-            <select id="report-col-axis" onchange="onReportAxisChange()" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 10px;font-size:13px;font-family:inherit">
-              <option value="영역">영역(상품)</option>
-              <option value="소재">소재</option>
-              <option value="월" selected>월</option>
-              <option value="매체">매체</option>
-            </select>
-          </div>
-          <div>
-            <div class="report-builder__label">지표 (여러 개 선택 가능)</div>
-            <div id="report-metrics" style="display:flex;gap:10px;flex-wrap:wrap"></div>
-          </div>
-        </div>
-      </div>
-      <div class="table-card">
-        <div class="table-header">
-          <h2>커스텀 리포트</h2>
-          <button class="dl" onclick="downloadReportCsv()">⬇ CSV 다운로드</button>
-        </div>
-        <div class="table-wrap">
-          <table id="report-table"></table>
         </div>
       </div>
     </div>
@@ -761,6 +723,94 @@
   </div>
 </div>
 
+<!-- ===== 커스텀 보고서 패널 ===== -->
+<div class="tab-panel" id="panel-custom-report">
+  <div class="main-tabs" id="cr-category-tabs">
+    <button class="main-tab active" onclick="switchCustomReportCategory('pc',this)">파워컨텐츠</button>
+    <button class="main-tab" onclick="switchCustomReportCategory('keyword',this)">키워드</button>
+    <button class="main-tab" onclick="switchCustomReportCategory('display',this)">디스플레이</button>
+    <button class="main-tab" onclick="switchCustomReportCategory('affiliate',this)">제휴·기타</button>
+  </div>
+
+  <div class="table-card cr-preset-bar">
+    <span class="cr-field-label" style="margin:0">빠른 보고서</span>
+    <div class="tab-bar" id="cr-preset-buttons" style="margin-bottom:0"></div>
+    <span class="row-count">프리셋 적용 후에도 모든 항목을 자유롭게 바꿀 수 있어요.</span>
+  </div>
+
+  <div class="cr-workspace" id="cr-workspace">
+    <aside class="table-card cr-settings" id="cr-settings">
+      <div class="table-header">
+        <h2 id="cr-settings-title">파워컨텐츠 보고서 설정</h2>
+        <div class="table-actions">
+          <button class="dl" onclick="resetCustomReport()">초기화</button>
+          <button class="dl cr-btn-primary" onclick="applyCustomReport()">보고서 적용</button>
+        </div>
+      </div>
+
+      <div class="cr-step">
+        <div class="cr-step-title">1. 조회 범위</div>
+        <div class="cr-field-label"><span id="cr-filter-label">기기</span><span class="cr-field-note">복수 선택</span></div>
+        <div class="tab-bar" id="cr-filter-options"></div>
+        <div class="cr-field-label">조회 월</div>
+        <div class="cr-select-row">
+          <select id="cr-month-from" aria-label="시작 월"></select>
+          <select id="cr-month-to" aria-label="종료 월"></select>
+        </div>
+      </div>
+
+      <div class="cr-step">
+        <div class="cr-step-title">2. 표 구성</div>
+        <div class="tab-bar" id="cr-mode-switch" style="margin-bottom:8px">
+          <button class="tab-btn active" data-mode="rows" onclick="setCustomReportEditMode('rows',this)">행 기준 편집</button>
+          <button class="tab-btn" data-mode="cols" onclick="setCustomReportEditMode('cols',this)">열 기준 편집</button>
+        </div>
+        <p class="cr-field-note" id="cr-axis-help">아래 항목을 선택하면 행 기준에 추가됩니다.</p>
+        <div class="tab-bar" id="cr-axis-options"></div>
+        <div class="cr-order-grid">
+          <div class="cr-order-zone active" data-zone="rows">
+            <div class="cr-order-head"><span>행 기준 순서</span><em>드래그로 순서 변경</em></div>
+            <div class="cr-sortable" id="cr-row-sortable"></div>
+          </div>
+          <div class="cr-order-zone" data-zone="cols">
+            <div class="cr-order-head"><span>열 기준 순서</span><em>드래그로 순서 변경</em></div>
+            <div class="cr-sortable" id="cr-col-sortable"></div>
+          </div>
+        </div>
+        <p class="cr-field-note" style="margin-top:8px">같은 기준은 행과 열에 동시에 사용할 수 없습니다.</p>
+      </div>
+
+      <div class="cr-step">
+        <div class="cr-step-title">3. 표시 지표</div>
+        <div class="cr-metric-position" id="cr-metric-position">
+          <span>지표 위치</span>
+          <button class="tab-btn active" data-position="row" onclick="setCustomReportMetricPosition('row',this)">행에 표시</button>
+          <button class="tab-btn" data-position="column" onclick="setCustomReportMetricPosition('column',this)">열에 표시</button>
+        </div>
+        <div id="cr-metric-groups"></div>
+      </div>
+    </aside>
+
+    <section class="table-card cr-preview">
+      <div class="table-header">
+        <div>
+          <h2 id="cr-preview-title">파워컨텐츠 결과 미리보기</h2>
+          <div class="row-count" id="cr-summary" style="margin-top:4px"></div>
+        </div>
+        <button class="dl" onclick="downloadCustomReportCsv()">⬇ CSV 다운로드</button>
+      </div>
+      <div class="context-note" id="cr-notice">
+        <div class="context-note__label" id="cr-notice-title"></div>
+        <div class="context-note__text" id="cr-notice-text"></div>
+      </div>
+      <div class="table-wrap cr-table-wrap">
+        <table id="cr-table"></table>
+      </div>
+      <div class="cr-table-foot" id="cr-table-foot">화면은 최대 240행 미리보기 · CSV는 전체 결과</div>
+    </section>
+  </div>
+</div>
+
 <!-- 키워드 드릴다운 모달 -->
 <div class="modal-bg modal-bg--layer1" id="kw-modal-bg" onclick="closeKwModal(event)">
   <div class="modal" style="width:1300px;max-width:95vw;max-height:85vh;overflow-y:auto">
@@ -859,6 +909,7 @@
 <script src="./js/keyword.js"></script>
 <script src="./js/app.js"></script>
 <script src="./js/display.js"></script>
+<script src="./js/report.js"></script>
 
 <div id="loading-overlay" class="loading-overlay is-hidden">
   <div style="background:#fff;border-radius:12px;padding:2rem 2.5rem;max-width:360px;width:90%;text-align:center">

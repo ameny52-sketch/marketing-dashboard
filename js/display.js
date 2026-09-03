@@ -1452,10 +1452,12 @@ async function loadDisplayData(){
   pending.textContent = '▶ 데이터 로드 중...';
   pending.style.display=''; pending.classList.remove('is-hidden'); content.style.display='none';
   try{
-    // 준비 단계라 시트가 자주 바뀌므로 display_report/display_intype는 캐싱 없이 매번 새로 받는다
+    // 준비 단계라 시트가 자주 바뀌므로 display_report/display_intype는 캐싱 없이 매번 새로 받는다.
+    // display_intype(구글시트 참조표)는 응답이 없거나 느려도 화면 전체가 "로드 중"에 멈추면 안 되므로
+    // 타임아웃을 걸고, 실패해도 빈 참조표로 계속 진행한다 (인타입 매핑만 못 쓸 뿐 핵심 데이터는 정상 표시)
     const [reportText, intypeText, s] = await Promise.all([
       fetch(SHEETS_URLS.display_report).then(r=>r.text()),
-      SHEETS_URLS.display_intype ? fetch(SHEETS_URLS.display_intype).then(r=>r.text()) : Promise.resolve(''),
+      SHEETS_URLS.display_intype ? _fetchWithTimeout(SHEETS_URLS.display_intype, 8000).then(r=>r.text()).catch(()=>'') : Promise.resolve(''),
       loadAllSheets(),
     ]);
     _displayData = _pCSV(reportText) || [];

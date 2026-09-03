@@ -245,8 +245,8 @@ async function switchCustomReportCategory(cat, btn){
 }
 
 // ===== 컨트롤 렌더링 =====
-function q(sel){ return document.querySelector(sel); }
-function qa(sel){ return [...document.querySelectorAll(sel)]; }
+function q(sel, root){ return (root||document).querySelector(sel); }
+function qa(sel, root){ return [...(root||document).querySelectorAll(sel)]; }
 
 function _crRenderControls(){
   _crRenderFilters();

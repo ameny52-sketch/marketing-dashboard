@@ -90,7 +90,11 @@ function _showSheetLoadWarning(labels){
 // ===== IndexedDB 캐시 (용량 무제한) =====
 const _IDB_NAME='adtool_cache_v4';
 const _IDB_STORE='sheets';
-const _TTL_DYNAMIC='daily';           // 매체별 광고비 + RAW: 날짜 바뀌면 자동 갱신
+// 매체별 광고비 + RAW 캐시 유효시간. 예전엔 '요일이 바뀌면 갱신'(daily)이었는데, 그러면 자동화가
+// 당일 중에 데이터를 다시 올려도(재배포, push 실패 후 재시도 등) 브라우저마다 "데이터 새로고침"을
+// 수동으로 눌러야만 반영돼서 불편했다 — 파일이 몇백KB 수준으로 작아서 자주 다시 받아도 부담 없으므로
+// 1시간 후 자동 만료로 바꿔, 새로고침만 해도 최신 데이터가 알아서 반영되게 한다
+const _TTL_DYNAMIC=60*60*1000;
 
 function _openIDB(){
   return new Promise((res,rej)=>{

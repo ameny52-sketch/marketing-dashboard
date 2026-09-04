@@ -306,7 +306,7 @@ function _crRenderOrder(kind, wrap){
       <button class="cr-order-move" type="button" data-dir="down" ${i===arr.length-1?'disabled':''} aria-label="${a} 아래로">▼</button>
       <button class="cr-order-remove" type="button" aria-label="${a} 제거">×</button>
     </div>`
-  ).join('') : `<div class="cr-order-empty">${kind==='rows'?'행':'열'} 기준을 선택하세요.</div>`;
+  ).join('') : `<div class="cr-order-empty">${kind==='rows'?'행 기준':kind==='cols'?'열 기준':'표시 지표'}을(를) 선택하세요.</div>`;
   qa('.cr-order-item', wrap).forEach(item=>{
     item.addEventListener('dragstart', ()=>{ _crDragged = {kind:item.dataset.kind, axis:item.dataset.axis}; item.classList.add('dragging'); });
     item.addEventListener('dragend', ()=>{ _crDragged = null; qa('.cr-order-item').forEach(x=>x.classList.remove('dragging','drag-over')); });
@@ -348,6 +348,7 @@ function _crRenderMetrics(){
     `<button class="tab-btn cr-metric-btn ${_crState.metrics.includes(m)?'active':''}" data-metric="${m}">${m}</button>`
   ).join('')}</div>`;
   qa('#cr-metric-position .tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.position===_crState.metricPosition));
+  _crRenderOrder('metrics', q('#cr-metric-sortable'));
 }
 
 function _crRenderSummary(){

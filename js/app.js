@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
   // 미디어 그룹 탭 active 상태 확인 (전체 버튼이 active인지)
   const allBtn = document.querySelector('.media-group-tab.active');
-  if(!allBtn || allBtn.textContent.trim() !== '전체'){
+  if(!allBtn || !(allBtn.getAttribute('onclick')||'').includes("'all'")){
     const firstBtn = document.querySelector('.media-group-tab');
     if(firstBtn) firstBtn.classList.add('active');
   }
@@ -32,6 +32,25 @@ document.addEventListener('DOMContentLoaded', function(){
   // 기준값 초과 알림 (백그라운드에서 조용히 체크, 화면 로딩을 막지 않음)
   _checkDashboardAlerts();
 });
+
+// ===== 사이드바 접기/펼치기 (PC 포함, localStorage로 상태 기억) =====
+const _SIDEBAR_ICON_COLLAPSED = '<svg viewBox="0 0 24 24"><path d="m10 7 5 5-5 5"/></svg>';
+const _SIDEBAR_ICON_EXPANDED  = '<svg viewBox="0 0 24 24"><path d="m14 7-5 5 5 5"/></svg>';
+function toggleSidebar(){
+  const sidebar = document.getElementById('app-sidebar');
+  const collapsed = sidebar.classList.toggle('collapsed');
+  try{ localStorage.setItem('cr_sidebar_collapsed', collapsed ? '1' : '0'); }catch(e){}
+  const icon = document.getElementById('sidebar-collapse-icon');
+  if(icon) icon.innerHTML = collapsed ? _SIDEBAR_ICON_COLLAPSED : _SIDEBAR_ICON_EXPANDED;
+  const btn = document.getElementById('sidebar-collapse-btn');
+  if(btn) btn.setAttribute('aria-label', collapsed ? '사이드바 펼치기' : '사이드바 접기');
+}
+(function(){
+  // 페이지 로드 시 접힘 아이콘도 저장된 상태에 맞춰 동기화 (본문의 인라인 스크립트가 클래스 자체는 이미 반영해둠)
+  const sidebar = document.getElementById('app-sidebar');
+  const icon = document.getElementById('sidebar-collapse-icon');
+  if(sidebar && icon && sidebar.classList.contains('collapsed')) icon.innerHTML = _SIDEBAR_ICON_COLLAPSED;
+})();
 
 // ===== 기준값 초과 알림 팝업 =====
 // 파워컨텐츠/키워드 전체 평균 DB단가, 디스플레이 특정 매체·영역의 광고비/DB단가가

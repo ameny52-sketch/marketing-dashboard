@@ -20,17 +20,41 @@
   </div>
 </header>
 
-<nav class="media-group-tabs app-main-nav" aria-label="광고 매체 메뉴">
-  <button class="media-group-tab active" onclick="switchMediaGroup('all',this)">전체</button>
-  <button class="media-group-tab" onclick="switchMediaGroup('pc_content',this)">파워컨텐츠</button>
-  <button class="media-group-tab" onclick="switchMediaGroup('keyword',this)">키워드</button>
-  <button class="media-group-tab" onclick="switchMediaGroup('display',this)">디스플레이</button>
-  <button class="media-group-tab" onclick="switchMediaGroup('custom_report',this)">커스텀 보고서</button>
-</nav>
-
-<div id="sheet-load-warning" class="sheet-load-warning is-hidden"></div>
+<div class="app-shell">
+  <aside class="app-sidebar" id="app-sidebar">
+    <nav class="app-sidebar-nav" aria-label="광고 매체 메뉴">
+      <button class="media-group-tab active" onclick="switchMediaGroup('all',this)">
+        <span class="sidebar-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+        <span class="sidebar-label">전체</span><span class="sidebar-tooltip">전체</span>
+      </button>
+      <button class="media-group-tab" onclick="switchMediaGroup('pc_content',this)">
+        <span class="sidebar-icon"><svg viewBox="0 0 24 24"><path d="M5 4h11a2 2 0 0 1 2 2v13H6a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1z"/><path d="M18 8h2v9a2 2 0 0 1-2 2"/><path d="M8 8h6"/><path d="M8 12h6"/><path d="M8 16h4"/></svg></span>
+        <span class="sidebar-label">파워컨텐츠</span><span class="sidebar-tooltip">파워컨텐츠</span>
+      </button>
+      <button class="media-group-tab" onclick="switchMediaGroup('keyword',this)">
+        <span class="sidebar-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg></span>
+        <span class="sidebar-label">키워드</span><span class="sidebar-tooltip">키워드</span>
+      </button>
+      <button class="media-group-tab" onclick="switchMediaGroup('display',this)">
+        <span class="sidebar-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M7 20h10"/><path d="M9 18v2M15 18v2"/></svg></span>
+        <span class="sidebar-label">디스플레이</span><span class="sidebar-tooltip">디스플레이</span>
+      </button>
+      <button class="media-group-tab" onclick="switchMediaGroup('custom_report',this)">
+        <span class="sidebar-icon"><svg viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6z"/><path d="M15 3v4h4"/><path d="M9 12h6M9 16h6"/></svg></span>
+        <span class="sidebar-label">커스텀 보고서</span><span class="sidebar-tooltip">커스텀 보고서</span>
+      </button>
+    </nav>
+    <div class="app-sidebar-bottom">
+      <button class="app-sidebar-collapse-btn" id="sidebar-collapse-btn" onclick="toggleSidebar()" aria-label="사이드바 접기">
+        <span class="sidebar-icon" id="sidebar-collapse-icon"><svg viewBox="0 0 24 24"><path d="m14 7-5 5 5 5"/></svg></span>
+        <span class="sidebar-label">메뉴 접기</span>
+      </button>
+    </div>
+  </aside>
+  <script>(function(){try{if(localStorage.getItem('cr_sidebar_collapsed')==='1')document.getElementById('app-sidebar').classList.add('collapsed');}catch(e){}})();</script>
 
 <div class="container">
+  <div id="sheet-load-warning" class="sheet-load-warning is-hidden"></div>
   <!-- 전체 탭용 서브메뉴 -->
   <div class="main-tabs" id="subtabs-all">
     <button class="main-tab active" onclick="switchTab('daily',this)">📅 Daily DB 현황</button>
@@ -812,6 +836,7 @@
     </section>
   </div>
 </div>
+</div><!-- /.app-shell -->
 
 <!-- 키워드 드릴다운 모달 -->
 <div class="modal-bg modal-bg--layer1" id="kw-modal-bg" onclick="closeKwModal(event)">

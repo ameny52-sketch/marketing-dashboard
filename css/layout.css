@@ -10,20 +10,16 @@ body{background:var(--bg);color:var(--text);font-family:'Pretendard','Apple SD G
 button,input,select,textarea{font-family:inherit}
 button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid rgba(242,138,0,.28);outline-offset:2px}
 
-/* Header */
-.app-hero{position:relative;z-index:210;display:flex;align-items:center;width:100%;max-width:none;height:58px;margin:0;padding-left:24px;padding-right:24px;background:var(--surface);border:0;border-bottom:1px solid var(--border)}
-.app-hero-inner{position:relative;display:flex;align-items:center;gap:18px;width:100%;min-height:58px;padding:0;overflow:visible;color:var(--text);background:transparent;border:0;border-radius:0;box-shadow:none}
-.app-hero-inner:before,.app-hero-inner:after{display:none}
-.app-brand{display:flex;flex-direction:row;align-items:center;gap:12px;position:relative;z-index:1}
-.app-logo{display:block;height:20px;width:auto;filter:brightness(0);opacity:.92}
-.app-brand h1{margin:0;color:var(--muted);font-size:12px;font-weight:600;line-height:1;letter-spacing:.01em}
-#refresh-data-btn{min-height:34px!important;margin-left:auto!important;padding:0 12px!important;color:var(--text)!important;background:var(--surface)!important;border:1px solid var(--border)!important;border-radius:8px!important;font-size:12px!important;font-weight:600!important;box-shadow:none!important}
-#refresh-data-btn:hover{background:var(--bg)!important;border-color:var(--border-strong)!important}
-
-/* App shell: left sidebar (collapsible, PC 포함) + content */
+/* App shell: left sidebar (collapsible, PC 포함, 브랜드 영역 포함) + content.
+   상단 헤더가 없어졌으므로 사이드바가 뷰포트 최상단부터 시작한다. */
 .app-shell{display:flex;align-items:flex-start}
-.app-sidebar{position:sticky;top:58px;flex:0 0 208px;width:208px;display:flex;flex-direction:column;height:calc(100vh - 58px);background:var(--surface);border-right:1px solid var(--border);overflow:visible;transition:width .18s ease,flex-basis .18s ease;z-index:150}
+.app-sidebar{position:sticky;top:0;flex:0 0 208px;width:208px;display:flex;flex-direction:column;height:100vh;background:var(--surface);border-right:1px solid var(--border);overflow:visible;transition:width .18s ease,flex-basis .18s ease;z-index:150}
 .app-sidebar.collapsed{flex:0 0 64px;width:64px}
+
+.app-sidebar-brand{display:flex;align-items:center;gap:12px;height:58px;flex:0 0 58px;padding:0 16px;border-bottom:1px solid var(--border);white-space:nowrap;overflow:hidden}
+.app-sidebar-brand-mark{display:grid;place-items:center;width:28px;height:28px;flex:0 0 28px;border-radius:8px;background:var(--accent);color:#fff;font-weight:900;font-size:14px;line-height:1}
+.app-sidebar-brand-text{font-size:15px;font-weight:800;color:var(--text)}
+
 .app-sidebar-nav{padding:12px 10px;display:flex;flex-direction:column;gap:4px}
 .media-group-tab{position:relative;display:flex;align-items:center;gap:12px;min-height:42px;height:42px;padding:0 12px;margin:0;border:0;background:transparent;border-radius:10px;color:var(--muted);cursor:pointer;text-align:left;white-space:nowrap;width:100%;font-size:14px;font-weight:650;line-height:1.35;box-shadow:none;font-family:inherit}
 .media-group-tab:hover:not(.disabled){color:var(--text);background:var(--bg)}
@@ -32,13 +28,20 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .sidebar-icon svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .sidebar-label{font-size:14px;transition:opacity .12s ease}
 .sidebar-tooltip{display:none;position:absolute;left:54px;top:50%;transform:translateY(-50%);background:#23262b;color:#fff;font-size:12px;padding:7px 9px;border-radius:7px;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.13);z-index:250}
-.app-sidebar.collapsed .sidebar-label,.app-sidebar.collapsed .app-sidebar-collapse-btn .sidebar-label{display:inline-block;opacity:0;pointer-events:none;width:0;overflow:hidden}
-.app-sidebar.collapsed .media-group-tab:hover .sidebar-tooltip,.app-sidebar.collapsed .app-sidebar-collapse-btn:hover .sidebar-tooltip{display:block}
-.app-sidebar-bottom{margin-top:auto;padding:10px;border-top:1px solid var(--border)}
-.app-sidebar-collapse-btn{width:100%;height:40px;border:0;background:transparent;border-radius:10px;color:var(--muted);display:flex;align-items:center;gap:12px;padding:0 12px;cursor:pointer;font-family:inherit;font-size:13px}
-.app-sidebar-collapse-btn:hover{background:var(--bg);color:var(--text)}
-.app-sidebar.collapsed .app-sidebar-collapse-btn{justify-content:center;padding:0}
-.app-sidebar.collapsed .media-group-tab,.app-sidebar.collapsed .app-sidebar-collapse-btn{gap:0;justify-content:center;padding:0}
+.app-sidebar.collapsed .sidebar-label{display:inline-block;opacity:0;pointer-events:none;width:0;overflow:hidden}
+.app-sidebar.collapsed .media-group-tab:hover .sidebar-tooltip,
+.app-sidebar.collapsed .app-sidebar-action-btn:hover .sidebar-tooltip,
+.app-sidebar.collapsed .app-sidebar-collapse-btn:hover .sidebar-tooltip{display:block}
+
+.app-sidebar-bottom{margin-top:auto;padding:10px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:4px}
+.app-sidebar-action-btn,.app-sidebar-collapse-btn{width:100%;height:40px;border:0;background:transparent;border-radius:10px;color:var(--muted);display:flex;align-items:center;gap:12px;padding:0 12px;cursor:pointer;font-family:inherit;font-size:13px}
+.app-sidebar-action-btn:hover,.app-sidebar-collapse-btn:hover{background:var(--bg);color:var(--text)}
+.app-sidebar-action-btn:disabled{opacity:.55;cursor:not-allowed}
+
+.app-sidebar.collapsed .app-sidebar-brand,
+.app-sidebar.collapsed .media-group-tab,
+.app-sidebar.collapsed .app-sidebar-action-btn,
+.app-sidebar.collapsed .app-sidebar-collapse-btn{gap:0;justify-content:center;padding:0}
 
 /* Page frame and secondary tabs */
 .container{flex:1 1 auto;min-width:0;max-width:1800px;margin:0 auto;padding:24px 28px 48px}
@@ -258,18 +261,17 @@ div[style*="box-shadow"]{box-shadow:none!important}
 
 @media(max-width:1200px){.kpi-grid,.kpi-grid.kpi-grid-9,.kpi-grid.kpi-grid-7{grid-template-columns:repeat(4,minmax(0,1fr))}.metrics-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.alert-grid[style*="repeat(4"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}#insight-cards,#kw-insight-cards{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
 @media(max-width:900px){
-  .app-hero{height:54px;padding:0 16px}.app-hero-inner{min-height:54px}.app-logo{height:18px}.app-brand h1{display:none}
   .app-sidebar,.app-sidebar.collapsed{flex:0 0 64px;width:64px}
   .app-sidebar-collapse-btn{display:none}
   .sidebar-label{display:inline-block;opacity:0;pointer-events:none;width:0;overflow:hidden}
-  .media-group-tab{gap:0;justify-content:center;padding:0}
+  .app-sidebar-brand,.media-group-tab,.app-sidebar-action-btn{gap:0;justify-content:center;padding:0}
   .container{padding:16px 16px 36px}
   .main-tabs{gap:16px;overflow-x:auto;flex-wrap:nowrap}.tab-actions{position:sticky;right:0;padding-left:8px;background:var(--bg)}
   .cpc-chart-row,.alert-grid{grid-template-columns:1fr}
   .analysis-toolbar{align-items:stretch}.toolbar-divider{display:none}.compact-control--search{flex:1;width:auto}
 }
 @media(max-width:680px){.kpi-grid,.kpi-grid.kpi-grid-9,.kpi-grid.kpi-grid-7,.metrics-grid,.cpc-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi-card{height:94px}.modal-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.insight-hero{padding:18px!important}.insight-hero:before{display:none}.alert-grid[style*="repeat(4"]{grid-template-columns:1fr!important}#insight-cards,#kw-insight-cards{grid-template-columns:repeat(2,minmax(0,1fr))!important}.insight-kpi-grid>div:nth-child(2n){border-right:0!important}}
-@media(max-width:480px){#refresh-data-btn{font-size:0!important;width:34px;padding:0!important;justify-content:center}.container{padding-left:12px;padding-right:12px}.kpi-grid,.kpi-grid.kpi-grid-9,.kpi-grid.kpi-grid-7,.metrics-grid,.cpc-summary{grid-template-columns:1fr 1fr}.kpi-card{padding:13px 14px}}
+@media(max-width:480px){.container{padding-left:12px;padding-right:12px}.kpi-grid,.kpi-grid.kpi-grid-9,.kpi-grid.kpi-grid-7,.metrics-grid,.cpc-summary{grid-template-columns:1fr 1fr}.kpi-card{padding:13px 14px}}
 
 /* 표시/숨김 토글 — 이 파일이 마지막에 로드되므로, 같은 우선순위의 display 규칙(.main-tabs, .month-picker, .context-note 등)보다 항상 뒤에 와서 숨김 상태가 확실히 이긴다 */
 .is-hidden{display:none}

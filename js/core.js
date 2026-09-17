@@ -1083,10 +1083,11 @@ function getSortedFiltered(){
 }
 function downloadCSV(){
   const cols=_pcCols();
-  const headers=cols.map(c=>c.label);
+  const headers=cols.map(c=>(_pcTableCumMode && PC_CUM_COLS.includes(c.key)) ? c.label+' ·누적' : c.label);
   const rows=getSortedFiltered().map(r=>cols.map(c=>{
-    if(c.special==='roas') return r.roas===null?'미매칭':r.roas+'%';
-    const v=r[c.key]; return v===null?'':v;
+    if(c.special==='roas'){ const v=_pcCumVal(r,'roas'); return v===null?'미매칭':v+'%'; }
+    const v=PC_CUM_COLS.includes(c.key)?_pcCumVal(r,c.key):r[c.key];
+    return v===null?'':v;
   }));
   const csv=[headers,...rows].map(r=>r.join(',')).join('\n');
   const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
@@ -1096,10 +1097,11 @@ function downloadCSV(){
 }
 function downloadXLSX(){
   const cols=_pcCols();
-  const headers=cols.map(c=>c.label);
+  const headers=cols.map(c=>(_pcTableCumMode && PC_CUM_COLS.includes(c.key)) ? c.label+' ·누적' : c.label);
   const rows=getSortedFiltered().map(r=>cols.map(c=>{
-    if(c.special==='roas') return r.roas===null?'미매칭':r.roas;
-    return r[c.key]===null?'':r[c.key];
+    if(c.special==='roas'){ const v=_pcCumVal(r,'roas'); return v===null?'미매칭':v; }
+    const v=PC_CUM_COLS.includes(c.key)?_pcCumVal(r,c.key):r[c.key];
+    return v===null?'':v;
   }));
   const ws=XLSX.utils.aoa_to_sheet([headers,...rows]);
   const wb=XLSX.utils.book_new();

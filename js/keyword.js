@@ -320,14 +320,18 @@ function kwSort(col){
 
 function downloadKwCsv(){
   const rows = getKwFiltered();
-  const hdr = ['키워드','매체','기기','광고비','클릭수','DB수','계약수','평가업적','ROAS','DB단가','계약율'];
-  const body = rows.map(r=>[
-    r.keyword||'',r.sub_media,r.device,
-    r.cost!=null?r.cost:'',r.clicks!=null?r.clicks:'',
-    r.db,r.contracts,r.perf||'',
-    r.roas!=null?r.roas+'%':'',r.cpd!=null?r.cpd:'',
-    r.cvr!=null?r.cvr.toFixed(1)+'%':''
-  ].join(','));
+  const s = _kwTableCumMode ? ' ·누적' : '';
+  const hdr = ['키워드','매체','기기','광고비','클릭수','DB수',`계약수${s}`,`평가업적${s}`,`ROAS${s}`,'DB단가',`계약율${s}`];
+  const body = rows.map(r=>{
+    const contracts=_kwCumVal(r,'contracts'), perf=_kwCumVal(r,'perf'), roas=_kwCumVal(r,'roas'), cvr=_kwCumVal(r,'cvr');
+    return [
+      r.keyword||'',r.sub_media,r.device,
+      r.cost!=null?r.cost:'',r.clicks!=null?r.clicks:'',
+      r.db,contracts,perf||'',
+      roas!=null?roas+'%':'',r.cpd!=null?r.cpd:'',
+      cvr!=null?cvr.toFixed(1)+'%':''
+    ].join(',');
+  });
   const csv = [hdr.join(','),...body].join('\n');
   const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
   const a = document.createElement('a'); a.href=URL.createObjectURL(blob);

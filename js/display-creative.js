@@ -129,7 +129,7 @@ function _renderCreativeRanking(){
   const bad = sorted.length>5 ? [...sorted].reverse().slice(0,5) : [];
 
   window.__creativeRankingLookup = [];
-  const fmtVal = v => v===null ? '-' : (metric==='cpd' ? v.toLocaleString()+'원' : v+'%');
+  const fmtVal = v => v===null ? '-' : (metric==='cpd' ? v.toLocaleString()+'원' : _fmtPct(v));
   function rowHtml(item){
     const idx = window.__creativeRankingLookup.length;
     window.__creativeRankingLookup.push({media:item.media, area:item.area, kw:item.kw, codes:item.codes});
@@ -337,7 +337,7 @@ function renderCreativeHistoryMatrix(){
   const {months, areaList} = _buildCreativeHistoryMatrix(_creativeHistoryMedia);
   const metric = _creativeHistoryMetric;
   const lowerIsBetter = metric === 'cpd';
-  const fmtVal = v => v===null||v===undefined ? '-' : (metric==='cpd' ? v.toLocaleString()+'원' : v+'%');
+  const fmtVal = v => v===null||v===undefined ? '-' : (metric==='cpd' ? v.toLocaleString()+'원' : _fmtPct(v));
 
   if(!months.length){
     thead.innerHTML = '';

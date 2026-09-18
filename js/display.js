@@ -332,8 +332,8 @@ const DISPLAY_INSIGHT_COLS = [
   {key:'imp', label:'노출수', num:true, fmt:v=>v.toLocaleString()},
   {key:'snd', label:'발송수', num:true, fmt:v=>v.toLocaleString()},
   {key:'clk', label:'클릭수', num:true, fmt:v=>v.toLocaleString()},
-  {key:'ctr', label:'CTR', num:true, fmt:v=>v!==null?v+'%':'-'},
-  {key:'dbcvr', label:'DB전환율', num:true, fmt:v=>v!==null?v+'%':'-'},
+  {key:'ctr', label:'CTR', num:true, fmt:v=>_fmtPct(v)},
+  {key:'dbcvr', label:'DB전환율', num:true, fmt:v=>_fmtPct(v)},
   {key:'db', label:'DB수', num:true, fmt:v=>v.toLocaleString()},
   {key:'cpd', label:'DB단가', num:true, fmt:v=>v!==null?v.toLocaleString()+'원':'-'},
   {key:'contracts', label:'계약수', num:true, fmt:v=>v.toLocaleString()},
@@ -564,7 +564,7 @@ function renderDisplayCharts(areaList, mediaRows, crmRows, monSel){
     }
   }
 
-  const fmtVal = v => v===null||v===undefined ? '-' : (metric.unit==='%' ? v+'%' : v.toLocaleString()+(metric.unit==='원'?'원':''));
+  const fmtVal = v => v===null||v===undefined ? '-' : (metric.unit==='%' ? _fmtPct(v) : v.toLocaleString()+(metric.unit==='원'?'원':''));
   _displayChartSingle = new Chart(ctx, {
     type: metric.type,
     data: {labels: periods, datasets},
@@ -599,7 +599,7 @@ function renderDisplayCharts(areaList, mediaRows, crmRows, monSel){
       },
       scales:{
         x:{stacked: metric.type==='bar', grid:{display:false},ticks:{font:{size:10},color:'#888',maxRotation:0,autoSkip:true}},
-        y:{stacked: metric.type==='bar', ticks:{callback:v=>metric.unit==='%'?v+'%':v.toLocaleString(),font:{size:10},color:'#888'},grid:{color:'rgba(0,0,0,0.05)'}}
+        y:{stacked: metric.type==='bar', ticks:{callback:v=>metric.unit==='%'?_fmtPct(v):v.toLocaleString(),font:{size:10},color:'#888'},grid:{color:'rgba(0,0,0,0.05)'}}
       }
     }
   });

@@ -91,6 +91,14 @@ function _fetchWithTimeout(url, ms){
 
 // CSV 한 칸 이스케이프 — 값에 콤마/따옴표/줄바꿈이 있으면 따옴표로 감싼다.
 // (광고그룹명이나 키워드에 콤마가 들어가면 이게 없을 때 열이 밀려서 파일이 깨진다)
+// 퍼센트 표기. Chart.js 가 계산한 축 눈금은 2.8000000000000003 처럼 부동소수점 오차가 섞여
+// 나오므로 그대로 문자열에 붙이면 "2.800000000000003%" 가 화면에 나온다. 반드시 이걸 쓸 것.
+// (천단위 구분은 넣지 않는다 — ROAS 처럼 큰 퍼센트의 기존 표기를 바꾸지 않기 위함)
+function _fmtPct(v){
+  if(v===null || v===undefined || Number.isNaN(v)) return '-';
+  return (Math.round(v*100)/100) + '%';
+}
+
 function _csvCell(v){
   if(v===''||v===null||v===undefined) return '';
   const s = String(v);
@@ -683,9 +691,9 @@ const COLS=[
   {key:'cpc',label:'평균CPC',cls:'num',fmt:v=>v===null?'-':v.toLocaleString()},
   {key:'db',label:'DB수',cls:'num',fmt:v=>v.toLocaleString()},
   {key:'cpd',label:'DB단가(원)',cls:'num',fmt:v=>v===null?'-':v.toLocaleString()},
-  {key:'dbcvr',label:'DB전환율(%)',cls:'num',fmt:v=>v===null?'-':v+'%'},
+  {key:'dbcvr',label:'DB전환율(%)',cls:'num',fmt:v=>_fmtPct(v)},
   {key:'contracts',label:'계약수',cls:'num',fmt:v=>v.toLocaleString()},
-  {key:'cvr',label:'계약률(%)',cls:'num',fmt:v=>v===null?'-':v+'%'},
+  {key:'cvr',label:'계약률(%)',cls:'num',fmt:v=>_fmtPct(v)},
   {key:'performance',label:'평가업적(원)',cls:'num',fmt:v=>v.toLocaleString()},
   {key:'roas',label:'ROAS(%)',cls:'num',special:'roas'},
   {key:'avg_rank',label:'평균순위',cls:'num',fmt:v=>(v===null||v===undefined)?'-':v+'위'},
@@ -1014,7 +1022,7 @@ function openDetail(idx){
     });
     const sorted=Object.values(byDate).sort((a,b)=>a.date.localeCompare(b.date));
     const fmt = v => v!==null ? v.toLocaleString() : '-';
-    const fmtP = v => v!==null ? v+'%' : '-';
+    const fmtP = _fmtPct;
 
     document.getElementById('modal-tbody').innerHTML=sorted.map((d,i)=>{
       const ds = (r.daily_sales_map || r.dailySalesMap || {})[d.date] || {db:0,contracts:0,performance:0};

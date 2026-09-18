@@ -124,7 +124,7 @@ async function renderDataChart(rows){
     }
   }
 
-  const fmtVal = v => v===null||v===undefined ? '-' : (metric.unit==='%' ? v+'%' : v.toLocaleString()+(metric.unit==='원'?'원':''));
+  const fmtVal = v => v===null||v===undefined ? '-' : (metric.unit==='%' ? _fmtPct(v) : v.toLocaleString()+(metric.unit==='원'?'원':''));
   _dataChartSingle = new Chart(ctx, {
     type: metric.type,
     data: {labels: dayLabels, datasets},
@@ -137,7 +137,7 @@ async function renderDataChart(rows){
       },
       scales:{
         x:{grid:{display:false},ticks:{font:{size:10},color:'#888',maxRotation:0,autoSkip:true}},
-        y:{ticks:{callback:v=>metric.unit==='%'?v+'%':v.toLocaleString(),font:{size:10},color:'#888'},grid:{color:'rgba(0,0,0,0.05)'}}
+        y:{ticks:{callback:v=>metric.unit==='%'?_fmtPct(v):v.toLocaleString(),font:{size:10},color:'#888'},grid:{color:'rgba(0,0,0,0.05)'}}
       },
       onClick: (evt, elements) => {
         if(!elements.length) return;
@@ -162,10 +162,10 @@ const DAILY_GROUP_MODAL_COLS = [
   {key:'imp', label:'노출수', num:true, fmt:v=>v.toLocaleString()},
   {key:'clicks', label:'클릭수', num:true, fmt:v=>v.toLocaleString()},
   {key:'cpc', label:'CPC', num:true, fmt:v=>v!==null?v.toLocaleString()+'원':'-'},
-  {key:'ctr', label:'CTR', num:true, fmt:v=>v!==null?v+'%':'-'},
+  {key:'ctr', label:'CTR', num:true, fmt:v=>_fmtPct(v)},
   {key:'db', label:'DB수', num:true, fmt:v=>v.toLocaleString()+'건'},
   {key:'cpd', label:'DB단가', num:true, fmt:v=>v!==null?v.toLocaleString()+'원':'-'},
-  {key:'dbcvr', label:'DB전환율', num:true, fmt:v=>v!==null?v+'%':'-'},
+  {key:'dbcvr', label:'DB전환율', num:true, fmt:v=>_fmtPct(v)},
   {key:'roas', label:'ROAS', num:true, special:'roas'},
 ];
 let _dailyGroupModalRows = [];
@@ -361,7 +361,7 @@ async function renderKwChart(rows){
 
   // 당월 막대에 마우스 올렸을 때 뜨는 툴팁에 "당월 합계"(그 날 네이버+구글+다음 합) 한 줄을 추가한다.
   // 전달 합계/네이버/구글/다음은 이미 각 시리즈 자체가 툴팁 한 줄씩 보여주고 있어 손댈 필요 없음
-  const fmtVal = v => v===null||v===undefined ? '-' : (metric.unit==='%' ? v+'%' : v.toLocaleString()+(metric.unit==='원'?'원':''));
+  const fmtVal = v => v===null||v===undefined ? '-' : (metric.unit==='%' ? _fmtPct(v) : v.toLocaleString()+(metric.unit==='원'?'원':''));
   _kwChartInstance = new Chart(ctx, {
     type: metric.type,
     data: {labels: dates, datasets},
@@ -380,7 +380,7 @@ async function renderKwChart(rows){
       },
       scales:{
         x:{stacked:stackable, grid:{display:false},ticks:{font:{size:10},color:'#888',maxRotation:0,autoSkip:true}},
-        y:{stacked:stackable, ticks:{callback:v=>metric.unit==='%'?v+'%':v.toLocaleString(),font:{size:10},color:'#888'},grid:{color:'rgba(0,0,0,0.05)'}}
+        y:{stacked:stackable, ticks:{callback:v=>metric.unit==='%'?_fmtPct(v):v.toLocaleString(),font:{size:10},color:'#888'},grid:{color:'rgba(0,0,0,0.05)'}}
       },
       onClick: (evt, elements) => {
         if(!elements.length) return;
@@ -405,10 +405,10 @@ const DAILY_MEDIA_MODAL_COLS = [
   {key:'imp', label:'노출수', num:true, fmt:v=>v.toLocaleString()},
   {key:'clicks', label:'클릭수', num:true, fmt:v=>v.toLocaleString()},
   {key:'cpc', label:'CPC', num:true, fmt:v=>v!==null?v.toLocaleString()+'원':'-'},
-  {key:'ctr', label:'CTR', num:true, fmt:v=>v!==null?v+'%':'-'},
+  {key:'ctr', label:'CTR', num:true, fmt:v=>_fmtPct(v)},
   {key:'db', label:'DB수', num:true, fmt:v=>v.toLocaleString()+'건'},
   {key:'cpd', label:'DB단가', num:true, fmt:v=>v!==null?v.toLocaleString()+'원':'-'},
-  {key:'dbcvr', label:'DB전환율', num:true, fmt:v=>v!==null?v+'%':'-'},
+  {key:'dbcvr', label:'DB전환율', num:true, fmt:v=>_fmtPct(v)},
 ];
 let _dailyMediaModalRows = [];
 let _dailyMediaModalDate = '';

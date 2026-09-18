@@ -64,6 +64,9 @@ tbody td.intype-cell{font-family:'SF Mono','Fira Code',monospace;font-size:11px;
 .stat-table.stat-table--tight th{padding:7px 10px}
 .tbl-tight{font-size:12px;white-space:nowrap}
 .ta-center{text-align:center}
+.ta-right{text-align:right}
+.fw-600{font-weight:600}
+
 .text-good{color:#16a34a}
 .text-bad{color:#dc2626}
 .text-faint-sm{font-size:11px;color:var(--faint)}

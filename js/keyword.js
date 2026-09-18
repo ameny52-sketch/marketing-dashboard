@@ -155,7 +155,7 @@ function renderKwTable(){
   document.getElementById('kw-thead').innerHTML = '<tr>'+cols.map(c=>{
     const arr = c.key===kwSortCol?(kwSortAsc?' ↑':' ↓'):'';
     const label = (_kwTableCumMode && KW_CUM_COLS.includes(c.key)) ? c.label+' ·누적' : c.label;
-    return `<th style="padding:7px 10px;background:#fafaf8;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);white-space:nowrap;cursor:pointer;text-align:${c.r?'right':'left'}" onclick="kwSort('${c.key}')">${label}${arr}</th>`;
+    return `<th class="${c.r?'ta-right':''}" onclick="kwSort('${c.key}')">${label}${arr}</th>`;
   }).join('')+'</tr>';
 
   // 페이징
@@ -166,7 +166,7 @@ function renderKwTable(){
   // 바디 - 현재 페이지만 렌더
   document.getElementById('kw-tbody').innerHTML = pageRows.map((r,i)=>{
     const globalIdx = (kwPage-1)*KW_PAGE_SIZE + i;
-    const clickable = 'onclick="openKwDetail(kwSortedData[' + globalIdx + '])" style="cursor:pointer;"';
+    const clickable = 'onclick="openKwDetail(kwSortedData[' + globalIdx + '])" class="clickable"';
     const mediaPill = r.sub_media==='네이버'
       ? '<span style="font-size:11px;padding:2px 7px;border-radius:4px;background:#e8f5e9;color:#1b5e20;font-weight:600">네이버</span>'
       : r.sub_media==='구글'
@@ -176,24 +176,24 @@ function renderKwTable(){
       ? '<span style="font-size:11px;padding:2px 7px;border-radius:4px;background:#E6F1FB;color:#0C447C;font-weight:600">PC</span>'
       : '<span style="font-size:11px;padding:2px 7px;border-radius:4px;background:#EAF3DE;color:#27500A;font-weight:600">모바일</span>';
     const dContracts = _kwCumVal(r,'contracts'), dCvr = _kwCumVal(r,'cvr'), dPerf = _kwCumVal(r,'perf'), dRoas = _kwCumVal(r,'roas');
-    const cvrStyle = dCvr!=null&&dCvr>=10?'color:#dc2626;font-weight:600':'';
-    return `<tr ${clickable} style="border-bottom:1px solid var(--border)">
-      <td style="padding:7px 10px;font-weight:500;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.keyword||'-'}</td>
-      <td style="padding:7px 10px">${mediaPill}</td>
-      <td style="padding:7px 10px">${devPill}</td>
-      <td style="padding:7px 10px;text-align:right">${r.cost!=null?r.cost.toLocaleString():'-'}</td>
-      <td style="padding:7px 10px;text-align:right">${r.impressions!=null?r.impressions.toLocaleString():'-'}</td>
-      <td style="padding:7px 10px;text-align:right">${r.clicks!=null?r.clicks.toLocaleString():'-'}</td>
-      <td style="padding:7px 10px;text-align:right">${r.cpc!=null?r.cpc.toLocaleString():'-'}</td>
-      <td style="padding:7px 10px;text-align:right;font-weight:600">${r.db.toLocaleString()}</td>
-      <td style="padding:7px 10px;text-align:right">${r.cpd!=null?r.cpd.toLocaleString():'-'}</td>
-      <td style="padding:7px 10px;text-align:right">${r.dbcvr!=null?r.dbcvr.toFixed(1)+'%':'-'}</td>
-      <td style="padding:7px 10px;text-align:right">${dContracts.toLocaleString()}</td>
-      <td style="padding:7px 10px;text-align:right;${cvrStyle}">${dCvr!=null?dCvr.toFixed(1)+'%':'-'}</td>
-      <td style="padding:7px 10px;text-align:right">${dPerf?Math.round(dPerf).toLocaleString():'-'}</td>
-      <td style="padding:7px 10px;text-align:right">${roasBadge(dRoas)}</td>
+    const cvrCls = dCvr!=null&&dCvr>=10?' cell-warn':'';
+    return `<tr ${clickable}>
+      <td class="cell-name">${r.keyword||'-'}</td>
+      <td>${mediaPill}</td>
+      <td>${devPill}</td>
+      <td class="ta-right">${r.cost!=null?r.cost.toLocaleString():'-'}</td>
+      <td class="ta-right">${r.impressions!=null?r.impressions.toLocaleString():'-'}</td>
+      <td class="ta-right">${r.clicks!=null?r.clicks.toLocaleString():'-'}</td>
+      <td class="ta-right">${r.cpc!=null?r.cpc.toLocaleString():'-'}</td>
+      <td class="ta-right fw-600">${r.db.toLocaleString()}</td>
+      <td class="ta-right">${r.cpd!=null?r.cpd.toLocaleString():'-'}</td>
+      <td class="ta-right">${r.dbcvr!=null?r.dbcvr.toFixed(1)+'%':'-'}</td>
+      <td class="ta-right">${dContracts.toLocaleString()}</td>
+      <td class="ta-right${cvrCls}">${dCvr!=null?dCvr.toFixed(1)+'%':'-'}</td>
+      <td class="ta-right">${dPerf?Math.round(dPerf).toLocaleString():'-'}</td>
+      <td class="ta-right">${roasBadge(dRoas)}</td>
     </tr>`;
-  }).join('') || '<tr><td colspan="14" style="padding:2rem;text-align:center;color:var(--faint)">데이터 없음</td></tr>';
+  }).join('') || '<tr><td colspan="14" class="cell-empty">데이터 없음</td></tr>';
 
   // 페이지 네비게이션
   const nav = document.getElementById('kw-page-nav');

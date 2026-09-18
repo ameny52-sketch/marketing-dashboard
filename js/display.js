@@ -278,7 +278,7 @@ function renderDisplayInsight(){
         </div>
       </div>
       <div class="table-wrap">
-        <table class="tbl-matrix">
+        <table class="tbl-matrix tbl-dense">
           <thead id="creative-history-thead"></thead>
           <tbody id="creative-history-tbody"></tbody>
         </table>
@@ -1746,7 +1746,7 @@ function _renderCreativeDaily(info, monSel){
       ${sumCard('계약률','green', sumCvr!==null?sumCvr+'%':'-')}
     </div>
     <div style="max-height:220px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--rs)">
-      <table class="tbl-creative-daily">
+      <table class="tbl-creative-daily tbl-dense">
         <thead><tr>
           <th>날짜</th>
           ${th('광고비')}${th('노출수')}${th('발송수')}${th('클릭수')}${th('CTR')}${th('DB수')}${th('DB단가')}${th('DB전환율')}

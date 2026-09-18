@@ -164,6 +164,10 @@ tbody td.num,.cpc-tbl td.r{color:var(--muted);font-variant-numeric:tabular-nums}
 /* ---- .tbl-dense : 행이 많아 기본 밀도(9px 12px)보다 좁게 쓰는 표 ----
    예전엔 이 값들이 JS 템플릿의 인라인 style로 셀마다 반복돼 있었다. 표 모양을 바꾸려면
    여기만 고치면 되고, JS는 데이터만 넣는다. */
+/* ===== 표 셀 밀도는 앱 전체에서 두 가지만 쓴다 =====
+   기본(클래스 없음) : 9px 12px — 행이 적고 찬찬히 읽는 표
+   .tbl-dense        : 7px 10px — 행이 많아 한 화면에 많이 담아야 하는 표
+   예전에는 6/7/8/9px x 10/12/14px 이 표마다 제각각이었고 대부분 JS 인라인에 박혀 있었다. */
 .tbl-dense thead th,.tbl-dense tbody td{padding:7px 10px}
 /* 헤더 배경이 크림색인 표 (그 외 표는 var(--bg)). 전체를 통일하려면 이 클래스를 떼면 된다 */
 .tbl-head-cream thead th{background:#fafaf8}
@@ -183,13 +187,13 @@ td.dk-caret{color:var(--faint);text-align:center}
 .cell-note{padding-left:1rem;color:var(--faint);font-size:11px;text-align:left}
 /* 롤업 상세 모달(캠페인/키워드 -> 포함된 광고그룹 목록) 표 */
 .tbl-rollup{font-size:12.5px}
-.tbl-rollup thead th{position:sticky;top:0;padding:7px 10px;background:#f8fafc;text-align:right}
-.tbl-rollup tbody td{padding:6px 10px;text-align:right;border-bottom:1px solid var(--border)}
+.tbl-rollup thead th{position:sticky;top:0;background:#f8fafc;text-align:right}
+.tbl-rollup tbody td{text-align:right;border-bottom:1px solid var(--border)}
 .tbl-rollup tbody td.ta-left{text-align:left}
 .mono-sm{font-family:monospace;font-size:11px}
 .hint-line{margin-bottom:6px;font-size:11px;color:var(--faint)}
 /* ---- 소재 이력 매트릭스 (영역x월) — 셀마다 아래 테두리를 둬 마지막 행에도 선이 남는 형태 ---- */
-.tbl-matrix thead th,.tbl-matrix tbody td{padding:8px 10px;border-bottom:1px solid var(--border)}
+.tbl-matrix thead th,.tbl-matrix tbody td{border-bottom:1px solid var(--border)}
 .tbl-matrix tbody tr.row-area{font-weight:600}
 .tbl-matrix tbody tr.row-sub{background:var(--bg)}
 .tbl-matrix td.cell-name{max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -201,7 +205,7 @@ tbody td.cell-best{font-weight:700;color:#166534;background:#EAF3DE}
 .cell-empty-center{padding:1.5rem;color:var(--faint);font-size:12px;text-align:center}
 
 /* ---- 크리에이티브 모달의 일별 표 ---- */
-.tbl-creative-daily thead th,.tbl-creative-daily tbody td{padding:6px 10px;border-bottom:1px solid var(--border)}
+.tbl-creative-daily thead th,.tbl-creative-daily tbody td{border-bottom:1px solid var(--border)}
 .tbl-creative-daily thead th{position:sticky;top:0;background:#fafaf8}
 
 /* ---- 디스플레이 영역별 성과 표 ---- */
@@ -223,6 +227,14 @@ tbody td.cell-best{font-weight:700;color:#166534;background:#EAF3DE}
 #cpc-thead th:nth-child(4){width:75px}
 #cpc-thead th:nth-child(n+5):nth-child(-n+10){width:85px}
 #cpc-thead th:nth-child(11){min-width:130px}
+
+/* ---- 성과 진단 계열 표의 셀 변형 (예전엔 insights.js 인라인에 흩어져 있었다) ---- */
+.cell-muted-sm{color:var(--muted);font-size:11px}   /* 기기·보종 같은 부가 정보 */
+.cell-strong{font-weight:600;font-size:13px}        /* 행의 대표 이름 */
+.cell-big{font-weight:600;font-size:15px}           /* 모달의 대표 수치 */
+.cell-truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.stat-table td.cell-truncate{max-width:150px}
+#daily-group-modal-body td.cell-truncate,#catmedia-detail-modal-bg td.cell-truncate{max-width:220px;font-weight:400}
 .cpc-tbl tr.row-key{background:#fffbeb}
 /* 데이터 없음 안내 셀. .tbl-dense 의 촘촘한 패딩에 눌리지 않도록 같은 구체성으로 뒤에 둔다 */
 tbody td.cell-empty{padding:2rem;text-align:center;color:var(--faint)}
@@ -239,9 +251,9 @@ tbody td.cell-empty{padding:2rem;text-align:center;color:var(--faint)}
    클래스도 같은 ID 스코프로 올려야 배경색이 밀리지 않는다. */
 #daily-thead tr{background:#fafaf8}
 /* 좌상단 "구분" 셀 (2행 병합, 가로 스크롤 시 왼쪽 고정) */
-#daily-thead tr th.dth-corner{padding:7px 10px;min-width:80px;text-align:center;background:#fafaf8;border-right:1px solid var(--border);border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);position:sticky;left:0;z-index:4}
+#daily-thead tr th.dth-corner{min-width:80px;text-align:center;background:#fafaf8;border-right:1px solid var(--border);border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);position:sticky;left:0;z-index:4}
 /* 매체 그룹 헤더 (헤더 1행) */
-#daily-thead th.dth-group{padding:6px 10px;text-align:center;border-right:1px solid var(--border);border-bottom:1px solid var(--border);font-size:11px;font-weight:600}
+#daily-thead th.dth-group{text-align:center;border-right:1px solid var(--border);border-bottom:1px solid var(--border);font-size:11px;font-weight:600}
 #daily-thead th.dth-group--total{color:#854F0B;background:#fff8ec}
 #daily-thead th.dth-group--pc{color:#ff9b00}
 #daily-thead th.dth-group--kw{color:#1a5c2a}
@@ -251,7 +263,7 @@ tbody td.cell-empty{padding:2rem;text-align:center;color:var(--faint)}
 .dtd--total{background:#fff8ec}
 .dth--sep,.dtd--sep{border-right:1px solid var(--border)}
 /* 날짜(첫 열) — 가로 스크롤 시 왼쪽 고정 */
-#daily-tbody tr td.dtd-date{padding:7px 10px;font-size:12px;text-align:center;color:var(--text);background:var(--surface);border-right:1px solid var(--border);border-bottom:1px solid var(--border);position:sticky;left:0;z-index:1}
+#daily-tbody tr td.dtd-date{font-size:12px;text-align:center;color:var(--text);background:var(--surface);border-right:1px solid var(--border);border-bottom:1px solid var(--border);position:sticky;left:0;z-index:1}
 #daily-tbody tr td.dtd-date.is-weekend{color:#dc2626}
 /* 월 합계 행 */
 #daily-tbody tr.row-month-total{background:#eff4ff;font-weight:700}

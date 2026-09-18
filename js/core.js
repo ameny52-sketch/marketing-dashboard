@@ -917,7 +917,7 @@ function openRollupDetail(i){
       <div class="modal-metric"><div class="label">ROAS</div><div class="val" style="color:var(--amber)">${r.roas!==null?num(r.roas,'%'):'-'}</div></div>
     </div>
     <div class="hint-line">광고그룹을 클릭하면 일별 상세가 열립니다</div>
-    <div class="table-wrap"><table class="tbl-rollup">
+    <div class="table-wrap"><table class="tbl-rollup tbl-dense">
       <thead><tr>${['광고그룹','기기','인타입','광고비','클릭수','DB수','DB단가','계약수','ROAS'].map(th).join('')}</tr></thead>
       <tbody>${members.map(m=>{
         const idx = resultData.indexOf(m);

@@ -60,8 +60,6 @@ tbody td.intype-cell{font-family:'SF Mono','Fira Code',monospace;font-size:11px;
 
 /* 통계 소표 (성과진단 TOP/변화 표) */
 .stat-table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}
-.stat-table th{padding:8px 14px}
-.stat-table.stat-table--tight th{padding:7px 10px}
 .tbl-tight{font-size:12px;white-space:nowrap}
 .ta-center{text-align:center}
 .ta-right{text-align:right}
@@ -69,6 +67,7 @@ tbody td.intype-cell{font-family:'SF Mono','Fira Code',monospace;font-size:11px;
 
 .text-good{color:#16a34a}
 .text-bad{color:#dc2626}
+.text-faint{color:var(--faint)}
 .text-faint-sm{font-size:11px;color:var(--faint)}
 
 /* 모달 */
@@ -169,10 +168,10 @@ tbody td.intype-cell{font-family:'SF Mono','Fira Code',monospace;font-size:11px;
 .fill-pc{background:#595959}
 .fill-mo{background:#166634}
 .cpc-tbl table{font-size:12px}
-.cpc-tbl thead th{font-size:11px;background:#fafaf8;padding:7px 10px;text-align:left;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;letter-spacing:.03em;cursor:pointer;user-select:none}
+.cpc-tbl thead th{font-size:11px;background:#fafaf8;text-align:left;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;letter-spacing:.03em;cursor:pointer;user-select:none}
 .cpc-tbl thead th:hover{background:#f0f0ec;color:var(--text)}
 .cpc-tbl thead th.r{text-align:right}
-.cpc-tbl tbody td{padding:7px 10px;white-space:nowrap;border-bottom:1px solid var(--border)}
+.cpc-tbl tbody td{white-space:nowrap;border-bottom:1px solid var(--border)}
 .cpc-tbl tbody tr:last-child td{border-bottom:none}
 .cpc-tbl tbody tr:hover td{background:#fafaf8}
 .cpc-tbl td.r{text-align:right;color:var(--muted)}
@@ -183,5 +182,5 @@ tbody td.intype-cell{font-family:'SF Mono','Fira Code',monospace;font-size:11px;
 .cpc-no-data{padding:2rem;text-align:center;color:var(--faint);font-size:13px}
 
 /* ===== Daily DB 현황 ===== */
-.dth{padding:6px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right;white-space:nowrap}
-.dtd{padding:7px 10px;border-bottom:1px solid var(--border);text-align:right;font-size:12px;color:var(--text)}
+.dth{border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right;white-space:nowrap}
+.dtd{border-bottom:1px solid var(--border);text-align:right;font-size:12px;color:var(--text)}

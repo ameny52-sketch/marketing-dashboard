@@ -120,7 +120,7 @@ function renderKwInsight(){
   if(range==='7days'){
     const thead=document.getElementById('kw-insight-trend-thead');
     const tbody=document.getElementById('kw-insight-trend-tbody');
-    thead.innerHTML=`<tr style="background:#fafaf8"><th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">날짜</th>${['광고비','클릭','DB수','DB단가','CPC','CTR','DB전환율'].map(h=>`<th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">${h}</th>`).join('')}</tr>`;
+    thead.innerHTML=`<tr><th>날짜</th>${['광고비','클릭','DB수','DB단가','CPC','CTR','DB전환율'].map(h=>`<th class="ta-right">${h}</th>`).join('')}</tr>`;
     tbody.innerHTML=last7.map((k,i)=>{
       const d=sumDates([k]);
       const p=i>0?sumDates([last7[i-1]]):null;
@@ -128,18 +128,18 @@ function renderKwInsight(){
         const cv=p&&pv>0?Math.round((val-pv)/pv*100):null;
         const color=cv===null?'':((cv>0&&!inv)||(cv<0&&inv)?'#22c55e':'#ef4444');
         const arrow=cv===null?'':(cv>0?'▲':'▼');
-        return `<td style="padding:7px 10px;text-align:right;font-size:12px">${val>0?val.toLocaleString()+sfx:'-'}${cv!==null?`<br><span style="font-size:10px;color:${color}">${arrow}${Math.abs(cv)}%</span>`:''}</td>`;
+        return `<td class="ta-right">${val>0?val.toLocaleString()+sfx:'-'}${cv!==null?`<br><span style="font-size:10px;color:${color}">${arrow}${Math.abs(cv)}%</span>`:''}</td>`;
       }
       const pD=p||{};
       return `<tr style="border-bottom:1px solid var(--border)">
-        <td style="padding:7px 10px;font-size:12px;color:var(--muted)">${k.replace(/\./g,'').slice(0,8)}</td>
+        <td class="cell-muted">${k.replace(/\./g,'').slice(0,8)}</td>
         ${td(Math.round(d.cost/10000),Math.round((pD.cost||0)/10000),false,'만')}
         ${td(d.clicks,pD.clicks||0,false,'')}
         ${td(d.db,pD.db||0,false,'건')}
         ${td(d.cpd,pD.cpd||0,true,'원')}
         ${td(d.cpc,pD.cpc||0,true,'원')}
-        <td style="padding:7px 10px;text-align:right;font-size:12px">${d.ctr.toFixed(2)}%</td>
-        <td style="padding:7px 10px;text-align:right;font-size:12px">${d.dbcvr.toFixed(1)}%</td>
+        <td class="ta-right">${d.ctr.toFixed(2)}%</td>
+        <td class="ta-right">${d.dbcvr.toFixed(1)}%</td>
       </tr>`;
     }).join('');
   }
@@ -239,15 +239,15 @@ function renderKwInsightDetail(range, dates, dm){
     const cpdC=pctColor(r.cpdPct,true),cpcC=pctColor(r.cpcPct,true),cvrC=pctColor(r.cvrDiff,false),dbC=r.dbDiff>=0?'#16a34a':'#dc2626';
     const [kwName, devicePart] = r.key.split(' · ');
     return `<tr style="border-bottom:1px solid var(--border)">
-      <td style="padding:9px 14px;font-weight:600;font-size:13px">${kwName}</td>
-      <td style="padding:9px 14px;font-size:11px;color:var(--muted)">${devicePart||''}</td>
-      <td style="padding:9px 14px;text-align:right"><span style="color:var(--muted);font-size:11px">${r.prevCpd.toLocaleString()} → </span><strong>${r.curCpd.toLocaleString()}원</strong> <span style="color:${cpdC};font-weight:600;font-size:11px">${pctIcon(r.cpdPct)}${Math.abs(r.cpdPct)}%</span></td>
-      <td style="padding:9px 14px;text-align:right"><span style="color:var(--muted);font-size:11px">${r.prevCpc.toLocaleString()} → </span><strong>${r.curCpc.toLocaleString()}원</strong>${r.cpcPct!==null?` <span style="color:${cpcC};font-weight:600;font-size:11px">${pctIcon(r.cpcPct)}${Math.abs(r.cpcPct)}%</span>`:''}</td>
-      <td style="padding:9px 14px;text-align:right"><span style="color:var(--muted);font-size:11px">${r.prevCvr.toFixed(1)}% → </span><strong>${r.curCvr.toFixed(1)}%</strong> <span style="color:${cvrC};font-weight:600;font-size:11px">${r.cvrDiff>0?'▲':'▼'}${Math.abs(r.cvrDiff)}p</span></td>
-      <td style="padding:9px 14px;text-align:right"><span style="color:var(--muted);font-size:11px">${r.prevDb}건 → </span><strong>${r.curDb}건</strong> <span style="color:${dbC};font-weight:600;font-size:11px">${r.dbDiff>=0?'+':''}${r.dbDiff}건</span></td>
-      <td style="padding:9px 14px;text-align:center"><span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${j.bg};color:${j.color}">${j.label}</span></td>
+      <td class="cell-strong">${kwName}</td>
+      <td class="cell-muted-sm">${devicePart||''}</td>
+      <td class="ta-right"><span style="color:var(--muted);font-size:11px">${r.prevCpd.toLocaleString()} → </span><strong>${r.curCpd.toLocaleString()}원</strong> <span style="color:${cpdC};font-weight:600;font-size:11px">${pctIcon(r.cpdPct)}${Math.abs(r.cpdPct)}%</span></td>
+      <td class="ta-right"><span style="color:var(--muted);font-size:11px">${r.prevCpc.toLocaleString()} → </span><strong>${r.curCpc.toLocaleString()}원</strong>${r.cpcPct!==null?` <span style="color:${cpcC};font-weight:600;font-size:11px">${pctIcon(r.cpcPct)}${Math.abs(r.cpcPct)}%</span>`:''}</td>
+      <td class="ta-right"><span style="color:var(--muted);font-size:11px">${r.prevCvr.toFixed(1)}% → </span><strong>${r.curCvr.toFixed(1)}%</strong> <span style="color:${cvrC};font-weight:600;font-size:11px">${r.cvrDiff>0?'▲':'▼'}${Math.abs(r.cvrDiff)}p</span></td>
+      <td class="ta-right"><span style="color:var(--muted);font-size:11px">${r.prevDb}건 → </span><strong>${r.curDb}건</strong> <span style="color:${dbC};font-weight:600;font-size:11px">${r.dbDiff>=0?'+':''}${r.dbDiff}건</span></td>
+      <td class="ta-center"><span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${j.bg};color:${j.color}">${j.label}</span></td>
     </tr>`;
-  }).join(''):`<tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--faint);font-size:12px">비교 데이터 부족</td></tr>`;
+  }).join(''):`<tr><td colspan="7" class="cell-empty-center">비교 데이터 부족</td></tr>`;
 
   // 키워드 단위 개선·악화 TOP5
   const kwRows=data.map(r=>{
@@ -262,15 +262,15 @@ function renderKwInsightDetail(range, dates, dm){
   function kwHtml(r,isGood){
     const cc=isGood?'#16a34a':'#dc2626';
     return `<tr style="border-bottom:1px solid var(--border)">
-      <td style="padding:8px 10px;font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis;font-weight:500" title="${r.kw}">${r.kw}</td>
-      <td style="padding:8px 10px;font-size:11px;color:var(--muted)">${r.device}</td>
-      <td style="padding:8px 10px;text-align:right;font-size:12px"><strong style="color:${cc}">${r.curCpd.toLocaleString()}원</strong><span style="display:block;font-size:10px;color:${cc};font-weight:600">${pctIcon(r.cpdPct)}${Math.abs(r.cpdPct)}%</span></td>
-      <td style="padding:8px 10px;text-align:right;font-size:12px">${r.curCpc.toLocaleString()}원${r.cpcPct!==null?`<span style="display:block;font-size:10px;color:${pctColor(r.cpcPct,true)};font-weight:600">${pctIcon(r.cpcPct)}${Math.abs(r.cpcPct)}%</span>`:''}</td>
-      <td style="padding:8px 10px;text-align:right;font-size:12px">${r.curCvr.toFixed(1)}%<span style="display:block;font-size:10px;color:${pctColor(r.cvrDiff,false)};font-weight:600">${r.cvrDiff>0?'▲':'▼'}${Math.abs(r.cvrDiff)}p</span></td>
-      <td style="padding:8px 10px;text-align:right;font-size:12px">${r.curDb}건</td>
+      <td class="cell-truncate" title="${r.kw}">${r.kw}</td>
+      <td class="cell-muted-sm">${r.device}</td>
+      <td class="ta-right"><strong style="color:${cc}">${r.curCpd.toLocaleString()}원</strong><span style="display:block;font-size:10px;color:${cc};font-weight:600">${pctIcon(r.cpdPct)}${Math.abs(r.cpdPct)}%</span></td>
+      <td class="ta-right">${r.curCpc.toLocaleString()}원${r.cpcPct!==null?`<span style="display:block;font-size:10px;color:${pctColor(r.cpcPct,true)};font-weight:600">${pctIcon(r.cpcPct)}${Math.abs(r.cpcPct)}%</span>`:''}</td>
+      <td class="ta-right">${r.curCvr.toFixed(1)}%<span style="display:block;font-size:10px;color:${pctColor(r.cvrDiff,false)};font-weight:600">${r.cvrDiff>0?'▲':'▼'}${Math.abs(r.cvrDiff)}p</span></td>
+      <td class="ta-right">${r.curDb}건</td>
     </tr>`;
   }
-  const empty=`<tr><td colspan="6" style="padding:2rem;text-align:center;color:var(--faint);font-size:12px">비교 데이터 부족</td></tr>`;
+  const empty=`<tr><td colspan="6" class="cell-empty-center">비교 데이터 부족</td></tr>`;
   const goodRows=[...kwRows].sort((a,b)=>a.cpdPct-b.cpdPct).slice(0,5);
   const badRows =[...kwRows].sort((a,b)=>b.cpdPct-a.cpdPct).slice(0,5);
   document.getElementById('kw-insight-good-tbody').innerHTML=goodRows.length?goodRows.map(r=>kwHtml(r,true)).join(''):empty;
@@ -430,7 +430,7 @@ function renderInsight(){
   if(range==='7days'){
     const thead = document.getElementById('insight-trend-thead');
     const tbody = document.getElementById('insight-trend-tbody');
-    thead.innerHTML = `<tr style="background:#fafaf8"><th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:left">날짜</th>${['광고비','클릭','DB수','DB단가','CPC','CTR','DB전환율','평균순위'].map(h=>`<th style="padding:7px 10px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:right">${h}</th>`).join('')}</tr>`;
+    thead.innerHTML = `<tr><th>날짜</th>${['광고비','클릭','DB수','DB단가','CPC','CTR','DB전환율','평균순위'].map(h=>`<th class="ta-right">${h}</th>`).join('')}</tr>`;
     tbody.innerHTML = last7.map((k,i)=>{
       const d = sumDates([k]);
       const p = i>0 ? sumDates([last7[i-1]]) : null;
@@ -438,19 +438,19 @@ function renderInsight(){
         const chgV = p&&prev_val>0 ? Math.round((val-prev_val)/prev_val*100) : null;
         const color = chgV===null?'':( (chgV>0&&!inverse)||(chgV<0&&inverse) ? '#22c55e':'#ef4444');
         const arrow = chgV===null?'':(chgV>0?'▲':'▼');
-        return `<td style="padding:7px 10px;text-align:right;font-size:12px">${val>0?val.toLocaleString()+suffix:'-'}${chgV!==null?`<br><span style="font-size:10px;color:${color}">${arrow}${Math.abs(chgV)}%</span>`:''}</td>`;
+        return `<td class="ta-right">${val>0?val.toLocaleString()+suffix:'-'}${chgV!==null?`<br><span style="font-size:10px;color:${color}">${arrow}${Math.abs(chgV)}%</span>`:''}</td>`;
       }
       const prevD = p||{};
       return `<tr style="border-bottom:1px solid var(--border)">
-        <td style="padding:7px 10px;font-size:12px;color:var(--muted)">${k.replace(/\./g,'').slice(0,8)}</td>
+        <td class="cell-muted">${k.replace(/\./g,'').slice(0,8)}</td>
         ${td(Math.round(d.cost/10000), Math.round((prevD.cost||0)/10000), false, '만')}
         ${td(d.clicks, prevD.clicks||0, false, '')}
         ${td(d.db, prevD.db||0, false, '건')}
         ${td(d.cpd, prevD.cpd||0, true, '원')}
         ${td(d.cpc, prevD.cpc||0, true, '원')}
-        <td style="padding:7px 10px;text-align:right;font-size:12px">${d.ctr.toFixed(2)}%</td>
-        <td style="padding:7px 10px;text-align:right;font-size:12px">${d.dbcvr.toFixed(1)}%</td>
-        <td style="padding:7px 10px;text-align:right;font-size:12px">${d.rank>0?d.rank.toFixed(1)+'위':'-'}</td>
+        <td class="ta-right">${d.ctr.toFixed(2)}%</td>
+        <td class="ta-right">${d.dbcvr.toFixed(1)}%</td>
+        <td class="ta-right">${d.rank>0?d.rank.toFixed(1)+'위':'-'}</td>
       </tr>`;
     }).join('');
   }
@@ -540,14 +540,14 @@ function renderInsightDetail(range, dates){
     const j=judgeRow(r);
     const cpdC=pctColor(r.cpdPct,true); const cpcC=pctColor(r.cpcPct,true); const cvrC=pctColor(r.cvrDiff,false); const dbC=r.dbDiff>=0?'#16a34a':'#dc2626';
     return `<tr style="border-bottom:1px solid var(--border);cursor:pointer" onclick="showCatMediaDetail('${escHtml(r.cat)}','${escHtml(r.media)}')" title="클릭하면 원인 기여 그룹을 볼 수 있습니다">
-      <td style="padding:9px 14px;font-weight:600;font-size:13px">${r.key}</td>
-      <td style="padding:9px 14px;text-align:right"><span style="color:var(--muted);font-size:11px">${r.prevCpd.toLocaleString()} → </span><strong>${r.curCpd.toLocaleString()}원</strong> <span style="color:${cpdC};font-weight:600;font-size:11px">${pctIcon(r.cpdPct)}${Math.abs(r.cpdPct)}%</span></td>
-      <td style="padding:9px 14px;text-align:right"><span style="color:var(--muted);font-size:11px">${r.prevCpc.toLocaleString()} → </span><strong>${r.curCpc.toLocaleString()}원</strong>${r.cpcPct!==null?` <span style="color:${cpcC};font-weight:600;font-size:11px">${pctIcon(r.cpcPct)}${Math.abs(r.cpcPct)}%</span>`:''}</td>
-      <td style="padding:9px 14px;text-align:right"><span style="color:var(--muted);font-size:11px">${r.prevCvr.toFixed(1)}% → </span><strong>${r.curCvr.toFixed(1)}%</strong> <span style="color:${cvrC};font-weight:600;font-size:11px">${r.cvrDiff>0?'▲':'▼'}${Math.abs(r.cvrDiff)}p</span></td>
-      <td style="padding:9px 14px;text-align:right"><span style="color:var(--muted);font-size:11px">${r.prevDb}건 → </span><strong>${r.curDb}건</strong> <span style="color:${dbC};font-weight:600;font-size:11px">${r.dbDiff>=0?'+':''}${r.dbDiff}건</span></td>
-      <td style="padding:9px 14px;text-align:center"><span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${j.bg};color:${j.color}">${j.label}</span></td>
+      <td class="cell-strong">${r.key}</td>
+      <td class="ta-right"><span style="color:var(--muted);font-size:11px">${r.prevCpd.toLocaleString()} → </span><strong>${r.curCpd.toLocaleString()}원</strong> <span style="color:${cpdC};font-weight:600;font-size:11px">${pctIcon(r.cpdPct)}${Math.abs(r.cpdPct)}%</span></td>
+      <td class="ta-right"><span style="color:var(--muted);font-size:11px">${r.prevCpc.toLocaleString()} → </span><strong>${r.curCpc.toLocaleString()}원</strong>${r.cpcPct!==null?` <span style="color:${cpcC};font-weight:600;font-size:11px">${pctIcon(r.cpcPct)}${Math.abs(r.cpcPct)}%</span>`:''}</td>
+      <td class="ta-right"><span style="color:var(--muted);font-size:11px">${r.prevCvr.toFixed(1)}% → </span><strong>${r.curCvr.toFixed(1)}%</strong> <span style="color:${cvrC};font-weight:600;font-size:11px">${r.cvrDiff>0?'▲':'▼'}${Math.abs(r.cvrDiff)}p</span></td>
+      <td class="ta-right"><span style="color:var(--muted);font-size:11px">${r.prevDb}건 → </span><strong>${r.curDb}건</strong> <span style="color:${dbC};font-weight:600;font-size:11px">${r.dbDiff>=0?'+':''}${r.dbDiff}건</span></td>
+      <td class="ta-center"><span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${j.bg};color:${j.color}">${j.label}</span></td>
     </tr>`;
-  }).join('') : `<tr><td colspan="6" style="padding:2rem;text-align:center;color:var(--faint);font-size:12px">비교 데이터 부족</td></tr>`;
+  }).join('') : `<tr><td colspan="6" class="cell-empty-center">비교 데이터 부족</td></tr>`;
 
   // ── 광고그룹 개선·악화 TOP5 ─────────────────────────────
   const grpRows=resultData.map(r=>{
@@ -562,16 +562,16 @@ function renderInsightDetail(range, dates){
   function grpHtml(r,isGood){
     const cc=isGood?'#16a34a':'#dc2626';
     return `<tr style="border-bottom:1px solid var(--border)">
-      <td style="padding:8px 10px;font-size:12px;max-width:130px;overflow:hidden;text-overflow:ellipsis;font-weight:500" title="${r.group}">${r.group}</td>
-      <td style="padding:8px 10px;font-size:11px;color:var(--muted)">${r.cat}</td>
-      <td style="padding:8px 10px;font-size:11px;color:var(--muted)">${r.media}</td>
-      <td style="padding:8px 10px;text-align:right;font-size:12px"><strong style="color:${cc}">${r.curCpd.toLocaleString()}원</strong><span style="display:block;font-size:10px;color:${cc};font-weight:600">${pctIcon(r.cpdPct)}${Math.abs(r.cpdPct)}%</span></td>
-      <td style="padding:8px 10px;text-align:right;font-size:12px">${r.curCpc.toLocaleString()}원${r.cpcPct!==null?`<span style="display:block;font-size:10px;color:${pctColor(r.cpcPct,true)};font-weight:600">${pctIcon(r.cpcPct)}${Math.abs(r.cpcPct)}%</span>`:''}</td>
-      <td style="padding:8px 10px;text-align:right;font-size:12px">${r.curCvr.toFixed(1)}%<span style="display:block;font-size:10px;color:${pctColor(r.cvrDiff,false)};font-weight:600">${r.cvrDiff>0?'▲':'▼'}${Math.abs(r.cvrDiff)}p</span></td>
-      <td style="padding:8px 10px;text-align:right;font-size:12px">${r.curDb}건</td>
+      <td class="cell-truncate" title="${r.group}">${r.group}</td>
+      <td class="cell-muted-sm">${r.cat}</td>
+      <td class="cell-muted-sm">${r.media}</td>
+      <td class="ta-right"><strong style="color:${cc}">${r.curCpd.toLocaleString()}원</strong><span style="display:block;font-size:10px;color:${cc};font-weight:600">${pctIcon(r.cpdPct)}${Math.abs(r.cpdPct)}%</span></td>
+      <td class="ta-right">${r.curCpc.toLocaleString()}원${r.cpcPct!==null?`<span style="display:block;font-size:10px;color:${pctColor(r.cpcPct,true)};font-weight:600">${pctIcon(r.cpcPct)}${Math.abs(r.cpcPct)}%</span>`:''}</td>
+      <td class="ta-right">${r.curCvr.toFixed(1)}%<span style="display:block;font-size:10px;color:${pctColor(r.cvrDiff,false)};font-weight:600">${r.cvrDiff>0?'▲':'▼'}${Math.abs(r.cvrDiff)}p</span></td>
+      <td class="ta-right">${r.curDb}건</td>
     </tr>`;
   }
-  const empty=`<tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--faint);font-size:12px">비교 데이터 부족</td></tr>`;
+  const empty=`<tr><td colspan="7" class="cell-empty-center">비교 데이터 부족</td></tr>`;
   const goodRows=[...grpRows].sort((a,b)=>a.cpdPct-b.cpdPct).slice(0,5);
   const badRows =[...grpRows].sort((a,b)=>b.cpdPct-a.cpdPct).slice(0,5);
   document.getElementById('insight-good-tbody').innerHTML=goodRows.length?goodRows.map(r=>grpHtml(r,true)).join(''):empty;
@@ -845,15 +845,15 @@ function _renderDailyGroupModalTable(){
         <thead><tr>
           ${DAILY_GROUP_MODAL_COLS.map(c=>{
             const arrow = c.key===col ? (asc?' ↑':' ↓') : '';
-            return `<th style="text-align:${c.num?'right':'left'};padding:8px 10px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border);cursor:pointer;white-space:nowrap" onclick="sortDailyGroupModal('${c.key}')">${c.label}${arrow}</th>`;
+            return `<th class="${c.num?'ta-right':''}" onclick="sortDailyGroupModal('${c.key}')">${c.label}${arrow}</th>`;
           }).join('')}
         </tr></thead>
         <tbody>
           ${sorted.map(g=>`<tr>
             ${DAILY_GROUP_MODAL_COLS.map(c=>{
-              if(c.key==='group') return `<td style="padding:8px 10px;font-size:12px;border-bottom:1px solid var(--border);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(g.group)}">${escHtml(g.group)}</td>`;
-              if(c.special==='roas') return `<td style="text-align:right;padding:8px 10px;font-size:12px;border-bottom:1px solid var(--border)">${roasBadge(g.roas)}</td>`;
-              return `<td style="text-align:right;padding:8px 10px;font-size:12px;border-bottom:1px solid var(--border)">${c.fmt(g[c.key])}</td>`;
+              if(c.key==='group') return `<td class="cell-truncate" title="${escHtml(g.group)}">${escHtml(g.group)}</td>`;
+              if(c.special==='roas') return `<td class="ta-right">${roasBadge(g.roas)}</td>`;
+              return `<td class="ta-right">${c.fmt(g[c.key])}</td>`;
             }).join('')}
           </tr>`).join('')}
         </tbody>
@@ -1087,14 +1087,14 @@ function _renderDailyMediaModalTable(){
         <thead><tr>
           ${DAILY_MEDIA_MODAL_COLS.map(c=>{
             const arrow = c.key===col ? (asc?' ↑':' ↓') : '';
-            return `<th style="text-align:${c.num?'right':'left'};padding:8px 10px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border);cursor:pointer;white-space:nowrap" onclick="sortDailyMediaModal('${c.key}')">${c.label}${arrow}</th>`;
+            return `<th class="${c.num?'ta-right':''}" onclick="sortDailyMediaModal('${c.key}')">${c.label}${arrow}</th>`;
           }).join('')}
         </tr></thead>
         <tbody>
           ${sorted.map(g=>`<tr>
             ${DAILY_MEDIA_MODAL_COLS.map(c=>{
-              if(c.key==='media') return `<td style="padding:8px 10px;font-size:12px;border-bottom:1px solid var(--border)">${escHtml(g.media)}</td>`;
-              return `<td style="text-align:right;padding:8px 10px;font-size:12px;border-bottom:1px solid var(--border)">${c.fmt(g[c.key])}</td>`;
+              if(c.key==='media') return `<td>${escHtml(g.media)}</td>`;
+              return `<td class="ta-right">${c.fmt(g[c.key])}</td>`;
             }).join('')}
           </tr>`).join('')}
         </tbody>
@@ -1165,13 +1165,13 @@ function showInsightDetail(key){
     const prev = i>0 ? getVal(dayMap2[last7[i-1]]||{}, key) : null;
     const chg = prev!==null&&prev>0 ? Math.round((val-prev)/prev*100) : null;
     const good = chg===null?null:((chg>0&&!inverse)||(chg<0&&inverse));
-    const color = good===null?'var(--faint)':good?'#22c55e':'#ef4444';
+    const colorCls = good===null?'text-faint':good?'text-good':'text-bad';
     const arrow = chg===null?'':(chg>0?'▲':'▼');
     const dateStr = k.replace(/\./g,'').slice(2,8); // YYMMDD
     return `<tr style="border-bottom:1px solid var(--border)">
-      <td style="padding:8px 12px;font-size:13px;color:var(--muted)">${dateStr}</td>
-      <td style="padding:8px 12px;text-align:right;font-size:15px;font-weight:600">${val>0?val.toLocaleString()+suffix(key):'-'}</td>
-      <td style="padding:8px 12px;text-align:right;font-size:12px;color:${color}">${chg!==null?arrow+' '+Math.abs(chg)+'%':''}</td>
+      <td class="cell-muted">${dateStr}</td>
+      <td class="ta-right cell-big">${val>0?val.toLocaleString()+suffix(key):'-'}</td>
+      <td class="ta-right ${colorCls}">${chg!==null?arrow+' '+Math.abs(chg)+'%':''}</td>
     </tr>`;
   }).join('');
 
@@ -1180,10 +1180,10 @@ function showInsightDetail(key){
   document.getElementById('insight-detail-title').textContent = label + ' 최근 7일';
   document.getElementById('insight-detail-body').innerHTML = `
     <table style="width:100%;border-collapse:collapse">
-      <thead><tr style="background:#fafaf8">
-        <th style="padding:8px 12px;font-size:11px;font-weight:600;color:var(--muted);text-align:left;border-bottom:1px solid var(--border)">날짜</th>
-        <th style="padding:8px 12px;font-size:11px;font-weight:600;color:var(--muted);text-align:right;border-bottom:1px solid var(--border)">${label}</th>
-        <th style="padding:8px 12px;font-size:11px;font-weight:600;color:var(--muted);text-align:right;border-bottom:1px solid var(--border)">전일대비</th>
+      <thead><tr>
+        <th>날짜</th>
+        <th class="ta-right">${label}</th>
+        <th class="ta-right">전일대비</th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>`;

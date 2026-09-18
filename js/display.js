@@ -160,7 +160,10 @@ function renderDisplayInsight(){
   // ── 광고 매체별 성과 표 (매체×영역 단위, 표 우측 월선택으로 기간 지정 가능 · 기본값 전체 기간) ──
   // 인타입 코드는 월 상관없이 전체 기간 기준으로 모으고(DB는 상담등록일로 월을 판단하므로),
   // 광고비/노출/클릭 등 광고 지표만 선택된 월에 맞는 행으로 한정한다 (renderDisplayTab과 동일한 방식)
-  const insightMonSel = document.getElementById('display-insight-month-sel')?.value || '';
+  // 첫 진입 시엔 select 자체가 아직 없다. 이때 빈 값("전체 월")으로 집계하면 모든 달을 훑어 느리므로
+  // 최신 월로 시작한다. 두 번째 렌더부터는 사용자가 고른 값을 그대로 쓴다("전체 월" 선택도 존중)
+  const _insightSelEl = document.getElementById('display-insight-month-sel');
+  const insightMonSel = _insightSelEl ? _insightSelEl.value : (_displayMonthList()[0] || '');
   const groupMap = {};
   rows.forEach(r=>{
     const media = (r['매체명']||'').trim();
@@ -313,7 +316,9 @@ function renderDisplayInsight(){
   // (innerHTML로 select 자체가 매번 새로 생성되므로 값이 초기화되는 것을 막기 위함)
   _fillDisplayInsightMonSel();
   const insightMonSelEl = document.getElementById('display-insight-month-sel');
-  if(insightMonSelEl) insightMonSelEl.value = insightMonSel;
+  // 첫 진입(_insightSelEl 이 없던 경우)에는 _fillDisplayInsightMonSel 이 정한 기본값을 그대로 둔다
+  if(insightMonSelEl && _insightSelEl) insightMonSelEl.value = insightMonSel;
+  _syncAllMonthPickers();
   _renderDisplayInsightTable();
   _creativeRankingList = _buildCreativeRankingThisMonth();
   _renderCreativeRanking();
@@ -661,13 +666,18 @@ async function loadDisplayData(){
   }
 }
 
+// 디스플레이 탭의 월 선택지 (최신월이 앞). 광고 리포트에 아직 그 달 행이 없어도(광고비 업로드 전)
+// CRM에 상담등록일이 있으면 선택지에 넣는다 — DB는 상담등록일 기준으로 이미 잡히므로,
+// 광고비만 나중에 채워지는 구조를 지원한다
+function _displayMonthList(){
+  const reportMonths = (_displayData||[]).map(r=>(r['날짜']||'').slice(0,7));
+  const crmMonths = (_displayCrmRaw||[]).map(r=>_normDS(r['상담등록일']||'').slice(0,7));
+  return [...new Set([...reportMonths, ...crmMonths])].filter(m=>/^\d{4}-\d{2}$/.test(m)).sort().reverse();
+}
+
 function _fillDisplayMonSel(){
   const sel = document.getElementById('display-month-sel');
-  // 광고 리포트에 아직 그 달 행이 없어도(광고비 업로드 전) CRM에 상담등록일이 있으면 월 선택지에 넣는다
-  // — DB는 상담등록일 기준으로 이미 잡히므로, 광고비만 나중에 채워지는 구조를 지원
-  const reportMonths = _displayData.map(r=>(r['날짜']||'').slice(0,7));
-  const crmMonths = (_displayCrmRaw||[]).map(r=>_normDS(r['상담등록일']||'').slice(0,7));
-  const months = [...new Set([...reportMonths, ...crmMonths])].filter(m=>/^\d{4}-\d{2}$/.test(m)).sort().reverse();
+  const months = _displayMonthList();
   const cur = sel.value;
   sel.innerHTML = '<option value="">전체 월</option>' + months.map(m=>{
     const [y,mo]=m.split('-'); return `<option value="${m}">${y}년 ${parseInt(mo)}월</option>`;
@@ -680,14 +690,13 @@ function _fillDisplayMonSel(){
 function _fillDisplayInsightMonSel(){
   const sel = document.getElementById('display-insight-month-sel');
   if(!sel) return;
-  const reportMonths = (_displayData||[]).map(r=>(r['날짜']||'').slice(0,7));
-  const crmMonths = (_displayCrmRaw||[]).map(r=>_normDS(r['상담등록일']||'').slice(0,7));
-  const months = [...new Set([...reportMonths, ...crmMonths])].filter(m=>/^\d{4}-\d{2}$/.test(m)).sort().reverse();
+  const months = _displayMonthList();
   const cur = sel.value;
   sel.innerHTML = '<option value="">전체 월</option>' + months.map(m=>{
     const [y,mo]=m.split('-'); return `<option value="${m}">${y}년 ${parseInt(mo)}월</option>`;
   }).join('');
-  if(months.includes(cur)) sel.value = cur; // 기본값은 "전체 월" 유지
+  if(months.includes(cur)) sel.value = cur;
+  else if(months.length) sel.value = months[0]; // 최신 월을 기본값으로 (전체 월은 모든 달을 훑어 첫 진입이 느리다)
   _syncAllMonthPickers();
 }
 

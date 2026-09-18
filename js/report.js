@@ -1,3 +1,34 @@
+// ===== 디스플레이 롱포맷 어댑터 (js/display.js 에서 이동) =====
+// ===== 디스플레이 롱포맷 집계 (커스텀 보고서 탭의 디스플레이 어댑터가 재사용) =====
+// 매체별로 이미 검증된 _buildMediaExportSums()의 영역↔소재↔인타입 매칭 결과를 4개 매체 모두에 대해
+// 모아 "매체,영역,소재,월" 단위 롱포맷 행 목록으로 만든다 (노출/클릭/DB/광고비 + 계약수/평가업적, 당월+누적).
+const DISPLAY_REPORT_MEDIAS = ['카카오페이','T멤버십','가스락','KT PASS'];
+let _reportLongRowsCache = null;
+function _buildAllDisplayLongRows(){
+  if(_reportLongRowsCache) return _reportLongRowsCache;
+  const long = [];
+  DISPLAY_REPORT_MEDIAS.forEach(media=>{
+    const {areas} = _buildMediaExportSums(media);
+    Object.entries(areas).forEach(([area,a])=>{
+      Object.values(a.kws).forEach(k=>{
+        Object.entries(k.months).forEach(([ym,m])=>{
+          if(!m.imp && !m.clk && !m.db && !m.cost) return;
+          long.push({매체:media, 영역:area, 소재:k.kw, 월:ym,
+            imp:m.imp, clk:m.clk, db:m.db, cost:m.cost,
+            contracts:m.contracts||0, perf:m.perf||0,
+            contracts_cum:m.contracts_cum||0, perf_cum:m.perf_cum||0});
+        });
+      });
+    });
+  });
+  _reportLongRowsCache = long;
+  return long;
+}
+function _reportMonthLabel(ym){
+  const mm = ym.match(/^(\d{4})-(\d{2})$/);
+  return mm ? `${mm[1]}년 ${parseInt(mm[2])}월` : ym;
+}
+
 // ===== 커스텀 보고서 (파워컨텐츠/키워드/디스플레이/제휴·기타 공용 피벗 빌더) =====
 // 각 카테고리의 실제 데이터를 "롱포맷"(한 행 = 축값들 + 지표 원천값)으로 펼친 뒤,
 // 사용자가 고른 행/열 축·지표로 다시 묶어 표로 그린다. 목업(custom-report-prototype-v4.html)의

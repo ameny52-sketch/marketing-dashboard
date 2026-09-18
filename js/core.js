@@ -1287,3 +1287,11 @@ function setKwInsightDevice(device, btn){
   const dates=Object.keys(dayMap2).sort();
   renderKwInsightDetail(range, dates, dayMap2);
 }
+
+// ===== 공용 유틸 (js/display.js 에서 이동 — 모든 파일이 쓴다) =====
+// 구글시트/CRM 값은 비개발자가 직접 입력하므로 따옴표가 섞여 들어올 수 있다.
+// title="${...}" 같은 속성 안에 그대로 들어가면 마크업이 깨지므로 따옴표까지 이스케이프한다
+function escHtml(str){
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}

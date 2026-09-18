@@ -216,6 +216,13 @@ tbody td.cell-best{font-weight:700;color:#166534;background:#EAF3DE}
 .cpc-tbl td.cell-rank1{color:#0C447C;font-weight:600}
 .cpc-tbl td.cell-faint{color:var(--faint)}
 .cpc-tbl td.cell-muted{color:var(--muted)}
+/* CPC 분석 표 열 너비 — 예전엔 index.html 의 th 마다 인라인으로 박혀 있었다 */
+#cpc-thead th:nth-child(1){min-width:150px}
+#cpc-thead th:nth-child(2){width:60px}
+#cpc-thead th:nth-child(3){width:65px}
+#cpc-thead th:nth-child(4){width:75px}
+#cpc-thead th:nth-child(n+5):nth-child(-n+10){width:85px}
+#cpc-thead th:nth-child(11){min-width:130px}
 .cpc-tbl tr.row-key{background:#fffbeb}
 /* 데이터 없음 안내 셀. .tbl-dense 의 촘촘한 패딩에 눌리지 않도록 같은 구체성으로 뒤에 둔다 */
 tbody td.cell-empty{padding:2rem;text-align:center;color:var(--faint)}

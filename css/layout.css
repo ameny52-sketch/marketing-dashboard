@@ -129,6 +129,8 @@ button.dl:hover,button.month-step:hover,.tab-btn:hover{color:var(--text);backgro
 .insight-kpi-grid>div>div:first-child{color:var(--muted)!important;font-size:11px!important;font-weight:550!important}.insight-kpi-grid>div>div:nth-child(2){margin-top:7px!important;color:var(--text)!important;font-size:20px!important;font-weight:720!important}
 .context-note{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding:12px 15px!important;background:var(--surface)!important;border:1px solid var(--border)!important;border-radius:10px!important}
 .context-note__label{flex:0 0 auto;color:var(--accent)!important;font-size:11px!important;font-weight:750!important}.context-note__text{color:var(--muted)!important;font-size:12px!important;line-height:1.5!important}
+.notice-warn{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding:12px 15px;background:var(--amber-bg);border:1px solid #efd78e;border-radius:10px}
+.notice-warn__label{flex:0 0 auto;color:var(--amber);font-size:11px;font-weight:750}.notice-warn__text{color:var(--amber);font-size:12px;line-height:1.5}
 
 /* Charts */
 .cpc-chart-row{gap:12px;margin-bottom:16px}

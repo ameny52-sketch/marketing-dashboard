@@ -1564,8 +1564,22 @@ function setDisplayAreaCumMode(cum, btn){
   if(_displayLastAreaList) renderDisplayAreaTable(_displayLastAreaList);
 }
 
+// "미확인" 영역(광고비 리포트/인타입 참조표 어디에도 등록 안 된 코드로 들어온 DB)이 있으면
+// 표 맨 아래로 접혀 있어 놓치기 쉬우므로, 표 위에 눈에 띄는 배너로 먼저 알려준다
+function _renderDisplayUnmappedNotice(areaList){
+  const el = document.getElementById('display-unmapped-notice');
+  if(!el) return;
+  const unmapped = areaList.find(a=>a.area==='미확인');
+  if(!unmapped || !unmapped.db){ el.classList.add('is-hidden'); el.innerHTML=''; return; }
+  const codes = [...unmapped.codes].join(', ');
+  el.classList.remove('is-hidden');
+  el.innerHTML = `<span class="notice-warn__label">⚠ 미확인 DB ${unmapped.db.toLocaleString()}건</span>
+    <span class="notice-warn__text">인타입 참조표에 등록되지 않은 코드로 들어온 DB입니다 (${escHtml(codes)}). 참조표에 매체/영역/소재를 추가하면 정상 영역으로 반영됩니다.</span>`;
+}
+
 function renderDisplayAreaTable(areaList){
   _displayLastAreaList = areaList;
+  _renderDisplayUnmappedNotice(areaList);
   const cum = _displayAreaCumMode;
   const s = cum ? ' ·누적' : '';
   document.getElementById('display-thead').innerHTML = `<tr>

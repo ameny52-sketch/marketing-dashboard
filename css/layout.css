@@ -188,6 +188,27 @@ td.dk-caret{color:var(--faint);text-align:center}
 .tbl-rollup tbody td.ta-left{text-align:left}
 .mono-sm{font-family:monospace;font-size:11px}
 .hint-line{margin-bottom:6px;font-size:11px;color:var(--faint)}
+/* ---- 소재 이력 매트릭스 (영역x월) — 셀마다 아래 테두리를 둬 마지막 행에도 선이 남는 형태 ---- */
+.tbl-matrix thead th,.tbl-matrix tbody td{padding:8px 10px;border-bottom:1px solid var(--border)}
+.tbl-matrix tbody tr.row-area{font-weight:600}
+.tbl-matrix tbody tr.row-sub{background:var(--bg)}
+.tbl-matrix td.cell-name{max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbl-matrix td.cell-indent{padding-left:1.5rem;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* 기간 중 가장 좋은 값 강조 */
+/* td.num 의 muted 색상을 이겨야 하므로 같은 구체성(tbody td.x)으로 뒤에 둔다 */
+tbody td.cell-best{font-weight:700;color:#166534;background:#EAF3DE}
+/* 표 자리에 넣는 가운데 정렬 안내문 */
+.cell-empty-center{padding:1.5rem;color:var(--faint);font-size:12px;text-align:center}
+
+/* ---- 크리에이티브 모달의 일별 표 ---- */
+.tbl-creative-daily thead th,.tbl-creative-daily tbody td{padding:6px 10px;border-bottom:1px solid var(--border)}
+.tbl-creative-daily thead th{position:sticky;top:0;background:#fafaf8}
+
+/* ---- 디스플레이 영역별 성과 표 ---- */
+.cell-sub{color:var(--faint);font-size:12px}
+.cell-click{cursor:pointer}
+#display-tbody td.cell-indent{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#display-tbody td.cell-codes{max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* 데이터 없음 안내 셀. .tbl-dense 의 촘촘한 패딩에 눌리지 않도록 같은 구체성으로 뒤에 둔다 */
 tbody td.cell-empty{padding:2rem;text-align:center;color:var(--faint)}
 

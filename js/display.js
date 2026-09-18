@@ -278,7 +278,7 @@ function renderDisplayInsight(){
         </div>
       </div>
       <div class="table-wrap">
-        <table style="width:100%;border-collapse:collapse">
+        <table class="tbl-matrix">
           <thead id="creative-history-thead"></thead>
           <tbody id="creative-history-tbody"></tbody>
         </table>
@@ -302,7 +302,7 @@ function renderDisplayInsight(){
         </div>
       </div>
       <div class="table-wrap">
-        <table style="width:100%;border-collapse:collapse">
+        <table>
           <thead id="display-insight-thead"></thead>
           <tbody id="display-insight-tbody"></tbody>
         </table>
@@ -660,49 +660,47 @@ function renderCreativeHistoryMatrix(){
 
   if(!months.length){
     thead.innerHTML = '';
-    tbody.innerHTML = `<tr><td style="padding:1.5rem;color:var(--faint);font-size:12px;text-align:center">데이터가 없습니다.</td></tr>`;
+    tbody.innerHTML = `<tr><td class="cell-empty-center">데이터가 없습니다.</td></tr>`;
     return;
   }
 
   thead.innerHTML = `<tr>
     <th></th>
-    <th style="text-align:left;padding:8px 10px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border)">영역 (클릭 → 소재별 펼치기)</th>
+    <th>영역 (클릭 → 소재별 펼치기)</th>
     ${months.map(ym=>{
       const [y,mo] = ym.split('-');
-      return `<th class="num" style="padding:8px 10px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border)">${parseInt(mo)}월</th>`;
+      return `<th class="num">${parseInt(mo)}월</th>`;
     }).join('')}
   </tr>`;
 
   tbody.innerHTML = areaList.map((a,i)=>{
     const rowCls = `hist-kwdet-${i}`;
     const bestYm = _bestMonthOf(a.cellsByMonth, months, metric, lowerIsBetter);
-    const parentRow = `<tr style="cursor:pointer;font-weight:600" onclick="toggleDailyKwDetail('${rowCls}',this)">
-      <td class="dk-caret" style="color:var(--faint);text-align:center;padding:8px 10px;border-bottom:1px solid var(--border)">▸</td>
-      <td style="padding:8px 10px;font-size:12px;border-bottom:1px solid var(--border);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(a.area)}">${escHtml(a.area)}</td>
+    const parentRow = `<tr class="clickable row-area" onclick="toggleDailyKwDetail('${rowCls}',this)">
+      <td class="dk-caret">▸</td>
+      <td class="cell-name" title="${escHtml(a.area)}">${escHtml(a.area)}</td>
       ${months.map(ym=>{
         const c = a.cellsByMonth[ym];
         const v = c ? c[metric] : null;
         const isBest = ym===bestYm && v!==null;
-        const style = isBest ? 'font-weight:700;color:#166534;background:#EAF3DE' : '';
-        return `<td class="num" style="padding:8px 10px;font-size:12px;border-bottom:1px solid var(--border);${style}">${fmtVal(v)}</td>`;
+        return `<td class="num${isBest?' cell-best':''}">${fmtVal(v)}</td>`;
       }).join('')}
     </tr>`;
     const childRows = a.kws.map(k=>{
       const kBestYm = _bestMonthOf(k.cellsByMonth, months, metric, lowerIsBetter);
-      return `<tr class="${rowCls}" style="display:none;background:var(--bg)">
+      return `<tr class="${rowCls} row-sub" style="display:none">
         <td></td>
-        <td style="padding-left:1.5rem;color:var(--muted);font-size:12px;border-bottom:1px solid var(--border);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(k.kw)}">${escHtml(k.kw)}</td>
+        <td class="cell-indent" title="${escHtml(k.kw)}">${escHtml(k.kw)}</td>
         ${months.map(ym=>{
           const c = k.cellsByMonth[ym];
           const v = c ? c[metric] : null;
           const isBest = ym===kBestYm && v!==null;
-          const style = isBest ? 'font-weight:700;color:#166534;background:#EAF3DE' : '';
-          return `<td class="num" style="padding:8px 10px;font-size:12px;border-bottom:1px solid var(--border);${style}">${fmtVal(v)}</td>`;
+          return `<td class="num${isBest?' cell-best':''}">${fmtVal(v)}</td>`;
         }).join('')}
       </tr>`;
     }).join('');
     return parentRow + childRows;
-  }).join('') || `<tr><td colspan="${months.length+2}" style="padding:1.5rem;color:var(--faint);font-size:12px;text-align:center">이 매체에 소재 데이터가 없습니다.</td></tr>`;
+  }).join('') || `<tr><td colspan="${months.length+2}" class="cell-empty-center">이 매체에 소재 데이터가 없습니다.</td></tr>`;
 }
 
 // 팀 내부 소재별 효율 엑셀에 그대로 붙여넣을 수 있는 형태의 CSV — 매체 Total → 영역별 Total → 영역 안 소재별, 항목(지표)이 세로로 나열
@@ -1001,7 +999,7 @@ function _renderDisplayInsightTable(){
   document.getElementById('display-insight-thead').innerHTML = '<tr>'+DISPLAY_INSIGHT_COLS.map(c=>{
     const arrow = c.key===col ? (asc?' ↑':' ↓') : '';
     const label = (_displayInsightCumMode && DISPLAY_INSIGHT_CUM_COLS.includes(c.key)) ? c.label+' ·누적' : c.label;
-    return `<th class="${c.num?'num':''}" style="cursor:pointer" onclick="sortDisplayInsightTable('${c.key}')">${label}${arrow}</th>`;
+    return `<th class="${c.num?'num':''}" onclick="sortDisplayInsightTable('${c.key}')">${label}${arrow}</th>`;
   }).join('')+'</tr>';
 
   document.getElementById('display-insight-tbody').innerHTML = sorted.map(r=>`<tr>
@@ -1010,7 +1008,7 @@ function _renderDisplayInsightTable(){
       const v = DISPLAY_INSIGHT_CUM_COLS.includes(c.key) ? _displayInsightCumVal(r,c.key) : r[c.key];
       return c.key==='media'||c.key==='area' ? `<td>${escHtml(v)}</td>` : `<td class="num">${c.fmt(v)}</td>`;
     }).join('')}
-  </tr>`).join('') || `<tr><td colspan="${DISPLAY_INSIGHT_COLS.length}" style="padding:1rem;color:var(--faint)">데이터 없음</td></tr>`;
+  </tr>`).join('') || `<tr><td colspan="${DISPLAY_INSIGHT_COLS.length}" class="no-data-inline">데이터 없음</td></tr>`;
 }
 
 // 영역별 추이 데이터 준비: 특정 월 선택 시 일별, 전체 월 선택 시 월별로 집계
@@ -1585,7 +1583,7 @@ function renderDisplayAreaTable(areaList){
     <th class="num">평가업적${s}</th><th class="num">ROAS${s}</th>
   </tr>`;
   if(!areaList.length){
-    document.getElementById('display-tbody').innerHTML = '<tr><td colspan="15" style="padding:1rem;color:var(--faint)">데이터 없음</td></tr>';
+    document.getElementById('display-tbody').innerHTML = '<tr><td colspan="15" class="no-data-inline">데이터 없음</td></tr>';
     return;
   }
   // 소재 A,B,C... 순으로, "미확인"/소재 미기재 등은 맨 뒤로
@@ -1613,14 +1611,14 @@ function renderDisplayAreaTable(areaList){
         <td class="num">${kCvr!==null?kCvr.toLocaleString()+'%':'-'}</td>
         <td class="num">${kPerf>0?Math.round(kPerf).toLocaleString()+'원':'-'}</td>
         <td class="num">${roasBadge(kRoas)}</td>`
-        : `<td class="num" colspan="7" style="color:var(--faint);font-size:11px;text-align:left;padding-left:1rem">DB/계약 데이터는 영역 기준으로만 집계됩니다</td>`;
+        : `<td class="cell-note" colspan="7">DB/계약 데이터는 영역 기준으로만 집계됩니다</td>`;
       const kCodesTxt = [...k.monthCodes].join(', ');
       const lookupIdx = window.__creativeLookup.length;
       window.__creativeLookup.push({media:_displayMedia, area:a.area, kw:k.kw, codes:[...k.monthCodes]});
       return `<tr class="${rowCls}" style="display:none;background:var(--bg)">
         <td></td>
-        <td style="padding-left:1.5rem;color:var(--muted);max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer" title="클릭하면 크리에이티브 이미지를 볼 수 있습니다" onclick="openCreativeModal(${lookupIdx})">🖼️ ${escHtml(k.kw)}</td>
-        <td style="color:var(--faint);font-size:12px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(kCodesTxt)}">${escHtml(kCodesTxt)||'-'}</td>
+        <td class="cell-indent cell-click" title="클릭하면 크리에이티브 이미지를 볼 수 있습니다" onclick="openCreativeModal(${lookupIdx})">🖼️ ${escHtml(k.kw)}</td>
+        <td class="cell-sub cell-codes" title="${escHtml(kCodesTxt)}">${escHtml(kCodesTxt)||'-'}</td>
         <td class="num">${k.cost.toLocaleString()}</td>
         <td class="num">${k.imp.toLocaleString()}</td>
         <td class="num">${k.snd.toLocaleString()}</td>
@@ -1635,9 +1633,9 @@ function renderDisplayAreaTable(areaList){
     const aPerf = cum ? (a.perf_cum||0) : a.perf;
     const aRoas = cum ? a.roas_cum : a.roas;
     return `<tr style="cursor:pointer" onclick="toggleDailyKwDetail('${rowCls}',this)">
-      <td class="dk-caret" style="color:var(--faint);text-align:center">▸</td>
+      <td class="dk-caret">▸</td>
       <td>${escHtml(a.area)}</td>
-      <td style="color:var(--faint);font-size:12px" title="${escHtml(aCodesTxt)}">${a.displayCodes.size ? a.displayCodes.size+'개' : '-'}</td>
+      <td class="cell-sub" title="${escHtml(aCodesTxt)}">${a.displayCodes.size ? a.displayCodes.size+'개' : '-'}</td>
       <td class="num">${a.cost.toLocaleString()}</td>
       <td class="num">${a.imp.toLocaleString()}</td>
       <td class="num">${a.snd.toLocaleString()}</td>
@@ -1738,7 +1736,7 @@ function _renderCreativeDaily(info, monSel){
   const sumDbcvr = totalClk>0 ? Math.round(totalDb/totalClk*1000)/10 : null;
   const sumCvr   = totalDb>0 ? Math.round(totalContracts/totalDb*1000)/10 : null;
   const sumCard = (label,colorCls,val) => `<div class="metric"><div class="metric-label">${label}</div><div class="metric-value ${colorCls}">${val}</div></div>`;
-  const th = label => `<th class="num" style="padding:6px 10px;text-align:right;background:#fafaf8;border-bottom:1px solid var(--border);position:sticky;top:0">${label}</th>`;
+  const th = label => `<th class="num">${label}</th>`;
   dailyEl.innerHTML = `
     <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px">일별 데이터</div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:.75rem">
@@ -1748,9 +1746,9 @@ function _renderCreativeDaily(info, monSel){
       ${sumCard('계약률','green', sumCvr!==null?sumCvr+'%':'-')}
     </div>
     <div style="max-height:220px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--rs)">
-      <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <table class="tbl-creative-daily">
         <thead><tr>
-          <th style="padding:6px 10px;text-align:left;background:#fafaf8;border-bottom:1px solid var(--border);position:sticky;top:0">날짜</th>
+          <th>날짜</th>
           ${th('광고비')}${th('노출수')}${th('발송수')}${th('클릭수')}${th('CTR')}${th('DB수')}${th('DB단가')}${th('DB전환율')}
         </tr></thead>
         <tbody>
@@ -1759,15 +1757,15 @@ function _renderCreativeDaily(info, monSel){
             const cpd = d.db>0 ? Math.round(d.cost/d.db) : null;
             const dbcvr = d.clk>0 ? Math.round(d.db/d.clk*1000)/10 : null;
             return `<tr>
-            <td style="padding:6px 10px;border-bottom:1px solid var(--border)">${d.date}</td>
-            <td class="num" style="padding:6px 10px;text-align:right;border-bottom:1px solid var(--border)">${d.cost.toLocaleString()}</td>
-            <td class="num" style="padding:6px 10px;text-align:right;border-bottom:1px solid var(--border)">${d.imp.toLocaleString()}</td>
-            <td class="num" style="padding:6px 10px;text-align:right;border-bottom:1px solid var(--border)">${d.snd.toLocaleString()}</td>
-            <td class="num" style="padding:6px 10px;text-align:right;border-bottom:1px solid var(--border)">${d.clk.toLocaleString()}</td>
-            <td class="num" style="padding:6px 10px;text-align:right;border-bottom:1px solid var(--border)">${ctr!==null?ctr+'%':'-'}</td>
-            <td class="num" style="padding:6px 10px;text-align:right;border-bottom:1px solid var(--border)">${d.db.toLocaleString()}</td>
-            <td class="num" style="padding:6px 10px;text-align:right;border-bottom:1px solid var(--border)">${cpd!==null?cpd.toLocaleString()+'원':'-'}</td>
-            <td class="num" style="padding:6px 10px;text-align:right;border-bottom:1px solid var(--border)">${dbcvr!==null?dbcvr+'%':'-'}</td>
+            <td>${d.date}</td>
+            <td class="num">${d.cost.toLocaleString()}</td>
+            <td class="num">${d.imp.toLocaleString()}</td>
+            <td class="num">${d.snd.toLocaleString()}</td>
+            <td class="num">${d.clk.toLocaleString()}</td>
+            <td class="num">${ctr!==null?ctr+'%':'-'}</td>
+            <td class="num">${d.db.toLocaleString()}</td>
+            <td class="num">${cpd!==null?cpd.toLocaleString()+'원':'-'}</td>
+            <td class="num">${dbcvr!==null?dbcvr+'%':'-'}</td>
           </tr>`;
           }).join('')}
         </tbody>

@@ -141,10 +141,10 @@ function renderDisplayInsight(){
     const parts = [];
     if(costChg!==null) parts.push(`광고비 <span style="color:#facc15;font-weight:700">${Math.abs(costChg)}% ${costChg>0?'증가':'감소'}</span>`);
     else if(y.cost===0 && t.cost>0) parts.push(`광고비 <span style="color:#facc15;font-weight:700">신규 집행</span>`);
-    if(dbChg!==null) parts.push(`DB수 <span style="color:${dbChg>0?'#4ade80':'#f87171'};font-weight:700">${Math.abs(dbChg)}% ${dbChg>0?'증가':'감소'}</span>`);
-    if(cpdChg!==null) parts.push(`DB단가 <span style="color:${cpdChg<0?'#4ade80':'#f87171'};font-weight:700">${Math.abs(cpdChg)}% ${cpdChg<0?'하락':'상승'}</span>`);
-    if(ctrDiff!==null && Math.abs(ctrDiff)>=0.1) parts.push(`CTR <span style="color:${ctrDiff>0?'#4ade80':'#f87171'};font-weight:700">${Math.abs(ctrDiff)}%p ${ctrDiff>0?'상승':'하락'}</span>`);
-    if(dbcvrDiff!==null && Math.abs(dbcvrDiff)>=0.1) parts.push(`DB전환율 <span style="color:${dbcvrDiff>0?'#4ade80':'#f87171'};font-weight:700">${Math.abs(dbcvrDiff)}%p ${dbcvrDiff>0?'상승':'하락'}</span>`);
+    if(dbChg!==null) parts.push(`DB수 <span class="${dbChg>0?'delta-good':'delta-bad'}">${Math.abs(dbChg)}% ${dbChg>0?'증가':'감소'}</span>`);
+    if(cpdChg!==null) parts.push(`DB단가 <span class="${cpdChg<0?'delta-good':'delta-bad'}">${Math.abs(cpdChg)}% ${cpdChg<0?'하락':'상승'}</span>`);
+    if(ctrDiff!==null && Math.abs(ctrDiff)>=0.1) parts.push(`CTR <span class="${ctrDiff>0?'delta-good':'delta-bad'}">${Math.abs(ctrDiff)}%p ${ctrDiff>0?'상승':'하락'}</span>`);
+    if(dbcvrDiff!==null && Math.abs(dbcvrDiff)>=0.1) parts.push(`DB전환율 <span class="${dbcvrDiff>0?'delta-good':'delta-bad'}">${Math.abs(dbcvrDiff)}%p ${dbcvrDiff>0?'상승':'하락'}</span>`);
     const sentence = parts.length ? parts.join(', ')+'했습니다.' : '전일 대비 큰 변화가 없습니다.';
 
     const badges = [];

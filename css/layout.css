@@ -82,6 +82,13 @@ button.dl:hover,button.month-step:hover,.tab-btn:hover{color:var(--text);backgro
 .analysis-toolbar{margin-bottom:14px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:12px}
 .inline-filter-bar{margin-bottom:14px;padding:10px 16px;background:#fafafa;border-bottom:1px solid var(--border);border-radius:0}
 .toolbar-divider{width:1px;height:20px;background:var(--border)}
+/* Daily DB 현황 매체 토글 pill. 예전엔 인라인 스타일로만 그려졌고, layout.css가
+   button[style*="border:1px solid var(--border-strong)"] 로 잡아 꺼진 pill만 8px로 눌렀기 때문에
+   켜진 pill(14px)과 모양이 서로 달랐다 — 클래스로 옮기면서 pill 모양으로 통일한다 */
+.media-pill{border:1px solid var(--border);background:transparent;color:var(--faint);border-radius:14px;padding:3px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap}
+.media-pill:hover{color:var(--text);background:var(--bg)}
+.media-pill.is-on{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+.media-pill--all{color:var(--muted)}
 .compact-control{height:34px;padding:0 10px;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:8px}
 .compact-control--search{width:min(260px,100%)}
 .quiet-toggle{min-height:32px;padding:0 10px;color:var(--muted)!important;background:var(--surface)!important;border:1px solid var(--border)!important;border-radius:8px!important;font-size:11px!important;font-weight:600!important;box-shadow:none!important}
@@ -120,7 +127,10 @@ button.dl:hover,button.month-step:hover,.tab-btn:hover{color:var(--text);backgro
 .insight-hero__label{color:#7a4b00!important;font-size:12px!important;font-weight:750!important;letter-spacing:-.01em}
 .insight-hero__select{height:31px!important;padding:0 9px!important;color:var(--text)!important;background:rgba(255,255,255,.76)!important;border:1px solid #edcf9f!important;border-radius:7px!important;font-size:11px!important}
 .insight-hero__summary{color:var(--text)!important;font-size:14px!important;font-weight:650!important;line-height:1.65!important}
-.insight-hero__summary span[style*="#4ade80"]{color:var(--green)!important}.insight-hero__summary span[style*="#f87171"]{color:var(--red)!important}
+/* 요약 문장 안의 증감 표시 — 좋아진 지표는 초록, 나빠진 지표는 빨강.
+   (지표별로 좋은 방향이 달라서 JS가 판단해 클래스를 붙인다. 예: DB수는 증가가 good, DB단가는 감소가 good) */
+.insight-hero__summary .delta-good,.delta-good{color:var(--green);font-weight:700}
+.insight-hero__summary .delta-bad,.delta-bad{color:var(--red);font-weight:700}
 .insight-hero__badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px!important}
 .insight-hero__badges>span{padding:4px 8px!important;color:var(--muted)!important;background:rgba(255,255,255,.72)!important;border:1px solid rgba(226,192,140,.55)!important;border-radius:6px!important;font-size:10px!important}
 .insight-kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -152,7 +162,6 @@ tbody td,.cpc-tbl tbody td{padding:9px 12px;color:var(--text)}
 tbody td.num,.cpc-tbl td.r{color:var(--muted);font-variant-numeric:tabular-nums}
 .dth{color:var(--muted);background:var(--bg);font-weight:600}.dtd{color:var(--text)}
 #daily-table-card{overflow:visible!important;border-radius:12px!important;box-shadow:none!important}
-#daily-table-card>div[style*="overflow-x"]{overflow-x:auto;overflow-y:visible}
 #daily-table th:first-child,#daily-table td:first-child{position:sticky;left:0;z-index:2;background:var(--surface)}
 #daily-table thead th{position:sticky;top:0;z-index:3;background:var(--bg)}
 #daily-table thead th:first-child{z-index:4;background:var(--bg)}
@@ -168,6 +177,9 @@ tbody td.num,.cpc-tbl td.r{color:var(--muted);font-variant-numeric:tabular-nums}
 
 /* Alert/efficiency cards */
 .alert-grid{gap:12px;margin-bottom:16px}.alert-section{overflow:hidden}
+/* 알림판 4열 배치 — 예전엔 index.html의 인라인 grid-template-columns를 [style*="repeat(4"]로
+   찾아 반응형에서 덮어썼는데, 인라인 스타일이 바뀌면 조용히 깨지므로 클래스로 바꿨다 */
+.alert-grid--4col{grid-template-columns:repeat(4,1fr)}
 .alert-section-head{padding:13px 16px}.alert-section-head h3{font-size:13px;font-weight:650}.alert-section-head .cnt{background:var(--bg)}
 .alert-card{padding:15px 16px}.alert-card:hover{background:#f8f9fa}
 .alert-rank{width:24px;height:24px;border-radius:7px;font-size:11px}.alert-rank.red{background:var(--red-bg);color:var(--red)}.alert-rank.green{background:var(--green-bg);color:var(--green)}
@@ -187,9 +199,8 @@ tbody td.num,.cpc-tbl td.r{color:var(--muted);font-variant-numeric:tabular-nums}
 
 /* Generated controls and remaining inline-styled panels */
 select,input[type="text"],input[type="search"]{border-color:var(--border)!important;border-radius:8px!important}
-button[style*="border:1px solid var(--border-strong)"]{border-color:var(--border)!important;border-radius:8px!important;box-shadow:none!important}
-div[style*="border-radius:var(--r)"],section[style*="border-radius:var(--r)"]{border-radius:12px!important;box-shadow:none!important}
-div[style*="box-shadow"]{box-shadow:none!important}
+/* (인라인 스타일 문자열을 선택자로 매칭하던 규칙 3개는 삭제했다 — 겨냥하던 인라인 스타일이
+    이미 클래스로 정리돼 매칭되는 요소가 0개였고, 남겨두면 HTML을 정리할 때 조용히 깨지는 지뢰였다) */
 #sheet-load-warning{position:relative;z-index:30;border:0!important;border-bottom:1px solid #efd78e!important;background:#fff8d8!important;color:var(--amber)!important}
 .status{color:var(--faint);font-size:12px}.status.ok{color:var(--green)}.status.err{color:var(--red)}
 
@@ -261,7 +272,7 @@ div[style*="box-shadow"]{box-shadow:none!important}
 
 @media(max-width:1080px){.cr-workspace{grid-template-columns:1fr}.cr-settings{position:static}}
 
-@media(max-width:1200px){.kpi-grid,.kpi-grid.kpi-grid-9,.kpi-grid.kpi-grid-7{grid-template-columns:repeat(4,minmax(0,1fr))}.metrics-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.alert-grid[style*="repeat(4"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}#insight-cards,#kw-insight-cards{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
+@media(max-width:1200px){.kpi-grid,.kpi-grid.kpi-grid-9,.kpi-grid.kpi-grid-7{grid-template-columns:repeat(4,minmax(0,1fr))}.metrics-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.alert-grid--4col{grid-template-columns:repeat(2,minmax(0,1fr))}#insight-cards,#kw-insight-cards{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
 @media(max-width:900px){
   .app-sidebar,.app-sidebar.collapsed{flex:0 0 64px;width:64px}
   .app-sidebar-collapse-btn{display:none}
@@ -272,7 +283,7 @@ div[style*="box-shadow"]{box-shadow:none!important}
   .cpc-chart-row,.alert-grid{grid-template-columns:1fr}
   .analysis-toolbar{align-items:stretch}.toolbar-divider{display:none}.compact-control--search{flex:1;width:auto}
 }
-@media(max-width:680px){.kpi-grid,.kpi-grid.kpi-grid-9,.kpi-grid.kpi-grid-7,.metrics-grid,.cpc-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi-card{height:94px}.modal-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.insight-hero{padding:18px!important}.insight-hero:before{display:none}.alert-grid[style*="repeat(4"]{grid-template-columns:1fr!important}#insight-cards,#kw-insight-cards{grid-template-columns:repeat(2,minmax(0,1fr))!important}.insight-kpi-grid>div:nth-child(2n){border-right:0!important}}
+@media(max-width:680px){.kpi-grid,.kpi-grid.kpi-grid-9,.kpi-grid.kpi-grid-7,.metrics-grid,.cpc-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi-card{height:94px}.modal-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.insight-hero{padding:18px!important}.insight-hero:before{display:none}.alert-grid--4col{grid-template-columns:1fr}#insight-cards,#kw-insight-cards{grid-template-columns:repeat(2,minmax(0,1fr))!important}.insight-kpi-grid>div:nth-child(2n){border-right:0!important}}
 @media(max-width:480px){.container{padding-left:12px;padding-right:12px}.kpi-grid,.kpi-grid.kpi-grid-9,.kpi-grid.kpi-grid-7,.metrics-grid,.cpc-summary{grid-template-columns:1fr 1fr}.kpi-card{padding:13px 14px}}
 
 /* 표시/숨김 토글 — 이 파일이 마지막에 로드되므로, 같은 우선순위의 display 규칙(.main-tabs, .month-picker, .context-note 등)보다 항상 뒤에 와서 숨김 상태가 확실히 이긴다 */

@@ -85,9 +85,9 @@ function renderKwInsight(){
   const cpdChg=chg(cur.cpd,prev.cpd), cpcChg=chg(cur.cpc,prev.cpc), dbChg=chg(cur.db,prev.db);
 
   const summaryParts=[];
-  if(cpdChg!==null) summaryParts.push(`DB단가 <span style="color:${cpdChg<0?'#4ade80':'#f87171'};font-weight:700">${Math.abs(cpdChg)}% ${cpdChg<0?'하락':'상승'}</span>`);
-  if(cpcChg!==null) summaryParts.push(`CPC <span style="color:${cpcChg<0?'#4ade80':'#f87171'};font-weight:700">${Math.abs(cpcChg)}% ${cpcChg<0?'하락':'상승'}</span>`);
-  if(dbChg!==null)  summaryParts.push(`DB수 <span style="color:${dbChg>0?'#4ade80':'#f87171'};font-weight:700">${Math.abs(dbChg)}% ${dbChg>0?'증가':'감소'}</span>`);
+  if(cpdChg!==null) summaryParts.push(`DB단가 <span class="${cpdChg<0?'delta-good':'delta-bad'}">${Math.abs(cpdChg)}% ${cpdChg<0?'하락':'상승'}</span>`);
+  if(cpcChg!==null) summaryParts.push(`CPC <span class="${cpcChg<0?'delta-good':'delta-bad'}">${Math.abs(cpcChg)}% ${cpcChg<0?'하락':'상승'}</span>`);
+  if(dbChg!==null)  summaryParts.push(`DB수 <span class="${dbChg>0?'delta-good':'delta-bad'}">${Math.abs(dbChg)}% ${dbChg>0?'증가':'감소'}</span>`);
   document.getElementById('kw-insight-summary-text').innerHTML = summaryParts.length?summaryParts.join(', ')+'했습니다.':'전일 대비 큰 변화가 없습니다.';
 
   const badgeStyle='padding:6px 14px;border-radius:20px;background:rgba(255,255,255,0.12);color:#fff;font-size:12px;font-weight:500';
@@ -375,10 +375,10 @@ function renderInsight(){
 
   // ── 한줄 요약 ──────────────────────────────────────────────
   const summaryParts = [];
-  if(cpdChg!==null) summaryParts.push(`DB단가 <span style="color:${cpdChg<0?'#4ade80':'#f87171'};font-weight:700">${Math.abs(cpdChg)}% ${cpdChg<0?'하락':'상승'}</span>`);
-  if(cpcChg!==null) summaryParts.push(`CPC <span style="color:${cpcChg<0?'#4ade80':'#f87171'};font-weight:700">${Math.abs(cpcChg)}% ${cpcChg<0?'하락':'상승'}</span>`);
-  if(rankChg!==null&&Math.abs(rankChg)>=0.1) summaryParts.push(`평균순위 <span style="color:${rankChg<0?'#4ade80':'#f87171'};font-weight:700">${Math.abs(rankChg)}단계 ${rankChg<0?'상승':'하락'}</span>`);
-  if(dbChg!==null) summaryParts.push(`DB수 <span style="color:${dbChg>0?'#4ade80':'#f87171'};font-weight:700">${Math.abs(dbChg)}% ${dbChg>0?'증가':'감소'}</span>`);
+  if(cpdChg!==null) summaryParts.push(`DB단가 <span class="${cpdChg<0?'delta-good':'delta-bad'}">${Math.abs(cpdChg)}% ${cpdChg<0?'하락':'상승'}</span>`);
+  if(cpcChg!==null) summaryParts.push(`CPC <span class="${cpcChg<0?'delta-good':'delta-bad'}">${Math.abs(cpcChg)}% ${cpcChg<0?'하락':'상승'}</span>`);
+  if(rankChg!==null&&Math.abs(rankChg)>=0.1) summaryParts.push(`평균순위 <span class="${rankChg<0?'delta-good':'delta-bad'}">${Math.abs(rankChg)}단계 ${rankChg<0?'상승':'하락'}</span>`);
+  if(dbChg!==null) summaryParts.push(`DB수 <span class="${dbChg>0?'delta-good':'delta-bad'}">${Math.abs(dbChg)}% ${dbChg>0?'증가':'감소'}</span>`);
 
   document.getElementById('insight-summary-text').innerHTML =
     summaryParts.length ? summaryParts.join(', ')+'했습니다.' : '전일 대비 큰 변화가 없습니다.';
@@ -1410,9 +1410,9 @@ function renderDailyMediaToggle(){
   const hiddenCount = toggleMedias.filter(m=>_dailyHiddenMedias.has(m)).length;
   el.innerHTML = toggleMedias.map(m=>{
         const on = !_dailyHiddenMedias.has(m);
-        return `<button onclick="toggleDailyMedia('${m.replace(/'/g,"\\'")}')" style="border:1px solid ${on?'var(--accent)':'var(--border-strong)'};background:${on?'var(--accent-bg)':'transparent'};color:${on?'var(--accent)':'var(--faint)'};border-radius:14px;padding:3px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">${m}</button>`;
+        return `<button class="media-pill${on?' is-on':''}" onclick="toggleDailyMedia('${m.replace(/'/g,"\\'")}')">${m}</button>`;
       }).join('')
-    + `<button onclick="setDailyMediaAll(${hiddenCount>0})" style="border:1px solid var(--border-strong);background:transparent;color:var(--muted);border-radius:14px;padding:3px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">${hiddenCount>0?'전체 표시':'전체 숨기기'}</button>`;
+    + `<button class="media-pill media-pill--all" onclick="setDailyMediaAll(${hiddenCount>0})">${hiddenCount>0?'전체 표시':'전체 숨기기'}</button>`;
 }
 
 async function loadCrmData(month){

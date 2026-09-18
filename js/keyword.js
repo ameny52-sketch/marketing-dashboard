@@ -405,6 +405,7 @@ async function _initDailyTabCore(){
   } else if(months.length){
     monthSel.value = months[0];
   }
+  _syncAllMonthPickers();
   renderDaily();
 }
 

@@ -287,12 +287,12 @@ function renderDisplayInsight(){
     <div class="table-card">
       <div class="table-header">
         <h2>광고 매체별 성과</h2>
-        <div style="display:flex;align-items:center;gap:4px">
-          <button class="month-step" onclick="_stepMonthSelect('display-insight-month-sel',-1)" title="이전 달">◀</button>
-          <select id="display-insight-month-sel" onchange="renderDisplayInsight()" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 10px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);outline:none">
+        <div class="month-picker">
+          <button class="month-step" onclick="_stepMonthSelect('display-insight-month-sel',-1)" title="이전 달"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+          <select class="month-select" id="display-insight-month-sel" onchange="renderDisplayInsight()">
             <option value="">전체 월</option>
           </select>
-          <button class="month-step" onclick="_stepMonthSelect('display-insight-month-sel',1)" title="다음 달">▶</button>
+          <button class="month-step" onclick="_stepMonthSelect('display-insight-month-sel',1)" title="다음 달"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
         </div>
       </div>
       <div style="padding:.75rem 1.25rem">
@@ -674,6 +674,7 @@ function _fillDisplayMonSel(){
   }).join('');
   if(months.includes(cur)) sel.value = cur;
   else if(months.length) sel.value = months[0]; // 최신 월을 기본값으로 (전체 월 대신)
+  _syncAllMonthPickers();
 }
 
 function _fillDisplayInsightMonSel(){
@@ -687,6 +688,7 @@ function _fillDisplayInsightMonSel(){
     const [y,mo]=m.split('-'); return `<option value="${m}">${y}년 ${parseInt(mo)}월</option>`;
   }).join('');
   if(months.includes(cur)) sel.value = cur; // 기본값은 "전체 월" 유지
+  _syncAllMonthPickers();
 }
 
 // {매체,영역} 기준으로 인타입 참조표에서 해당하는 모든 소재의 인타입 코드를 찾는다 (월 무관, 전체 기간)

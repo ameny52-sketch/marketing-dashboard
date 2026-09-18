@@ -276,7 +276,27 @@ function _stepMonthSelect(id, calendarDelta){
   if(idx === sel.selectedIndex) return;
   sel.selectedIndex = idx;
   sel.dispatchEvent(new Event('change'));
+  _syncMonthPicker(sel);
 }
+
+// 양 끝 달에서는 화살표를 비활성으로 보여준다.
+// 목록이 내림차순(최신월이 앞)이라 "이전 달"이 인덱스가 커지는 방향이다.
+function _syncMonthPicker(sel){
+  const wrap = sel && sel.closest && sel.closest('.month-picker');
+  if(!wrap) return;
+  const btns = wrap.querySelectorAll('button.month-step');
+  if(btns.length < 2) return;
+  const few = sel.options.length < 2;
+  btns[0].disabled = few || sel.selectedIndex >= sel.options.length - 1;  // 이전 달
+  btns[1].disabled = few || sel.selectedIndex <= 0;                        // 다음 달
+}
+function _syncAllMonthPickers(){
+  document.querySelectorAll('.month-picker select').forEach(_syncMonthPicker);
+}
+// 드롭다운을 직접 바꿨을 때도 화살표 상태가 따라오도록 (각 select 의 onchange 를 건드리지 않기 위해 위임)
+document.addEventListener('change', e=>{
+  if(e.target && e.target.matches && e.target.matches('.month-picker select')) _syncMonthPicker(e.target);
+});
 function _fillMonSels(months){
   ['month-select','month-select-all','month-select-kw'].forEach(id=>{
     const sel=document.getElementById(id);if(!sel)return;
@@ -287,6 +307,7 @@ function _fillMonSels(months){
     months.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;sel.appendChild(o);});
     if(months.length)sel.value=months[0];
   });
+  _syncAllMonthPickers();
 }
 
 function _apiAnalyze(month,s){

@@ -73,10 +73,10 @@
     <button class="main-tab" onclick="switchTab('data',this)">데이터 현황</button>
     <div class="tab-actions">
       <div id="pc-month-sel-wrap" class="month-picker is-hidden">
-        <button class="month-step" onclick="_stepMonthSelect('month-select',-1)" title="이전 달">◀</button>
-        <select id="month-select" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 10px;font-size:13px;font-family:inherit;color:var(--text);background:var(--surface);outline:none;cursor:pointer" onchange="onMonthChange()">
+        <button class="month-step" onclick="_stepMonthSelect('month-select',-1)" title="이전 달"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+        <select class="month-select" id="month-select" onchange="onMonthChange()">
         </select>
-        <button class="month-step" onclick="_stepMonthSelect('month-select',1)" title="다음 달">▶</button>
+        <button class="month-step" onclick="_stepMonthSelect('month-select',1)" title="다음 달"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
       </div>
       <span class="status is-hidden" id="status"></span>
     </div>
@@ -88,10 +88,10 @@
     <button class="main-tab" onclick="switchTab('kw-main',this)">데이터 현황</button>
     <div class="tab-actions">
       <div id="kw-month-sel-wrap" class="month-picker is-hidden">
-        <button class="month-step" onclick="_stepMonthSelect('month-select-kw',-1)" title="이전 달">◀</button>
-        <select id="month-select-kw" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 10px;font-size:13px;font-family:inherit;color:var(--text);background:var(--surface);outline:none;cursor:pointer" onchange="onMonthChange()">
+        <button class="month-step" onclick="_stepMonthSelect('month-select-kw',-1)" title="이전 달"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+        <select class="month-select" id="month-select-kw" onchange="onMonthChange()">
         </select>
-        <button class="month-step" onclick="_stepMonthSelect('month-select-kw',1)" title="다음 달">▶</button>
+        <button class="month-step" onclick="_stepMonthSelect('month-select-kw',1)" title="다음 달"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
       </div>
       <span class="status is-hidden" id="status-kw"></span>
     </div>
@@ -311,11 +311,11 @@
       <button class="main-tab" onclick="switchDisplayMedia('가스락',this)">가스락</button>
       <button class="main-tab" onclick="switchDisplayMedia('KT PASS',this)">KT PASS</button>
       <span id="display-month-sel-wrap" class="month-picker month-picker--push is-hidden">
-        <button class="month-step" onclick="_stepMonthSelect('display-month-sel',-1)" title="이전 달">◀</button>
-        <select id="display-month-sel" onchange="renderDisplayTab()" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 10px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);outline:none">
+        <button class="month-step" onclick="_stepMonthSelect('display-month-sel',-1)" title="이전 달"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+        <select class="month-select" id="display-month-sel" onchange="renderDisplayTab()">
           <option value="">전체 월</option>
         </select>
-        <button class="month-step" onclick="_stepMonthSelect('display-month-sel',1)" title="다음 달">▶</button>
+        <button class="month-step" onclick="_stepMonthSelect('display-month-sel',1)" title="다음 달"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
       </span>
     </div>
 
@@ -636,11 +636,11 @@
         <button class="tab-btn" onclick="setDailyTableCumMode(true,this)">누적</button>
       </div>
       <div class="table-toolbar__actions">
-        <button class="month-step" onclick="_stepMonthSelect('daily-month-sel',-1)" title="이전 달">◀</button>
-        <select id="daily-month-sel" onchange="renderDaily()" style="border:1px solid var(--border-strong);border-radius:var(--rs);padding:5px 10px;font-size:12px;font-family:inherit;color:var(--text);background:var(--surface);outline:none">
+        <div class="month-picker"><button class="month-step" onclick="_stepMonthSelect('daily-month-sel',-1)" title="이전 달"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+        <select class="month-select" id="daily-month-sel" onchange="renderDaily()">
           <option value="">전체 월</option>
         </select>
-        <button class="month-step" onclick="_stepMonthSelect('daily-month-sel',1)" title="다음 달">▶</button>
+        <button class="month-step" onclick="_stepMonthSelect('daily-month-sel',1)" title="다음 달"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button></div>
         <button class="dl" onclick="downloadDailyCsv()">↓ CSV</button>
       </div>
     </div>

@@ -50,13 +50,12 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .main-tab:hover{color:var(--text);background:transparent}
 .main-tab.active,.main-tab.alert.active{color:var(--text);background:transparent;border:0;box-shadow:none}
 .main-tab.active:after,.main-tab.alert.active:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--accent)}
-.main-tabs select,.main-tabs input{height:34px;border:1px solid var(--border)!important;border-radius:8px!important;background:var(--surface)!important;color:var(--text)!important}
+.main-tabs select:not(.month-select),.main-tabs input{height:34px;border:1px solid var(--border)!important;border-radius:8px!important;background:var(--surface)!important;color:var(--text)!important}
 
 /* Common controls */
-button.dl,button.month-step,.cpc-dtab,.tab-btn{color:var(--muted);background:var(--surface);border-color:var(--border);border-radius:8px;box-shadow:none}
+button.dl,.cpc-dtab,.tab-btn{color:var(--muted);background:var(--surface);border-color:var(--border);border-radius:8px;box-shadow:none}
 button.dl{min-height:34px;padding:0 11px}
-button.month-step{width:32px;height:34px;font-size:11px}
-button.dl:hover,button.month-step:hover,.tab-btn:hover{color:var(--text);background:var(--bg)}
+button.dl:hover,.tab-btn:hover{color:var(--text);background:var(--bg)}
 .tab-bar{gap:5px}
 .tab-btn{min-height:32px;padding:0 11px;font-weight:600}
 .tab-btn.active,.tab-btn.pc.active,.tab-btn.mobile.active,.tab-btn.cat.active{color:var(--amber);background:var(--accent-bg);border-color:#efc98e;box-shadow:none}
@@ -74,7 +73,15 @@ button.dl:hover,button.month-step:hover,.tab-btn:hover{color:var(--text);backgro
 
 /* Reusable page controls */
 .tab-actions{display:flex;align-items:center;gap:8px;margin-left:auto}
-.month-picker{display:flex;align-items:center;gap:7px}.month-picker--push{margin-left:auto}
+/* 월 선택 컨트롤 — 이전/다음 버튼과 드롭다운을 테두리 하나로 묶는다 */
+.month-picker{display:inline-flex;align-items:center;gap:4px;padding:4px;border:1px solid var(--border-strong);background:var(--surface);border-radius:10px;white-space:nowrap}
+.month-picker--push{margin-left:auto}
+.month-picker:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(242,138,0,.1)}
+button.month-step{display:grid;place-items:center;width:30px;height:30px;padding:0;border:0;border-radius:7px;background:transparent;color:var(--muted);cursor:pointer;box-shadow:none}
+button.month-step:hover:not(:disabled){background:var(--bg);color:var(--text)}
+button.month-step:disabled{opacity:.32;cursor:default;background:transparent}
+button.month-step svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.month-select{min-width:106px;height:30px;padding:0 7px;border:0;background:transparent;color:var(--text);font-size:13px;font-weight:700;font-family:inherit;text-align:center;cursor:pointer;outline:none}
 .section-toolbar,.table-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px}
 .section-heading{margin:0;color:var(--text);font-size:14px;font-weight:700;letter-spacing:-.02em}
 .section-heading--standalone{margin:24px 0 12px}

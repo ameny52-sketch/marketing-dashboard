@@ -165,11 +165,18 @@ tbody td.num,.cpc-tbl td.r{color:var(--muted);font-variant-numeric:tabular-nums}
    예전엔 이 값들이 JS 템플릿의 인라인 style로 셀마다 반복돼 있었다. 표 모양을 바꾸려면
    여기만 고치면 되고, JS는 데이터만 넣는다. */
 .tbl-dense thead th,.tbl-dense tbody td{padding:7px 10px}
-/* 헤더 배경은 기존 모습 유지용. 다른 표처럼 var(--bg)로 통일하려면 이 한 줄만 지우면 된다 */
-.tbl-dense thead th{background:#fafaf8}
+/* 헤더 배경이 크림색인 표 (그 외 표는 var(--bg)). 전체를 통일하려면 이 클래스를 떼면 된다 */
+.tbl-head-cream thead th{background:#fafaf8}
 .tbl-dense td.cell-name{font-weight:500;max-width:160px;overflow:hidden;text-overflow:ellipsis}
 /* 기준치를 넘은 값 강조 — 색은 기존 인라인 값을 그대로 옮긴 것 */
 .cell-warn{color:#dc2626;font-weight:600}
+.cell-code{font-family:monospace;font-weight:500}
+.cell-muted{color:var(--muted)}
+/* 표 대신 보여주는 짧은 안내문 (모달 안 등) */
+.no-data-inline{padding:1rem;color:var(--faint);font-size:12px}
+/* 모달 안 섹션 제목 */
+.modal-section-label{margin-bottom:.5rem;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.modal-section-label--gap{margin:1rem 0 .5rem}
 /* 데이터 없음 안내 셀. .tbl-dense 의 촘촘한 패딩에 눌리지 않도록 같은 구체성으로 뒤에 둔다 */
 tbody td.cell-empty{padding:2rem;text-align:center;color:var(--faint)}
 

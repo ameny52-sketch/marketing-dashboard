@@ -216,7 +216,7 @@ function renderKwTable(){
 function _kwDailyDetailTableHtml(r){
   const daily = r.daily || {};
   const dates = Object.keys(daily).sort();
-  if(!dates.length) return `<div style="padding:1rem;color:var(--faint);font-size:12px">일별 데이터 없음</div>`;
+  if(!dates.length) return `<div class="no-data-inline">일별 데이터 없음</div>`;
   const fmt = v => v!=null ? v.toLocaleString() : '-';
   const fmtP = v => v!=null ? v+'%' : '-';
   const rows = dates.map(dk=>{
@@ -228,29 +228,29 @@ function _kwDailyDetailTableHtml(r){
     const cpd = db>0 && cost>0 ? Math.round(cost/db) : null;
     const dbcvr = clicks>0 ? Math.round(db/clicks*1000)/10 : null;
     const cvr = db>0 ? Math.round(contracts/db*1000)/10 : null;
-    return `<tr style="border-bottom:1px solid var(--border)">
-      <td style="padding:7px 10px;font-size:12px">${dk}</td>
-      <td style="padding:7px 10px;text-align:right">${cost.toLocaleString()}</td>
-      <td style="padding:7px 10px;text-align:right">${clicks.toLocaleString()}</td>
-      <td style="padding:7px 10px;text-align:right">${imp.toLocaleString()}</td>
-      <td style="padding:7px 10px;text-align:right">${fmtP(ctr)}</td>
-      <td style="padding:7px 10px;text-align:right">${fmt(cpc)}</td>
-      <td style="padding:7px 10px;text-align:right;font-weight:600">${db.toLocaleString()}</td>
-      <td style="padding:7px 10px;text-align:right">${contracts.toLocaleString()}</td>
-      <td style="padding:7px 10px;text-align:right">${Math.round(perf).toLocaleString()}</td>
-      <td style="padding:7px 10px;text-align:right">${roas!=null?roas.toLocaleString()+'%':'-'}</td>
-      <td style="padding:7px 10px;text-align:right">${fmt(cpd)}</td>
-      <td style="padding:7px 10px;text-align:right">${fmtP(dbcvr)}</td>
-      <td style="padding:7px 10px;text-align:right">${fmtP(cvr)}</td>
+    return `<tr>
+      <td>${dk}</td>
+      <td class="ta-right">${cost.toLocaleString()}</td>
+      <td class="ta-right">${clicks.toLocaleString()}</td>
+      <td class="ta-right">${imp.toLocaleString()}</td>
+      <td class="ta-right">${fmtP(ctr)}</td>
+      <td class="ta-right">${fmt(cpc)}</td>
+      <td class="ta-right fw-600">${db.toLocaleString()}</td>
+      <td class="ta-right">${contracts.toLocaleString()}</td>
+      <td class="ta-right">${Math.round(perf).toLocaleString()}</td>
+      <td class="ta-right">${roas!=null?roas.toLocaleString()+'%':'-'}</td>
+      <td class="ta-right">${fmt(cpd)}</td>
+      <td class="ta-right">${fmtP(dbcvr)}</td>
+      <td class="ta-right">${fmtP(cvr)}</td>
     </tr>`;
   }).join('');
   return `
-    <div style="overflow-x:auto">
-    <table style="width:100%;border-collapse:collapse;font-size:12px">
+    <div class="table-wrap">
+    <table class="tbl-dense">
       <thead>
-        <tr style="background:#fafaf8">
+        <tr>
           ${['날짜','광고비(원)','클릭수','노출수','CTR(%)','CPC(원)','DB수','계약수','평가업적(원)','ROAS(%)','DB단가(원)','DB전환율(%)','계약률(%)'].map((h,i)=>
-            `<th style="padding:7px 10px;text-align:${i===0?'left':'right'};font-size:11px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap">${h}</th>`
+            `<th class="${i===0?'':'ta-right'}">${h}</th>`
           ).join('')}
         </tr>
       </thead>
@@ -266,34 +266,34 @@ function openKwDetail(r){
 
   const details = r.intype_detail || [];
   const intypeRows = details.map(d=>{
-    const cvrStyle = d.cvr!=null&&d.cvr>=10?'color:#dc2626;font-weight:600':'';
-    return `<tr style="border-bottom:1px solid var(--border)">
-      <td style="padding:7px 10px;font-family:monospace;font-size:12px;font-weight:500">${d.intype}</td>
-      <td style="padding:7px 10px;font-size:12px;color:var(--muted)">${d.cat||'-'}</td>
-      <td style="padding:7px 10px;text-align:right;font-weight:600">${d.db.toLocaleString()}</td>
-      <td style="padding:7px 10px;text-align:right">${d.contracts.toLocaleString()}</td>
-      <td style="padding:7px 10px;text-align:right;${cvrStyle}">${d.cvr!=null?d.cvr.toFixed(1)+'%':'-'}</td>
-      <td style="padding:7px 10px;text-align:right">${d.perf?Math.round(d.perf).toLocaleString():'-'}</td>
+    const cvrCls = d.cvr!=null&&d.cvr>=10?' cell-warn':'';
+    return `<tr>
+      <td class="cell-code">${d.intype}</td>
+      <td class="cell-muted">${d.cat||'-'}</td>
+      <td class="ta-right fw-600">${d.db.toLocaleString()}</td>
+      <td class="ta-right">${d.contracts.toLocaleString()}</td>
+      <td class="ta-right${cvrCls}">${d.cvr!=null?d.cvr.toFixed(1)+'%':'-'}</td>
+      <td class="ta-right">${d.perf?Math.round(d.perf).toLocaleString():'-'}</td>
     </tr>`;
   }).join('');
   const intypeSection = !details.length ? '' : `
-    <div style="margin:1rem 0 .5rem;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">인타입별 상세</div>
-    <table style="width:100%;border-collapse:collapse;font-size:12px">
+    <div class="modal-section-label modal-section-label--gap">인타입별 상세</div>
+    <table class="tbl-dense">
       <thead>
-        <tr style="background:#fafaf8">
-          <th style="padding:7px 10px;text-align:left;font-size:11px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border)">인타입</th>
-          <th style="padding:7px 10px;text-align:left;font-size:11px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border)">보종</th>
-          <th style="padding:7px 10px;text-align:right;font-size:11px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border)">DB수</th>
-          <th style="padding:7px 10px;text-align:right;font-size:11px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border)">계약수</th>
-          <th style="padding:7px 10px;text-align:right;font-size:11px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border)">계약율</th>
-          <th style="padding:7px 10px;text-align:right;font-size:11px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border)">환산료</th>
+        <tr>
+          <th>인타입</th>
+          <th>보종</th>
+          <th class="ta-right">DB수</th>
+          <th class="ta-right">계약수</th>
+          <th class="ta-right">계약율</th>
+          <th class="ta-right">환산료</th>
         </tr>
       </thead>
       <tbody>${intypeRows}</tbody>
     </table>`;
 
   document.getElementById('kw-modal-body').innerHTML = `
-    <div style="margin-bottom:.5rem;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">일별 상세</div>
+    <div class="modal-section-label">일별 상세</div>
     ${_kwDailyDetailTableHtml(r)}
     ${intypeSection}
   `;

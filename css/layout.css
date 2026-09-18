@@ -109,7 +109,7 @@ button.dl:hover,button.month-step:hover,.tab-btn:hover{color:var(--text);backgro
 .metric-value.purple{color:var(--purple)}
 
 /* KPI cards — one compact summary rail instead of floating tiles */
-.kpi-grid,.insight-kpi-grid,.cpc-summary,.metrics-grid{gap:0;margin-bottom:16px;overflow:hidden;background:var(--surface);border:1px solid var(--border);border-radius:12px}
+.kpi-grid,.cpc-summary{gap:0;margin-bottom:16px;overflow:hidden;background:var(--surface);border:1px solid var(--border);border-radius:12px}
 .kpi-card{height:108px;align-items:flex-start;justify-content:center;padding:17px 18px;text-align:left;overflow:hidden;background:transparent;border:0;border-right:1px solid var(--border);border-radius:0}
 .kpi-card:last-child{border-right:0}
 .kpi-card:before{display:none}
@@ -133,10 +133,6 @@ button.dl:hover,button.month-step:hover,.tab-btn:hover{color:var(--text);backgro
 .insight-hero__summary .delta-bad,.delta-bad{color:var(--red);font-weight:700}
 .insight-hero__badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px!important}
 .insight-hero__badges>span{padding:4px 8px!important;color:var(--muted)!important;background:rgba(255,255,255,.72)!important;border:1px solid rgba(226,192,140,.55)!important;border-radius:6px!important;font-size:10px!important}
-.insight-kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
-.insight-kpi-grid>div{min-height:98px!important;padding:16px 18px!important;background:transparent!important;border:0!important;border-right:1px solid var(--border)!important;border-radius:0!important;box-shadow:none!important}
-.insight-kpi-grid>div:last-child{border-right:0!important}
-.insight-kpi-grid>div>div:first-child{color:var(--muted)!important;font-size:11px!important;font-weight:550!important}.insight-kpi-grid>div>div:nth-child(2){margin-top:7px!important;color:var(--text)!important;font-size:20px!important;font-weight:720!important}
 .context-note{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding:12px 15px!important;background:var(--surface)!important;border:1px solid var(--border)!important;border-radius:10px!important}
 .context-note__label{flex:0 0 auto;color:var(--accent)!important;font-size:11px!important;font-weight:750!important}.context-note__text{color:var(--muted)!important;font-size:12px!important;line-height:1.5!important}
 .notice-warn{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding:12px 15px;background:var(--amber-bg);border:1px solid #efd78e;border-radius:10px}
@@ -330,7 +326,6 @@ select,input[type="text"],input[type="search"]{border-color:var(--border)!import
 .cr-metric-position .tab-btn:hover{background:transparent;color:var(--text)}
 .cr-metric-position .tab-btn.active{color:var(--text);background:var(--surface);border-color:transparent;box-shadow:0 1px 2px rgba(17,20,24,.08)}
 #cr-metric-groups{display:grid;gap:10px}
-.cr-metric-group-title{margin-bottom:6px;color:var(--faint);font-size:10px;font-weight:700}
 
 .cr-order-grid{display:grid;gap:7px;margin-top:11px}
 .cr-order-zone{padding:9px;background:var(--bg);border:1px dashed var(--border-strong);border-radius:8px}
@@ -372,7 +367,7 @@ select,input[type="text"],input[type="search"]{border-color:var(--border)!import
 
 @media(max-width:1080px){.cr-workspace{grid-template-columns:1fr}.cr-settings{position:static}}
 
-@media(max-width:1200px){.kpi-grid,.kpi-grid.kpi-grid-9,.kpi-grid.kpi-grid-7{grid-template-columns:repeat(4,minmax(0,1fr))}.metrics-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.alert-grid--4col{grid-template-columns:repeat(2,minmax(0,1fr))}#insight-cards,#kw-insight-cards{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
+@media(max-width:1200px){.kpi-grid,.kpi-grid.kpi-grid-9,.kpi-grid.kpi-grid-7{grid-template-columns:repeat(4,minmax(0,1fr))}.alert-grid--4col{grid-template-columns:repeat(2,minmax(0,1fr))}#insight-cards,#kw-insight-cards{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
 @media(max-width:900px){
   .app-sidebar,.app-sidebar.collapsed{flex:0 0 64px;width:64px}
   .app-sidebar-collapse-btn{display:none}
@@ -383,8 +378,8 @@ select,input[type="text"],input[type="search"]{border-color:var(--border)!import
   .cpc-chart-row,.alert-grid{grid-template-columns:1fr}
   .analysis-toolbar{align-items:stretch}.toolbar-divider{display:none}.compact-control--search{flex:1;width:auto}
 }
-@media(max-width:680px){.kpi-grid,.kpi-grid.kpi-grid-9,.kpi-grid.kpi-grid-7,.metrics-grid,.cpc-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi-card{height:94px}.modal-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.insight-hero{padding:18px!important}.insight-hero:before{display:none}.alert-grid--4col{grid-template-columns:1fr}#insight-cards,#kw-insight-cards{grid-template-columns:repeat(2,minmax(0,1fr))!important}.insight-kpi-grid>div:nth-child(2n){border-right:0!important}}
-@media(max-width:480px){.container{padding-left:12px;padding-right:12px}.kpi-grid,.kpi-grid.kpi-grid-9,.kpi-grid.kpi-grid-7,.metrics-grid,.cpc-summary{grid-template-columns:1fr 1fr}.kpi-card{padding:13px 14px}}
+@media(max-width:680px){.kpi-grid,.kpi-grid.kpi-grid-9,.kpi-grid.kpi-grid-7,.cpc-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi-card{height:94px}.modal-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.insight-hero{padding:18px!important}.insight-hero:before{display:none}.alert-grid--4col{grid-template-columns:1fr}#insight-cards,#kw-insight-cards{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:480px){.container{padding-left:12px;padding-right:12px}.kpi-grid,.kpi-grid.kpi-grid-9,.kpi-grid.kpi-grid-7,.cpc-summary{grid-template-columns:1fr 1fr}.kpi-card{padding:13px 14px}}
 
 /* 표시/숨김 토글 — 이 파일이 마지막에 로드되므로, 같은 우선순위의 display 규칙(.main-tabs, .month-picker, .context-note 등)보다 항상 뒤에 와서 숨김 상태가 확실히 이긴다 */
 .is-hidden{display:none}

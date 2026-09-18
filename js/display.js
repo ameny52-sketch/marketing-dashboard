@@ -900,11 +900,7 @@ function _buildMediaExportRows(media, cumMode){
 
   return {months, rows};
 }
-function _csvCell(v){
-  if(v===''||v===null||v===undefined) return '';
-  const s = String(v);
-  return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s;
-}
+// _csvCell은 core.js로 옮겨 모든 CSV 내보내기가 같은 이스케이프를 쓰도록 통일했다
 
 // ===== 디스플레이 롱포맷 집계 (커스텀 보고서 탭의 디스플레이 어댑터가 재사용) =====
 // 매체별로 이미 검증된 _buildMediaExportSums()의 영역↔소재↔인타입 매칭 결과를 4개 매체 모두에 대해
@@ -1254,7 +1250,7 @@ async function loadDisplayData(){
     // display_intype(구글시트 참조표)는 응답이 없거나 느려도 화면 전체가 "로드 중"에 멈추면 안 되므로
     // 타임아웃을 걸고, 실패해도 빈 참조표로 계속 진행한다 (인타입 매핑만 못 쓸 뿐 핵심 데이터는 정상 표시)
     const [reportText, intypeText, s] = await Promise.all([
-      fetch(SHEETS_URLS.display_report).then(r=>r.text()),
+      _fetchWithTimeout(SHEETS_URLS.display_report, 20000).then(r=>r.text()),
       SHEETS_URLS.display_intype ? _fetchWithTimeout(SHEETS_URLS.display_intype, 8000).then(r=>r.text()).catch(()=>'') : Promise.resolve(''),
       loadAllSheets(),
     ]);
@@ -1816,6 +1812,9 @@ function _renderFoundImages(urls, body){
   </div>`;
 }
 
+// 구글시트/CRM 값은 비개발자가 직접 입력하므로 따옴표가 섞여 들어올 수 있다.
+// title="${...}" 같은 속성 안에 그대로 들어가면 마크업이 깨지므로 따옴표까지 이스케이프한다
 function escHtml(str){
-  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }

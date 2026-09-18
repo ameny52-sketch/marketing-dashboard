@@ -1,0 +1,14 @@
+# 로컬 개발용 설정 (미리보기 서버 포트 등) — 사람마다 달라서 공유하지 않는다
+.claude/
+
+# 잡파일
+.zip
+*.tmp
+*.bak
+
+# OS / 편집기
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/

@@ -77,7 +77,25 @@ function _setLoadOverlay(show,msg,pct){
 function _fetchWithTimeout(url, ms){
   const ctrl = new AbortController();
   const timer = setTimeout(()=>ctrl.abort(), ms);
-  return fetch(url, {signal: ctrl.signal}).finally(()=>clearTimeout(timer));
+  return fetch(url, {signal: ctrl.signal})
+    .then(r=>{
+      // 시트 권한이 풀렸거나 서버가 죽으면 CSV 대신 HTML 안내 페이지가 200으로 돌아오는 경우가 있다.
+      // 그대로 넘기면 _pCSV가 HTML을 쓰레기 행으로 파싱하고, 행이 0개가 아니라는 이유로 캐시에까지
+      // 저장돼서 사용자는 "숫자가 전부 0인 화면"을 경고 없이 보게 된다 — 여기서 끊는다
+      if(!r.ok) throw new Error(`HTTP ${r.status} ${r.statusText} — ${url}`);
+      const ct = (r.headers.get('content-type')||'').toLowerCase();
+      if(ct.includes('text/html')) throw new Error(`CSV 대신 HTML 응답 (시트 권한/URL 확인 필요) — ${url}`);
+      return r;
+    })
+    .finally(()=>clearTimeout(timer));
+}
+
+// CSV 한 칸 이스케이프 — 값에 콤마/따옴표/줄바꿈이 있으면 따옴표로 감싼다.
+// (광고그룹명이나 키워드에 콤마가 들어가면 이게 없을 때 열이 밀려서 파일이 깨진다)
+function _csvCell(v){
+  if(v===''||v===null||v===undefined) return '';
+  const s = String(v);
+  return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s;
 }
 function _showSheetLoadWarning(labels){
   const el = document.getElementById('sheet-load-warning');
@@ -1089,7 +1107,7 @@ function downloadCSV(){
     const v=PC_CUM_COLS.includes(c.key)?_pcCumVal(r,c.key):r[c.key];
     return v===null?'':v;
   }));
-  const csv=[headers,...rows].map(r=>r.join(',')).join('\n');
+  const csv=[headers,...rows].map(r=>r.map(_csvCell).join(',')).join('\n');
   const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
@@ -1170,8 +1188,6 @@ function switchMediaGroup(group, btn){
     document.getElementById('panel-kw-main').classList.remove('show');
 
     const showKwPanel = () => {
-      // window.kwData는 renderKwTable()에서만 세팅되므로 여기서 동기화
-      if(!window.kwData || !window.kwData.length) window.kwData = kwData;
       if(kwTabName === 'kw-insight'){
         document.getElementById('panel-kw-insight').classList.add('show');
         document.getElementById('kw-month-sel-wrap').style.display='none';
@@ -1192,7 +1208,6 @@ function switchMediaGroup(group, btn){
         const data=_apiKeyword(month,s),crmRes=_apiCrm(month,s);
         if(data.error){ setStatus('오류: '+data.error,'err'); return; }
         kwData = data.result || [];
-        window.kwData = kwData;
         CRM_DATA=crmRes.crm_data||{};CRM_MEDIA_LIST=crmRes.media_list||[];KW_DAILY_COST=crmRes.kw_daily_cost||{};
         setStatus(`로드 완료 — ${kwData.length}개 키워드`,'ok');
         showKwPanel();
@@ -1256,7 +1271,7 @@ function setKwInsightDevice(device, btn){
   btn.classList.add('active');
   // 상세 테이블만 재렌더 (renderKwInsight 전체 재호출)
   const range = document.getElementById('kw-insight-range').value;
-  const data = (window.kwData||[]).filter(r=>r.sub_media==='네이버');
+  const data = (kwData||[]).filter(r=>r.sub_media==='네이버');
   if(!data.length) return;
   // dates 재계산
   const dayMap2={};

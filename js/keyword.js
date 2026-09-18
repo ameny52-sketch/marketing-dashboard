@@ -102,7 +102,8 @@ function renderKwTable(){
 
   // 정렬된 데이터 저장 (드릴다운용 + 성과 진단용)
   window.kwSortedData = sorted;
-  window.kwData = rows;  // 성과 진단에서 사용
+  // (예전엔 여기서 필터링된 rows를 성과 진단용 전역변수에 넘겼는데, 그래서 키워드 표의 필터가
+  //  성과 진단 숫자까지 바꿔버렸다. 성과 진단은 이제 원본 kwData를 직접 보므로 넘기지 않는다)
   renderKwChart(rows);
 
   document.getElementById('kw-row-count').textContent = rows.length+'개';
@@ -321,16 +322,24 @@ function kwSort(col){
 function downloadKwCsv(){
   const rows = getKwFiltered();
   const s = _kwTableCumMode ? ' ·누적' : '';
-  const hdr = ['키워드','매체','기기','광고비','클릭수','DB수',`계약수${s}`,`평가업적${s}`,`ROAS${s}`,'DB단가',`계약율${s}`];
+  // 컬럼 구성은 화면 표(renderKwTable의 cols)와 같은 순서로 맞춘다 —
+  // 예전엔 노출수/평균CPC가 CSV에만 빠져 있어서 화면과 다운로드 결과가 서로 달랐다
+  const hdr = ['키워드','매체','기기','광고비','노출수','클릭수','평균CPC','DB수','DB단가','DB전환율',
+               `계약수${s}`,`계약률${s}`,`평가업적${s}`,`ROAS${s}`];
   const body = rows.map(r=>{
     const contracts=_kwCumVal(r,'contracts'), perf=_kwCumVal(r,'perf'), roas=_kwCumVal(r,'roas'), cvr=_kwCumVal(r,'cvr');
+    // 평균CPC/DB전환율은 renderKwTable()이 그릴 때 행에 채워넣는 값이라, 표를 아직 안 그린 상태에서
+    // 내보내면 빈칸이 된다 — 여기서 같은 식으로 직접 계산해 표를 거치지 않아도 항상 채워지게 한다
+    const cpc = (r.clicks>0 && r.cost!=null) ? Math.round(r.cost/r.clicks) : null;
+    const dbcvr = r.clicks>0 ? Math.round(r.db/r.clicks*1000)/10 : null;
     return [
       r.keyword||'',r.sub_media,r.device,
-      r.cost!=null?r.cost:'',r.clicks!=null?r.clicks:'',
-      r.db,contracts,perf||'',
-      roas!=null?roas+'%':'',r.cpd!=null?r.cpd:'',
-      cvr!=null?cvr.toFixed(1)+'%':''
-    ].join(',');
+      r.cost!=null?r.cost:'', r.impressions!=null?r.impressions:'', r.clicks!=null?r.clicks:'',
+      cpc!=null?cpc:'', r.db, r.cpd!=null?r.cpd:'',
+      dbcvr!=null?dbcvr+'%':'',
+      contracts, cvr!=null?cvr.toFixed(1)+'%':'', perf||'',
+      roas!=null?roas+'%':''
+    ].map(_csvCell).join(',');
   });
   const csv = [hdr.join(','),...body].join('\n');
   const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
@@ -1070,7 +1079,7 @@ function downloadCpcCsv(){
   const hdr = ['광고그룹','기기','보종','평균순위','실제CPC','1위예상CPC','2위예상CPC','3위예상CPC','4위예상CPC','5위+예상CPC'];
   const body = rows.map(r=>{
     const e = cpcCalcEstimates(r);
-    return [r.group,r.media,r.cat||'',(r.avg_rank||0).toFixed(1),e.cpc_actual,e.cpc_r1,e.cpc_r2,e.cpc_r3,e.cpc_r4,e.cpc_r5].join(',');
+    return [r.group,r.media,r.cat||'',(r.avg_rank||0).toFixed(1),e.cpc_actual,e.cpc_r1,e.cpc_r2,e.cpc_r3,e.cpc_r4,e.cpc_r5].map(_csvCell).join(',');
   });
   const csv = [hdr.join(','),...body].join('\n');
   const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});

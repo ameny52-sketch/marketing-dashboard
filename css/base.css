@@ -1,4 +1,6 @@
-:root{--bg:#f5f5f3;--surface:#fff;--border:#e2e2de;--border-strong:#c8c8c2;--text:#1a1a18;--muted:#6b6b66;--faint:#9e9e99;--accent:#ff9b00;--accent-bg:#fff4e5;--green:#166534;--green-bg:#dcfce7;--amber:#92400e;--amber-bg:#fef3c7;--red:#991b1b;--red-bg:#fee2e2;--r:10px;--rs:6px}
+/* 디자인 토큰(:root)은 css/layout.css 최상단 한 곳에서만 정의한다.
+   예전엔 이 파일에도 :root가 있었는데 layout.css가 나중에 로드되며 전부 덮어써서,
+   여기 색을 바꿔도 화면이 안 바뀌는 상태였다 — 색/여백을 바꾸려면 layout.css를 보면 된다 */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Apple SD Gothic Neo','Noto Sans KR',-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;min-height:100vh}
 header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;gap:12px;height:56px;position:sticky;top:0;z-index:200}

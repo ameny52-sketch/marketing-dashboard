@@ -5,8 +5,9 @@ function renderKwInsight(){
   const cards   = document.getElementById('kw-insight-cards');
   const detail  = document.getElementById('kw-insight-detail-section');
 
-  // kwData: 키워드 탭 데이터 (window.kwData로 저장)
-  const data = (window.kwData || []).filter(r=>r.sub_media==='네이버');
+  // 항상 키워드 원본 전체(kwData)를 본다 — 성과 진단은 자체 기간/기기 필터를 갖고 있으므로
+  // 키워드 표 쪽 검색·ROAS·DB단가 필터와는 독립적으로 동작해야 한다
+  const data = (kwData || []).filter(r=>r.sub_media==='네이버');
   if(!data.length){
     noData.style.display='block'; banner.style.display='none';
     cards.style.display='none';  detail.style.display='none';
@@ -146,7 +147,7 @@ function renderKwInsight(){
 
 function renderKwInsightDetail(range, dates, dm){
   const section=document.getElementById('kw-insight-detail-section');
-  const data=( window.kwData||[] ).filter(r=>r.sub_media==='네이버');
+  const data=( kwData||[] ).filter(r=>r.sub_media==='네이버');
   if(!data.length||!dates.length){section.style.display='none';return;}
 
   const today=dates[dates.length-1];
@@ -1339,7 +1340,7 @@ let _displayReportBootstrapPromise = null;
 function _fetchDisplayReportOnce(){
   if(!_displayReportBootstrapPromise){
     _displayReportBootstrapPromise = !SHEETS_URLS.display_report ? Promise.resolve([]) :
-      fetch(SHEETS_URLS.display_report).then(r=>r.text()).then(text=>_pCSV(text)||[])
+      _fetchWithTimeout(SHEETS_URLS.display_report, 20000).then(r=>r.text()).then(text=>_pCSV(text)||[])
         .catch(e=>{ console.warn('디스플레이 리포트 로드 실패:', e); return []; });
   }
   return _displayReportBootstrapPromise;

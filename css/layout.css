@@ -83,6 +83,10 @@ button.month-step:disabled{opacity:.32;cursor:default;background:transparent}
 button.month-step svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .month-select{min-width:106px;height:30px;padding:0 7px;border:0;background:transparent;color:var(--text);font-size:13px;font-weight:700;font-family:inherit;text-align:center;cursor:pointer;outline:none}
 .section-toolbar,.table-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px}
+/* 카드 안 상단 줄(당월·누적 + 월선택 + CSV)은 카드 헤더와 같은 여백을 쓴다.
+   예전엔 패딩이 0이라 버튼이 카드 모서리와 아래 필터 줄에 붙어 있었다.
+   (.section-toolbar 는 카드 밖 제목줄이라 해당 없음) */
+.table-toolbar{min-height:52px;padding:14px 16px}
 .section-heading{margin:0;color:var(--text);font-size:14px;font-weight:700;letter-spacing:-.02em}
 .section-heading--standalone{margin:24px 0 12px}
 .table-toolbar__actions,.inline-filter-bar,.analysis-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}

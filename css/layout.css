@@ -177,6 +177,17 @@ tbody td.num,.cpc-tbl td.r{color:var(--muted);font-variant-numeric:tabular-nums}
 /* 모달 안 섹션 제목 */
 .modal-section-label{margin-bottom:.5rem;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
 .modal-section-label--gap{margin:1rem 0 .5rem}
+/* 파워컨텐츠 일별 상세 모달 셀 (여백은 기본 td 규격을 쓰고 한쪽만 덮어쓴다) */
+td.dk-caret{color:var(--faint);text-align:center}
+.cell-indent{padding-left:1.5rem;color:var(--muted)}
+.cell-note{padding-left:1rem;color:var(--faint);font-size:11px;text-align:left}
+/* 롤업 상세 모달(캠페인/키워드 -> 포함된 광고그룹 목록) 표 */
+.tbl-rollup{font-size:12.5px}
+.tbl-rollup thead th{position:sticky;top:0;padding:7px 10px;background:#f8fafc;text-align:right}
+.tbl-rollup tbody td{padding:6px 10px;text-align:right;border-bottom:1px solid var(--border)}
+.tbl-rollup tbody td.ta-left{text-align:left}
+.mono-sm{font-family:monospace;font-size:11px}
+.hint-line{margin-bottom:6px;font-size:11px;color:var(--faint)}
 /* 데이터 없음 안내 셀. .tbl-dense 의 촘촘한 패딩에 눌리지 않도록 같은 구체성으로 뒤에 둔다 */
 tbody td.cell-empty{padding:2rem;text-align:center;color:var(--faint)}
 

@@ -906,8 +906,8 @@ function openRollupDetail(i){
   if(!r || !r.members) return;
   const members = [...r.members].sort((a,b)=>b.cost-a.cost);
   const num = (v,unit='') => (v===null||v===undefined) ? '-' : v.toLocaleString()+unit;
-  const th = l => `<th style="padding:7px 10px;text-align:right;background:#f8fafc;border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0">${l}</th>`;
-  const td = (v,extra='') => `<td style="padding:6px 10px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap;${extra}">${v}</td>`;
+  const th = l => `<th>${l}</th>`;
+  const td = (v,cls='') => `<td class="${cls}">${v}</td>`;
   document.getElementById('daily-group-modal-title').textContent = `${r.group} — 포함된 광고그룹 ${members.length}개`;
   document.getElementById('daily-group-modal-body').innerHTML = `
     <div class="modal-metrics" style="margin-bottom:1rem">
@@ -916,13 +916,13 @@ function openRollupDetail(i){
       <div class="modal-metric"><div class="label">DB단가</div><div class="val">${num(r.cpd,'원')}</div></div>
       <div class="modal-metric"><div class="label">ROAS</div><div class="val" style="color:var(--amber)">${r.roas!==null?num(r.roas,'%'):'-'}</div></div>
     </div>
-    <div style="font-size:11px;color:var(--faint);margin-bottom:6px">광고그룹을 클릭하면 일별 상세가 열립니다</div>
-    <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12.5px">
+    <div class="hint-line">광고그룹을 클릭하면 일별 상세가 열립니다</div>
+    <div class="table-wrap"><table class="tbl-rollup">
       <thead><tr>${['광고그룹','기기','인타입','광고비','클릭수','DB수','DB단가','계약수','ROAS'].map(th).join('')}</tr></thead>
       <tbody>${members.map(m=>{
         const idx = resultData.indexOf(m);
-        return `<tr class="clickable" style="cursor:pointer" onclick="document.getElementById('daily-group-modal-bg').style.display='none';openDetail(${idx})">
-          ${td(m.group,'text-align:left;font-weight:600')}${td(m.media||'-')}${td(`<span style="font-family:monospace;font-size:11px">${m.intype||'-'}</span>`)}
+        return `<tr class="clickable" onclick="document.getElementById('daily-group-modal-bg').style.display='none';openDetail(${idx})">
+          ${td(m.group,'ta-left fw-600')}${td(m.media||'-')}${td(`<span class="mono-sm">${m.intype||'-'}</span>`)}
           ${td(num(m.cost,'원'))}${td(num(m.clicks))}${td(num(m.db))}${td(num(m.cpd,'원'))}${td(num(m.contracts))}${td(m.roas!==null?num(m.roas,'%'):'-')}
         </tr>`;
       }).join('')}</tbody>
@@ -983,7 +983,7 @@ function openDetail(idx){
   const daily=(r.daily_raw || r.dailyRaw || []);
   if(!daily.length){
     document.getElementById('modal-thead').innerHTML='';
-    document.getElementById('modal-tbody').innerHTML='<tr><td style="padding:1rem;color:var(--faint)">일별 데이터 없음</td></tr>';
+    document.getElementById('modal-tbody').innerHTML='<tr><td class="no-data-inline">일별 데이터 없음</td></tr>';
   } else {
     document.getElementById('modal-thead').innerHTML=`<tr>
       <th></th>
@@ -1031,18 +1031,18 @@ function openDetail(idx){
         const cpc = k.clicks>0 ? Math.round(k.cost/k.clicks) : null;
         return `<tr class="${rowCls}" style="display:none;background:var(--bg)">
           <td></td>
-          <td style="padding-left:1.5rem;color:var(--muted)">${escHtml(k.keyword||'-')}</td>
+          <td class="cell-indent">${escHtml(k.keyword||'-')}</td>
           <td class="num">${(k.cost||0).toLocaleString()}</td>
           <td class="num">${(k.clicks||0).toLocaleString()}</td>
           <td class="num">${(k.impressions||0).toLocaleString()}</td>
           <td class="num">${ctr!==null?ctr+'%':'-'}</td>
           <td class="num">${cpc!==null?cpc.toLocaleString():'-'}</td>
-          <td class="num" colspan="8" style="color:var(--faint);font-size:11px;text-align:left;padding-left:1rem">DB/계약 데이터는 광고그룹 기준으로만 집계됩니다</td>
+          <td class="cell-note" colspan="8">DB/계약 데이터는 광고그룹 기준으로만 집계됩니다</td>
         </tr>`;
       }).join('');
-      return `<tr style="cursor:pointer" onclick="toggleDailyKwDetail('${rowCls}',this)">
-        <td class="dk-caret" style="color:var(--faint);text-align:center">▸</td>
-        <td>${d.date} <span style="font-size:11px;color:var(--faint)">(키워드 ${d.kws.length}개)</span></td>
+      return `<tr class="clickable" onclick="toggleDailyKwDetail('${rowCls}',this)">
+        <td class="dk-caret">▸</td>
+        <td>${d.date} <span class="text-faint-sm">(키워드 ${d.kws.length}개)</span></td>
         <td class="num">${d.cost.toLocaleString()}</td>
         <td class="num">${d.clicks.toLocaleString()}</td>
         <td class="num">${d.impressions.toLocaleString()}</td>

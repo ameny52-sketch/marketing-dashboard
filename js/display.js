@@ -265,15 +265,13 @@ function renderDisplayInsight(){
       <div class="table-header">
         <h2>영역별 소재 월간 히스토리 <span style="font-size:11px;font-weight:400;color:var(--faint)">(어느 달에 어떤 소재가 좋았는지 비교)</span></h2>
       </div>
-      <div style="padding:.75rem 1.25rem 0;border-bottom:0px">
+      <div class="table-filter-groups">
         <div class="tab-bar" id="creative-history-media-toggle" style="margin-bottom:0">
           <button class="tab-btn active" onclick="setCreativeHistoryMedia('카카오페이',this)">카카오페이</button>
           <button class="tab-btn" onclick="setCreativeHistoryMedia('T멤버십',this)">T멤버십</button>
           <button class="tab-btn" onclick="setCreativeHistoryMedia('가스락',this)">가스락</button>
           <button class="tab-btn" onclick="setCreativeHistoryMedia('KT PASS',this)">KT PASS</button>
         </div>
-      </div>
-      <div style="padding:.75rem 1.25rem 0;border-bottom:0px">
         <div class="tab-bar" id="creative-history-metric-toggle" style="margin-bottom:0">
           <button class="tab-btn active" onclick="setCreativeHistoryMetric('cpd',this)">DB단가</button>
           <button class="tab-btn" onclick="setCreativeHistoryMetric('ctr',this)">CTR</button>

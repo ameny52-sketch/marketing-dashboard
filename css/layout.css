@@ -67,7 +67,7 @@ button.dl:hover,.tab-btn:hover{color:var(--text);background:var(--bg)}
 .filter-row input,.filter-row select{height:34px;padding:0 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
 .filter-row input:focus,.filter-row select:focus{border-color:var(--accent)}
 .cpc-device-tabs{gap:4px}
-.cpc-dtab,.cpc-dtab:first-child,.cpc-dtab:last-child{height:34px;padding:0 12px;border:1px solid var(--border);border-radius:8px}
+.cpc-dtab,.cpc-dtab:first-child,.cpc-dtab:last-child{height:34px;padding:0 11px;border:1px solid var(--border);border-radius:8px}
 .cpc-dtab+.cpc-dtab{border-left:1px solid var(--border)}
 .cpc-dtab.act-pc,.cpc-dtab.act-mo,.cpc-dtab.act-all{color:var(--amber);background:var(--accent-bg);border-color:#efc98e}
 
@@ -92,7 +92,7 @@ button.month-step svg{width:16px;height:16px;fill:none;stroke:currentColor;strok
 /* Daily DB 현황 매체 토글 pill. 예전엔 인라인 스타일로만 그려졌고, layout.css가
    button[style*="border:1px solid var(--border-strong)"] 로 잡아 꺼진 pill만 8px로 눌렀기 때문에
    켜진 pill(14px)과 모양이 서로 달랐다 — 클래스로 옮기면서 pill 모양으로 통일한다 */
-.media-pill{border:1px solid var(--border);background:transparent;color:var(--faint);border-radius:14px;padding:3px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap}
+.media-pill{display:inline-flex;align-items:center;min-height:32px;padding:0 11px;border:1px solid var(--border);background:transparent;color:var(--faint);border-radius:16px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap}
 .media-pill:hover{color:var(--text);background:var(--bg)}
 .media-pill.is-on{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
 .media-pill--all{color:var(--muted)}

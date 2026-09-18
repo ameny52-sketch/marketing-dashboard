@@ -507,17 +507,17 @@ function renderDaily(){
 
   const COL = 7;
   const cumSuffix = _dailyTableCumMode ? ' ·누적' : '';
-  function subCols(){ return `<th class="dth">DB수</th><th class="dth">계약수${cumSuffix}</th><th class="dth">계약율${cumSuffix}</th><th class="dth">환산료${cumSuffix}</th><th class="dth">광고비</th><th class="dth">DB단가</th><th class="dth" style="border-right:1px solid var(--border)">ROAS${cumSuffix}</th>`; }
-  function totalSubCols(){ return `<th class="dth" style="background:#fff8ec">DB수</th><th class="dth" style="background:#fff8ec">계약수${cumSuffix}</th><th class="dth" style="background:#fff8ec">계약율${cumSuffix}</th><th class="dth" style="background:#fff8ec">환산료${cumSuffix}</th><th class="dth" style="background:#fff8ec">광고비</th><th class="dth" style="background:#fff8ec">DB단가</th><th class="dth" style="border-right:1px solid var(--border);background:#fff8ec">ROAS${cumSuffix}</th>`; }
+  function subCols(){ return `<th class="dth">DB수</th><th class="dth">계약수${cumSuffix}</th><th class="dth">계약율${cumSuffix}</th><th class="dth">환산료${cumSuffix}</th><th class="dth">광고비</th><th class="dth">DB단가</th><th class="dth dth--sep">ROAS${cumSuffix}</th>`; }
+  function totalSubCols(){ return `<th class="dth dth--total">DB수</th><th class="dth dth--total">계약수${cumSuffix}</th><th class="dth dth--total">계약율${cumSuffix}</th><th class="dth dth--total">환산료${cumSuffix}</th><th class="dth dth--total">광고비</th><th class="dth dth--total">DB단가</th><th class="dth dth--total dth--sep">ROAS${cumSuffix}</th>`; }
 
-  let theadHtml = '<tr style="background:#fafaf8"><th rowspan="2" style="padding:7px 10px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);text-align:center;min-width:80px;position:sticky;left:0;z-index:4;background:#fafaf8">구분</th>';
-  theadHtml += '<th colspan="' + COL + '" style="padding:6px 10px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);font-size:11px;font-weight:600;color:#854F0B;text-align:center;background:#fff8ec">전체합계</th>';
-  if(showPc) theadHtml += '<th colspan="' + COL + '" style="padding:6px 10px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);font-size:11px;font-weight:600;color:#ff9b00;text-align:center">파워컨텐츠</th>';
+  let theadHtml = '<tr><th rowspan="2" class="dth-corner">구분</th>';
+  theadHtml += '<th colspan="' + COL + '" class="dth-group dth-group--total">전체합계</th>';
+  if(showPc) theadHtml += '<th colspan="' + COL + '" class="dth-group dth-group--pc">파워컨텐츠</th>';
   allMedias.forEach(m=>{
-    const color = kwMedias.includes(m) ? '#1a5c2a' : '#444';
-    theadHtml += '<th colspan="' + COL + '" style="padding:6px 10px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);font-size:11px;font-weight:600;color:' + color + ';text-align:center">' + m + '</th>';
+    const kind = kwMedias.includes(m) ? 'kw' : 'etc';
+    theadHtml += '<th colspan="' + COL + '" class="dth-group dth-group--' + kind + '">' + m + '</th>';
   });
-  theadHtml += '</tr><tr style="background:#fafaf8">' + totalSubCols() + (showPc?subCols():'');
+  theadHtml += '</tr><tr>' + totalSubCols() + (showPc?subCols():'');
   allMedias.forEach(()=>{ theadHtml += subCols(); });
   theadHtml += '</tr>';
   const theadEl = document.getElementById('daily-thead');
@@ -530,14 +530,13 @@ function renderDaily(){
     const cvr  = db>0?(con/db*100).toFixed(1)+'%':'';
     const cpd  = db>0&&cost>0?fmtN(Math.round(cost/db)):'';
     const roas = perf>0&&cost>0?Math.round(cost/perf*100).toLocaleString()+'%':'';
-    return '<td class="dtd">'+( db||'')+' </td><td class="dtd">'+( con||'')+' </td><td class="dtd">'+cvr+'</td><td class="dtd">'+(perf?fmtN(Math.round(perf)):'')+' </td><td class="dtd">'+(cost?fmtN(cost):'')+' </td><td class="dtd">'+cpd+'</td><td class="dtd" style="border-right:1px solid var(--border)">'+roas+'</td>';
+    return '<td class="dtd">'+( db||'')+' </td><td class="dtd">'+( con||'')+' </td><td class="dtd">'+cvr+'</td><td class="dtd">'+(perf?fmtN(Math.round(perf)):'')+' </td><td class="dtd">'+(cost?fmtN(cost):'')+' </td><td class="dtd">'+cpd+'</td><td class="dtd dtd--sep">'+roas+'</td>';
   }
   function makeTotalCells(db, con, perf, cost){
     const cvr  = db>0?(con/db*100).toFixed(1)+'%':'';
     const cpd  = db>0&&cost>0?fmtN(Math.round(cost/db)):'';
     const roas = perf>0&&cost>0?Math.round(cost/perf*100).toLocaleString()+'%':'';
-    const s = 'background:#fff8ec';
-    return `<td class="dtd" style="${s}">${db||''}</td><td class="dtd" style="${s}">${con||''}</td><td class="dtd" style="${s}">${cvr}</td><td class="dtd" style="${s}">${perf?fmtN(Math.round(perf)):''}</td><td class="dtd" style="${s}">${cost?fmtN(cost):''}</td><td class="dtd" style="${s}">${cpd}</td><td class="dtd" style="border-right:1px solid var(--border);${s}">${roas}</td>`;
+    return `<td class="dtd dtd--total">${db||''}</td><td class="dtd dtd--total">${con||''}</td><td class="dtd dtd--total">${cvr}</td><td class="dtd dtd--total">${perf?fmtN(Math.round(perf)):''}</td><td class="dtd dtd--total">${cost?fmtN(cost):''}</td><td class="dtd dtd--total">${cpd}</td><td class="dtd dtd--total dtd--sep">${roas}</td>`;
   }
 
   function makeRow(item, isMonthTotal){
@@ -564,10 +563,9 @@ function renderDaily(){
     const totalDb=isMonthTotal?(item.totalDb||0):(pc_db+Object.values(crmDay).reduce((s,c)=>s+(c.db||0),0));
     const totalCon=isMonthTotal?((cum?item.totalCon_cum:item.totalCon)||0):(pc_con+Object.values(crmDay).reduce((s,c)=>s+(c[conKey]||0),0));
     const totalPerf=isMonthTotal?((cum?item.totalPerf_cum:item.totalPerf)||0):(pc_perf+Object.values(crmDay).reduce((s,c)=>s+(c[perfKey]||0),0));
-    const bg = isMonthTotal?'background:#eff4ff;font-weight:700':'';
-    const bgSticky = isMonthTotal?'#eff4ff':'var(--surface)';
-    const dateColor= isMonthTotal?'color:#ff9b00':
-      (item.pd&&(new Date(item.pd.year,item.pd.month-1,item.pd.day).getDay()===0||new Date(item.pd.year,item.pd.month-1,item.pd.day).getDay()===6)?'color:#dc2626':'color:var(--text)');
+    const rowCls = isMonthTotal ? ' class="row-month-total"' : '';
+    const isWeekend = !isMonthTotal && item.pd &&
+      [0,6].includes(new Date(item.pd.year,item.pd.month-1,item.pd.day).getDay());
     let crmCells='', crmCostSum=0;
     crmMedias.forEach(m=>{
       const c=crmDay[m]||{};
@@ -578,7 +576,7 @@ function renderDaily(){
     const totalCost=isMonthTotal?(item.totalCost||0):(pc_cost+naverCost+googleCost+daumCost+crmCostSum);
     const pcCells = showPc ? makeMediaCells(pc_db,pc_con,pc_perf,pc_cost) : '';
     const kwCells = kwMedias.length ? makeMediaCells(naverDb,naverCon,naverPerf,naverCost)+makeMediaCells(googleDb,googleCon,googlePerf,googleCost)+makeMediaCells(daumDb,daumCon,daumPerf,daumCost) : '';
-    return '<tr style="'+bg+'"><td style="padding:7px 10px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);font-size:12px;'+dateColor+';text-align:center;position:sticky;left:0;z-index:1;background:'+bgSticky+'">'+item.label+'</td>'+makeTotalCells(totalDb,totalCon,totalPerf,totalCost)+pcCells+kwCells+crmCells+'</tr>';
+    return '<tr'+rowCls+'><td class="dtd-date'+(isWeekend?' is-weekend':'')+'">'+item.label+'</td>'+makeTotalCells(totalDb,totalCon,totalPerf,totalCost)+pcCells+kwCells+crmCells+'</tr>';
   }
 
   document.getElementById('daily-tbody').innerHTML = allDays.map(item=>makeRow(item, item.type==='month-total')).join('');
@@ -1005,17 +1003,17 @@ function renderCpc(){
     const rnk = r.avg_rank || 0;
     const isKey = isKeyGroup(r.group, r.media);
     const keyBadge = isKey ? ' ⭐' : '';
-    return `<tr style="${isKey?'background:#fffbeb;':''}">
+    return `<tr class="${isKey?'row-key':''}">
       <td class="gname" title="${r.group}">${r.group}${keyBadge}</td>
       <td><span class="cpc-media-pill ${r.media==='PC'?'pill-pc':'pill-mo'}">${r.media}</span></td>
-      <td style="color:var(--muted);font-size:12px">${r.cat||'-'}</td>
+      <td class="cell-muted">${r.cat||'-'}</td>
       <td class="r"><span class="cpc-rank-badge ${rankBadgeCls(rnk)}">${rnk.toFixed(1)}위</span></td>
-      <td class="r" style="font-weight:700;color:var(--text)">${e.cpc_actual.toLocaleString()}원</td>
-      <td class="r" style="color:#0C447C;font-weight:600">${e.cpc_r1.toLocaleString()}원</td>
+      <td class="r cell-actual">${e.cpc_actual.toLocaleString()}원</td>
+      <td class="r cell-rank1">${e.cpc_r1.toLocaleString()}원</td>
       <td class="r">${e.cpc_r2.toLocaleString()}원</td>
       <td class="r">${e.cpc_r3.toLocaleString()}원</td>
       <td class="r">${e.cpc_r4.toLocaleString()}원</td>
-      <td class="r" style="color:var(--faint)">${e.cpc_r5.toLocaleString()}원</td>
+      <td class="r cell-faint">${e.cpc_r5.toLocaleString()}원</td>
       <td>
         <div class="cpc-bar-wrap">
           <div class="cpc-bar-bg"><div class="cpc-bar-fill ${fillCls(r)}" style="width:${bw}%"></div></div>

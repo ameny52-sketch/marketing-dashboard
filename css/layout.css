@@ -209,6 +209,14 @@ tbody td.cell-best{font-weight:700;color:#166534;background:#EAF3DE}
 .cell-click{cursor:pointer}
 #display-tbody td.cell-indent{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #display-tbody td.cell-codes{max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+
+/* ---- CPC 분석 표 ---- (.cpc-tbl td.r 의 muted 색을 덮어써야 해 같은 스코프로 뒤에 둔다) */
+.cpc-tbl td.cell-actual{color:var(--text);font-weight:700}
+.cpc-tbl td.cell-rank1{color:#0C447C;font-weight:600}
+.cpc-tbl td.cell-faint{color:var(--faint)}
+.cpc-tbl td.cell-muted{color:var(--muted)}
+.cpc-tbl tr.row-key{background:#fffbeb}
 /* 데이터 없음 안내 셀. .tbl-dense 의 촘촘한 패딩에 눌리지 않도록 같은 구체성으로 뒤에 둔다 */
 tbody td.cell-empty{padding:2rem;text-align:center;color:var(--faint)}
 
@@ -219,6 +227,28 @@ tbody td.cell-empty{padding:2rem;text-align:center;color:var(--faint)}
 #daily-table{font-size:11.5px}
 .daily-table-scroll{overflow:auto;max-height:calc(100vh - 220px)}
 #report-table{font-size:12.5px}
+/* ---- Daily DB 현황 표 (2단 헤더 + 첫 열 고정 + 매체 그룹 구분) ----
+   #daily-table thead th 같은 ID 규칙이 이미 있어서, 인라인이 하던 일을 대신하려면
+   클래스도 같은 ID 스코프로 올려야 배경색이 밀리지 않는다. */
+#daily-thead tr{background:#fafaf8}
+/* 좌상단 "구분" 셀 (2행 병합, 가로 스크롤 시 왼쪽 고정) */
+#daily-thead tr th.dth-corner{padding:7px 10px;min-width:80px;text-align:center;background:#fafaf8;border-right:1px solid var(--border);border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);position:sticky;left:0;z-index:4}
+/* 매체 그룹 헤더 (헤더 1행) */
+#daily-thead th.dth-group{padding:6px 10px;text-align:center;border-right:1px solid var(--border);border-bottom:1px solid var(--border);font-size:11px;font-weight:600}
+#daily-thead th.dth-group--total{color:#854F0B;background:#fff8ec}
+#daily-thead th.dth-group--pc{color:#ff9b00}
+#daily-thead th.dth-group--kw{color:#1a5c2a}
+#daily-thead th.dth-group--etc{color:#444}
+/* 전체합계 열 묶음 강조 / 매체 그룹 사이 구분선 */
+#daily-thead tr th.dth--total{background:#fff8ec}
+.dtd--total{background:#fff8ec}
+.dth--sep,.dtd--sep{border-right:1px solid var(--border)}
+/* 날짜(첫 열) — 가로 스크롤 시 왼쪽 고정 */
+#daily-tbody tr td.dtd-date{padding:7px 10px;font-size:12px;text-align:center;color:var(--text);background:var(--surface);border-right:1px solid var(--border);border-bottom:1px solid var(--border);position:sticky;left:0;z-index:1}
+#daily-tbody tr td.dtd-date.is-weekend{color:#dc2626}
+/* 월 합계 행 */
+#daily-tbody tr.row-month-total{background:#eff4ff;font-weight:700}
+#daily-tbody tr.row-month-total td.dtd-date{background:#eff4ff;color:#ff9b00}
 
 /* Status and ranking */
 .badge,.cpc-rank-badge,.cpc-media-pill{border-radius:5px;font-weight:600}

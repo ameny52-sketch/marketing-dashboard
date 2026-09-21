@@ -17,6 +17,19 @@ const _DISPLAY_CHART_METRICS = {
   dbcvr: {label:'DB전환율', type:'line', unit:'%'}
 };
 
+// ── CTR 분모(도달) ──────────────────────────────────────────────
+// 노출수가 없는 영역은 발송수를 노출 대신 쓴다. T멤버십 PUSH처럼 매체 리포트에 노출 개념 자체가
+// 없고 발송 건수만 오는 상품이 있는데, 그대로 두면 클릭은 잡히는데 분모가 0이라 CTR이 '-'로 비고,
+// 매체·전체 합산 CTR은 분모 없이 클릭만 더해져 실제보다 부풀려진다.
+// 노출과 발송이 함께 오는 영역(카카오페이 TMS)은 지금까지처럼 노출을 그대로 쓴다.
+// 반드시 "행 단위"로 골라서 합산할 것 — 영역이 섞인 합계(매체 합계, 오늘의 요약, KPI)에서도
+// 발송형/노출형이 각자 제 분모로 더해져야 하기 때문이다.
+function _dispRowReach(r){
+  const imp = _cN(r['노출수(열람수)']);
+  return imp>0 ? imp : _cN(r['발송수']);
+}
+function _dispCtr(reach, clk){ return reach>0 ? Math.round(clk/reach*10000)/100 : null; }
+
 function initDisplayTab(){
   if(!_displayLoaded){ _displayLoaded = true; loadDisplayData(); }
   else if(_isDisplayInsightActive()) renderDisplayInsight();
@@ -84,7 +97,7 @@ function renderDisplayInsight(){
 
   // 매체별 전체 영역 통합 집계 (오늘/어제) + 인타입 코드 집합 (DB수 매칭용)
   const agg = {};
-  mediaList.forEach(m=>{ agg[m] = {today:{cost:0,imp:0,clk:0,db:0}, yesterday:{cost:0,imp:0,clk:0,db:0}, codes:new Set()}; });
+  mediaList.forEach(m=>{ agg[m] = {today:{cost:0,imp:0,clk:0,reach:0,db:0}, yesterday:{cost:0,imp:0,clk:0,reach:0,db:0}, codes:new Set()}; });
   rows.forEach(r=>{
     const media = (r['매체명']||'').trim();
     const md = mediaDates[media];
@@ -95,6 +108,7 @@ function renderDisplayInsight(){
     bucket.cost += _cN(r['비용']);
     bucket.imp  += _cN(r['노출수(열람수)']);
     bucket.clk  += _cN(r['클릭수']);
+    bucket.reach += _dispRowReach(r);
     const code = (r['인타입']||'').trim();
     if(code) agg[media].codes.add(code);
   });
@@ -115,7 +129,7 @@ function renderDisplayInsight(){
   function calc(b){
     return {
       cpd: b.db>0 ? Math.round(b.cost/b.db) : null,
-      ctr: b.imp>0 ? Math.round(b.clk/b.imp*10000)/100 : null,
+      ctr: _dispCtr(b.reach, b.clk),
       dbcvr: b.clk>0 ? Math.round(b.db/b.clk*1000)/10 : null
     };
   }
@@ -123,11 +137,11 @@ function renderDisplayInsight(){
 
   // 파워컨텐츠/키워드 성과 진단과 동일한 형식: 매체별이 아닌 전체 매체 합산 한 줄 요약
   // (매체마다 "오늘"의 실제 날짜는 다를 수 있으나, 매체별 최신 데이터를 그대로 합산한다)
-  const totalY = {cost:0,imp:0,clk:0,db:0}, totalT = {cost:0,imp:0,clk:0,db:0};
+  const totalY = {cost:0,imp:0,clk:0,reach:0,db:0}, totalT = {cost:0,imp:0,clk:0,reach:0,db:0};
   mediaList.forEach(m=>{
     const y = agg[m].yesterday, t = agg[m].today;
-    totalY.cost+=y.cost; totalY.imp+=y.imp; totalY.clk+=y.clk; totalY.db+=y.db;
-    totalT.cost+=t.cost; totalT.imp+=t.imp; totalT.clk+=t.clk; totalT.db+=t.db;
+    totalY.cost+=y.cost; totalY.imp+=y.imp; totalY.clk+=y.clk; totalY.reach+=y.reach; totalY.db+=y.db;
+    totalT.cost+=t.cost; totalT.imp+=t.imp; totalT.clk+=t.clk; totalT.reach+=t.reach; totalT.db+=t.db;
   });
   const blocks = (()=>{
     const y = totalY, t = totalT;
@@ -169,7 +183,7 @@ function renderDisplayInsight(){
     const media = (r['매체명']||'').trim();
     const area = (r['상품명']||'').trim() || '(미지정)';
     const key = `${media}||${area}`;
-    if(!groupMap[key]) groupMap[key] = {media, area, cost:0, imp:0, clk:0, snd:0, codes:new Set()};
+    if(!groupMap[key]) groupMap[key] = {media, area, cost:0, imp:0, clk:0, snd:0, reach:0, codes:new Set()};
     const g = groupMap[key];
     const code = (r['인타입']||'').trim();
     if(code) g.codes.add(code);
@@ -178,6 +192,7 @@ function renderDisplayInsight(){
       g.imp  += _cN(r['노출수(열람수)']);
       g.clk  += _cN(r['클릭수']);
       g.snd  += _cN(r['발송수']);
+      g.reach += _dispRowReach(r);
     }
   });
   const codeToGroup = {};
@@ -197,7 +212,7 @@ function renderDisplayInsight(){
       if(!prefixMedia) return;
       const area = refAreaByMediaCode[`${prefixMedia.replace(/\s+/g,'')}||${code}`] || '미확인';
       const key = `${prefixMedia}||${area}`;
-      if(!groupMap[key]) groupMap[key] = {media:prefixMedia, area, cost:0, imp:0, clk:0, snd:0, codes:new Set()};
+      if(!groupMap[key]) groupMap[key] = {media:prefixMedia, area, cost:0, imp:0, clk:0, snd:0, reach:0, codes:new Set()};
       groupMap[key].codes.add(code);
       codeToGroup[code] = groupMap[key];
     });
@@ -219,7 +234,7 @@ function renderDisplayInsight(){
   });
   const tableRows = Object.entries(groupMap).map(([key,g])=>{
     const d = dbAgg[key];
-    const ctr = g.imp>0 ? Math.round(g.clk/g.imp*10000)/100 : null;
+    const ctr = _dispCtr(g.reach, g.clk);
     const dbcvr = g.clk>0 ? Math.round(d.db/g.clk*1000)/10 : null;
     const cpd = d.db>0 ? Math.round(g.cost/d.db) : null;
     const roas = (d.perf>0 && g.cost>0) ? Math.round(g.cost/d.perf*100) : null;
@@ -415,7 +430,7 @@ function _displayBuildChartSeries(areaList, mediaRows, crmRows, monSel){
   const data = {};
   areaList.forEach(a=>{
     data[a.area] = {};
-    periods.forEach(p=>data[a.area][p] = {cost:0, imp:0, clk:0, db:0});
+    periods.forEach(p=>data[a.area][p] = {cost:0, imp:0, clk:0, reach:0, db:0});
   });
 
   dayRows.forEach(r=>{
@@ -425,6 +440,7 @@ function _displayBuildChartSeries(areaList, mediaRows, crmRows, monSel){
     b.cost += _cN(r['비용']);
     b.imp  += _cN(r['노출수(열람수)']);
     b.clk  += _cN(r['클릭수']);
+    b.reach += _dispRowReach(r);
   });
 
   (crmRows||[]).forEach(r=>{
@@ -459,7 +475,7 @@ function _prevMonthKey(ym){
 // 툴팁에서는 당월처럼 영역별 수치도 같이 보여주기 위함 (인타입→영역 매핑은 월과 무관하므로
 // areaList의 codes를 그대로 재사용해 전달 CRM 데이터를 같은 영역으로 분류한다)
 function _displayPrevMonthTotals(media, prevKey, areaList){
-  const empty = () => ({cost:0,imp:0,clk:0,db:0});
+  const empty = () => ({cost:0,imp:0,clk:0,reach:0,db:0});
   const byDay = {};      // {day: {cost,imp,clk,db}} — 합계 (그래프에 그리는 값)
   const byDayArea = {};  // {day: {영역명: {cost,imp,clk,db}}} — 영역별 (툴팁 표시용)
 
@@ -470,9 +486,9 @@ function _displayPrevMonthTotals(media, prevKey, areaList){
     if(!byDay[day]) byDay[day] = empty();
     if(!byDayArea[day]) byDayArea[day] = {};
     if(!byDayArea[day][area]) byDayArea[day][area] = empty();
-    const cost=_cN(r['비용']), imp=_cN(r['노출수(열람수)']), clk=_cN(r['클릭수']);
-    byDay[day].cost+=cost; byDay[day].imp+=imp; byDay[day].clk+=clk;
-    byDayArea[day][area].cost+=cost; byDayArea[day][area].imp+=imp; byDayArea[day][area].clk+=clk;
+    const cost=_cN(r['비용']), imp=_cN(r['노출수(열람수)']), clk=_cN(r['클릭수']), reach=_dispRowReach(r);
+    byDay[day].cost+=cost; byDay[day].imp+=imp; byDay[day].clk+=clk; byDay[day].reach+=reach;
+    byDayArea[day][area].cost+=cost; byDayArea[day][area].imp+=imp; byDayArea[day][area].clk+=clk; byDayArea[day][area].reach+=reach;
   });
 
   const normM = media.replace(/\s+/g,'');
@@ -532,7 +548,7 @@ function renderDisplayCharts(areaList, mediaRows, crmRows, monSel){
     if(_displayChartMetric==='cost')   return b.cost;
     if(_displayChartMetric==='db')     return b.db;
     if(_displayChartMetric==='cpd')    return b.db>0 ? Math.round(b.cost/b.db) : null;
-    if(_displayChartMetric==='ctr')    return b.imp>0 ? Math.round(b.clk/b.imp*10000)/100 : null;
+    if(_displayChartMetric==='ctr')    return _dispCtr(b.reach, b.clk);
     if(_displayChartMetric==='dbcvr')  return b.clk>0 ? Math.round(b.db/b.clk*1000)/10 : null;
     return null;
   };
@@ -731,12 +747,12 @@ function renderDisplayTab(){
   const areas = {};
   mediaRows.forEach(r=>{
     const area = (r['상품명']||'').trim() || '(미지정)';
-    if(!areas[area]) areas[area] = {area, cost:0, imp:0, clk:0, snd:0, kws:{}, codes:new Set(), monthCodes:new Set(), codeLabelCost:{}};
+    if(!areas[area]) areas[area] = {area, cost:0, imp:0, clk:0, snd:0, reach:0, kws:{}, codes:new Set(), monthCodes:new Set(), codeLabelCost:{}};
     const a = areas[area];
     const code = (r['인타입']||'').trim();
     const kw = (r['소재명']||'').trim() || '(소재 미기재)';
     if(code) a.codes.add(code);
-    if(!a.kws[kw]) a.kws[kw] = {kw, cost:0, imp:0, clk:0, snd:0, codes:new Set(), monthCodes:new Set()};
+    if(!a.kws[kw]) a.kws[kw] = {kw, cost:0, imp:0, clk:0, snd:0, reach:0, codes:new Set(), monthCodes:new Set()};
     if(code) a.kws[kw].codes.add(code);
 
     const rowCost = _cN(r['비용']);
@@ -749,9 +765,9 @@ function renderDisplayTab(){
 
     const inMonth = !monSel || (r['날짜']||'').startsWith(monSel);
     if(inMonth){
-      const imp=_cN(r['노출수(열람수)']), clk=_cN(r['클릭수']), snd=_cN(r['발송수']);
-      a.cost+=rowCost; a.imp+=imp; a.clk+=clk; a.snd+=snd;
-      a.kws[kw].cost+=rowCost; a.kws[kw].imp+=imp; a.kws[kw].clk+=clk; a.kws[kw].snd+=snd;
+      const imp=_cN(r['노출수(열람수)']), clk=_cN(r['클릭수']), snd=_cN(r['발송수']), reach=_dispRowReach(r);
+      a.cost+=rowCost; a.imp+=imp; a.clk+=clk; a.snd+=snd; a.reach+=reach;
+      a.kws[kw].cost+=rowCost; a.kws[kw].imp+=imp; a.kws[kw].clk+=clk; a.kws[kw].snd+=snd; a.kws[kw].reach+=reach;
       if(code){ a.monthCodes.add(code); a.kws[kw].monthCodes.add(code); }
     }
   });
@@ -762,10 +778,10 @@ function renderDisplayTab(){
   // 강제 보정 코드: 오타로 확인된 특정 인타입을 지정된 영역/소재로 정상 코드처럼 편입시킨다
   Object.entries(DISPLAY_INTYPE_FORCE_MAP).forEach(([code, map])=>{
     if(map.media !== _displayMedia) return;
-    if(!areas[map.area]) areas[map.area] = {area:map.area, cost:0, imp:0, clk:0, snd:0, kws:{}, codes:new Set(), monthCodes:new Set(), codeLabelCost:{}};
+    if(!areas[map.area]) areas[map.area] = {area:map.area, cost:0, imp:0, clk:0, snd:0, reach:0, kws:{}, codes:new Set(), monthCodes:new Set(), codeLabelCost:{}};
     const a = areas[map.area];
     a.codes.add(code);
-    if(!a.kws[map.kw]) a.kws[map.kw] = {kw:map.kw, cost:0, imp:0, clk:0, snd:0, codes:new Set(), monthCodes:new Set()};
+    if(!a.kws[map.kw]) a.kws[map.kw] = {kw:map.kw, cost:0, imp:0, clk:0, snd:0, reach:0, codes:new Set(), monthCodes:new Set()};
     a.kws[map.kw].codes.add(code);
     // 더미 비용을 실제 라벨(map.kw)에 걸어둬야 소재 소유권 판정에서 이 코드가 그 소재로 확정된다 —
     // 빈 객체({})로 두면 아래 codeOwner 판정에서 owner가 없어져(undefined) 이 코드가 모든 소재에서
@@ -827,7 +843,7 @@ function renderDisplayTab(){
       // 참조표에 소재까지 등록돼 있으면 그 소재로 정확히 잡고, 없으면(구버전 데이터 등) "미확인"으로 묶는다 —
       // 광고비 리포트에 인타입을 안 넣어도 참조표만 채워두면 소재 단위까지 정확히 반영되게 하기 위함
       const kwLabel = refKwByCode[code] || '미확인';
-      if(!a.kws[kwLabel]) a.kws[kwLabel] = {kw:kwLabel, cost:0, imp:0, clk:0, snd:0, codes:new Set(), monthCodes:new Set()};
+      if(!a.kws[kwLabel]) a.kws[kwLabel] = {kw:kwLabel, cost:0, imp:0, clk:0, snd:0, reach:0, codes:new Set(), monthCodes:new Set()};
       a.kws[kwLabel].codes.add(code);
       if(!a.codeLabelCost[code]) a.codeLabelCost[code] = {[kwLabel]:0};
       // 이 코드로 들어온 DB가 선택된 월(상담등록일 기준)에 실제로 있을 때만 그 월의 인타입 표시에 포함
@@ -848,10 +864,10 @@ function renderDisplayTab(){
         if(claimedCodes.has(code)) return;
         if(!myPrefixes.some(p=>code.startsWith(p))) return;
         const AREA = '미확인';
-        if(!areas[AREA]) areas[AREA] = {area:AREA, cost:0, imp:0, clk:0, snd:0, kws:{}, codes:new Set(), monthCodes:new Set(), codeLabelCost:{}};
+        if(!areas[AREA]) areas[AREA] = {area:AREA, cost:0, imp:0, clk:0, snd:0, reach:0, kws:{}, codes:new Set(), monthCodes:new Set(), codeLabelCost:{}};
         const a = areas[AREA];
         a.codes.add(code);
-        if(!a.kws['미확인']) a.kws['미확인'] = {kw:'미확인', cost:0, imp:0, clk:0, snd:0, codes:new Set(), monthCodes:new Set()};
+        if(!a.kws['미확인']) a.kws['미확인'] = {kw:'미확인', cost:0, imp:0, clk:0, snd:0, reach:0, codes:new Set(), monthCodes:new Set()};
         a.kws['미확인'].codes.add(code);
         if(!a.codeLabelCost[code]) a.codeLabelCost[code] = {'미확인':0};
         const inSelMonth = crmRows.some(r=>(r['인타입']||'').trim()===code && (!monSel || _normDS(r['상담등록일']||'').startsWith(monSel)));
@@ -869,7 +885,7 @@ function renderDisplayTab(){
       hasIntype = codes.size>0;
     }
     const {db, contracts, perf, contracts_cum, perf_cum} = matchDb(codes);
-    const ctr = a.imp>0 ? Math.round(a.clk/a.imp*10000)/100 : null;
+    const ctr = _dispCtr(a.reach, a.clk);
     const {roas, cpd, dbcvr, cvr, roas_cum, cvr_cum} = calcMetrics(a.cost, a.clk, db, perf, contracts, perf_cum, contracts_cum);
 
     // 같은 인타입 코드가 소재명별로 여러 번 찍힌 경우(예: 원래 "소재 B"로 광고비가 나갔는데,
@@ -918,17 +934,17 @@ function renderDisplayTab(){
 
 function renderDisplaySummary(areaList, hasIntype){
   const totalCost = areaList.reduce((s,a)=>s+a.cost,0);
-  const totalImp  = areaList.reduce((s,a)=>s+a.imp,0);
   const totalClk  = areaList.reduce((s,a)=>s+a.clk,0);
   const totalDb   = areaList.reduce((s,a)=>s+a.db,0);
-  const ctr   = totalImp>0 ? Math.round(totalClk/totalImp*10000)/100 : null;
+  const totalReach= areaList.reduce((s,a)=>s+(a.reach||0),0);
+  const ctr   = _dispCtr(totalReach, totalClk);
   const cpd   = (hasIntype && totalDb>0) ? Math.round(totalCost/totalDb) : null;
   const dbcvr = (hasIntype && totalClk>0 && totalDb>0) ? Math.round(totalDb/totalClk*1000)/10 : null;
   const mc = _calcMonCum(areaList.map(a=>({...a, performance: a.perf||0, performance_cum: a.perf_cum||0, cost: a.cost||0})));
   const cid='display-summary';
   document.getElementById(cid).innerHTML = [
     _kpiCard(cid,0,'광고비', totalCost>0?totalCost:null, {unit:'원', color:'default', sub:'디스플레이 합계'}),
-    _kpiCard(cid,1,'CTR', ctr, {unit:'%', decimals:2, color:'red', sub:'클릭 ÷ 노출'}),
+    _kpiCard(cid,1,'CTR', ctr, {unit:'%', decimals:2, color:'red', sub:'클릭 ÷ 노출(발송)'}),
     _kpiCard(cid,2,'DB전환율', dbcvr, {unit:'%', decimals:1, color:'red', sub:'DB ÷ 클릭'}),
     _kpiCard(cid,3,'DB수', hasIntype?totalDb:null, {unit:'건', color:'accent', sub:'매칭 DB'}),
     _kpiCard(cid,4,'DB단가', cpd, {unit:'원', color:'purple', sub:'광고비 ÷ DB수'}),
@@ -989,7 +1005,7 @@ function renderDisplayAreaTable(areaList){
       const kx=kwSortKey(x.kw), ky=kwSortKey(y.kw);
       return kx!==ky ? kx-ky : x.kw.localeCompare(y.kw,'ko');
     }).map(k=>{
-      const kctr = k.imp>0 ? Math.round(k.clk/k.imp*10000)/100 : null;
+      const kctr = _dispCtr(k.reach, k.clk);
       const kContracts = cum ? (k.contracts_cum||0) : k.contracts;
       const kCvr = cum ? k.cvr_cum : k.cvr;
       const kPerf = cum ? (k.perf_cum||0) : k.perf;

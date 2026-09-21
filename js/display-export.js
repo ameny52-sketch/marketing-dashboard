@@ -19,10 +19,10 @@ const MEDIA_EXPORT_METRICS = [
 ];
 // 계약수(누적)/평가보험료(누적)은 CRM의 "계약수(누적)"/"평가업적(누적)" 필드 — 그 달 이후에도 계속 전환되는 후행 계약까지 반영된 값
 function _deriveExportMetrics(sums){
-  const {cost,imp,clk,db,contracts,perf,contracts_cum,perf_cum} = sums;
+  const {cost,imp,clk,reach,db,contracts,perf,contracts_cum,perf_cum} = sums;
   return {
     imp, clk, cost, db, contracts, perf, contracts_cum, perf_cum,
-    ctr: imp>0 ? clk/imp : '',
+    ctr: reach>0 ? clk/reach : '',
     dbcvr: clk>0 ? db/clk : '',
     cpd: db>0 ? cost/db : '',
     cvr: db>0 ? contracts/db : '',
@@ -47,11 +47,12 @@ function _buildMediaExportSums(media){
     const ym = (r['날짜']||'').slice(0,7);
     if(!a.kws[kw]) a.kws[kw] = {kw, codes:new Set(), months:{}};
     if(code) a.kws[kw].codes.add(code);
-    if(!a.kws[kw].months[ym]) a.kws[kw].months[ym] = {cost:0,imp:0,clk:0,db:0,contracts:0,perf:0,contracts_cum:0,perf_cum:0};
+    if(!a.kws[kw].months[ym]) a.kws[kw].months[ym] = {cost:0,imp:0,clk:0,reach:0,db:0,contracts:0,perf:0,contracts_cum:0,perf_cum:0};
     const rowCost = _cN(r['비용']);
     a.kws[kw].months[ym].cost += rowCost;
     a.kws[kw].months[ym].imp  += _cN(r['노출수(열람수)']);
     a.kws[kw].months[ym].clk  += _cN(r['클릭수']);
+    a.kws[kw].months[ym].reach += _dispRowReach(r);
     if(code){
       if(!a.codeLabelCost[code]) a.codeLabelCost[code] = {};
       a.codeLabelCost[code][kw] = (a.codeLabelCost[code][kw]||0) + rowCost;
@@ -120,7 +121,7 @@ function _buildMediaExportSums(media){
     const ym = _normDS(r['상담등록일']||'').slice(0,7);
     if(!ym) return;
     const k = areas[target.area].kws[target.kw];
-    if(!k.months[ym]) k.months[ym] = {cost:0,imp:0,clk:0,db:0,contracts:0,perf:0,contracts_cum:0,perf_cum:0};
+    if(!k.months[ym]) k.months[ym] = {cost:0,imp:0,clk:0,reach:0,db:0,contracts:0,perf:0,contracts_cum:0,perf_cum:0};
     k.months[ym].db+=_dbCount(r);
     k.months[ym].contracts += Math.round(_cN(r['계약수']));
     k.months[ym].perf += _cN(r['평가업적']);
@@ -143,12 +144,12 @@ function _sumMonths(monthsMap, months){
   const out = {};
   months.forEach(ym=>{
     const m = monthsMap[ym];
-    out[ym] = m ? {cost:m.cost,imp:m.imp,clk:m.clk,db:m.db,contracts:m.contracts,perf:m.perf,contracts_cum:m.contracts_cum,perf_cum:m.perf_cum} : {cost:0,imp:0,clk:0,db:0,contracts:0,perf:0,contracts_cum:0,perf_cum:0};
+    out[ym] = m ? {cost:m.cost,imp:m.imp,clk:m.clk,reach:m.reach,db:m.db,contracts:m.contracts,perf:m.perf,contracts_cum:m.contracts_cum,perf_cum:m.perf_cum} : {cost:0,imp:0,clk:0,reach:0,db:0,contracts:0,perf:0,contracts_cum:0,perf_cum:0};
   });
   return out;
 }
 function _addSums(a,b){
-  return {cost:a.cost+b.cost, imp:a.imp+b.imp, clk:a.clk+b.clk, db:a.db+b.db, contracts:a.contracts+b.contracts, perf:a.perf+b.perf, contracts_cum:a.contracts_cum+b.contracts_cum, perf_cum:a.perf_cum+b.perf_cum};
+  return {cost:a.cost+b.cost, imp:a.imp+b.imp, clk:a.clk+b.clk, reach:(a.reach||0)+(b.reach||0), db:a.db+b.db, contracts:a.contracts+b.contracts, perf:a.perf+b.perf, contracts_cum:a.contracts_cum+b.contracts_cum, perf_cum:a.perf_cum+b.perf_cum};
 }
 // 매체 Total → 영역 Total → 그 영역의 소재별, 항목이 세로로 나열된 행 목록을 만든다 ("영역" 칸은 블록의 첫 항목 행에만 채움 — 엑셀 원본과 동일)
 // cumMode는 "영역별 성과" 표의 당월/누적 토글과 동일 — 계약수/계약률/평가보험료/평가업적比광고비만 그에 따라 당월값 또는 누적값 하나만 나간다
@@ -170,7 +171,7 @@ function _buildMediaExportRows(media, cumMode){
 
   // 매체 전체 Total
   let mediaTotal = {};
-  months.forEach(ym=>{ mediaTotal[ym] = {cost:0,imp:0,clk:0,db:0,contracts:0,perf:0,contracts_cum:0,perf_cum:0}; });
+  months.forEach(ym=>{ mediaTotal[ym] = {cost:0,imp:0,clk:0,reach:0,db:0,contracts:0,perf:0,contracts_cum:0,perf_cum:0}; });
   areaNames.forEach(area=>{
     Object.values(areas[area].kws).forEach(k=>{
       months.forEach(ym=>{ mediaTotal[ym] = _addSums(mediaTotal[ym], _sumMonths(k.months, months)[ym]); });
@@ -183,7 +184,7 @@ function _buildMediaExportRows(media, cumMode){
     const kwList = Object.values(a.kws).sort((x,y)=> (kwSortKey(x.kw)-kwSortKey(y.kw)) || x.kw.localeCompare(y.kw,'ko'));
     // 이 영역의 소재 전체를 합친 Total
     let areaTotal = {};
-    months.forEach(ym=>{ areaTotal[ym] = {cost:0,imp:0,clk:0,db:0,contracts:0,perf:0,contracts_cum:0,perf_cum:0}; });
+    months.forEach(ym=>{ areaTotal[ym] = {cost:0,imp:0,clk:0,reach:0,db:0,contracts:0,perf:0,contracts_cum:0,perf_cum:0}; });
     kwList.forEach(k=>{
       const sums = _sumMonths(k.months, months);
       months.forEach(ym=>{ areaTotal[ym] = _addSums(areaTotal[ym], sums[ym]); });

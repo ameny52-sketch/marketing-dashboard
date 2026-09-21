@@ -14,7 +14,7 @@ function _buildAllDisplayLongRows(){
         Object.entries(k.months).forEach(([ym,m])=>{
           if(!m.imp && !m.clk && !m.db && !m.cost) return;
           long.push({매체:media, 영역:area, 소재:k.kw, 월:ym,
-            imp:m.imp, clk:m.clk, db:m.db, cost:m.cost,
+            imp:m.imp, clk:m.clk, reach:m.reach||0, db:m.db, cost:m.cost,
             contracts:m.contracts||0, perf:m.perf||0,
             contracts_cum:m.contracts_cum||0, perf_cum:m.perf_cum||0});
         });
@@ -39,7 +39,9 @@ const CR_METRIC_DEFS = {
   '클릭수':   {type:'count',  calc:s=>s.clk},
   'DB수':     {type:'count',  calc:s=>s.db},
   '광고비':   {type:'money',  calc:s=>s.cost},
-  'CTR':      {type:'percent',calc:s=>s.imp>0?Math.round(s.clk/s.imp*10000)/100:null},
+  // 디스플레이는 노출이 없는 발송형 영역(T멤버십 PUSH)이 있어 reach(노출 또는 발송)를 분모로 쓴다.
+  // 다른 카테고리는 reach를 안 채우므로 0 → 지금까지처럼 노출수가 분모가 된다.
+  'CTR':      {type:'percent',calc:s=>{const base=s.reach>0?s.reach:s.imp; return base>0?Math.round(s.clk/base*10000)/100:null;}},
   'DB전환율': {type:'percent',calc:s=>s.clk>0?Math.round(s.db/s.clk*1000)/10:null},
   'DB단가':   {type:'money',  calc:s=>s.db>0?Math.round(s.cost/s.db):null},
   '계약수':   {type:'count',  calc:s=>s.contracts},
@@ -109,8 +111,8 @@ let _crInitialized = false;
 const _crRowsCache = {pc:null, keyword:null, display:null, affiliate:null};
 const _crLoadingPromise = {};
 
-function _crEmptySum(){ return {imp:0,clk:0,db:0,cost:0,contracts:0,perf:0,contracts_cum:0,perf_cum:0}; }
-function _crAddSum(a,b){ ['imp','clk','db','cost','contracts','perf','contracts_cum','perf_cum'].forEach(k=>a[k]+=(b[k]||0)); return a; }
+function _crEmptySum(){ return {imp:0,clk:0,reach:0,db:0,cost:0,contracts:0,perf:0,contracts_cum:0,perf_cum:0}; }
+function _crAddSum(a,b){ ['imp','clk','reach','db','cost','contracts','perf','contracts_cum','perf_cum'].forEach(k=>a[k]+=(b[k]||0)); return a; }
 function _crMetricValue(sum,key){ const def=CR_METRIC_DEFS[key]; return def ? def.calc(sum) : null; }
 function _crFormat(v,key){
   if(v===null||v===undefined||!Number.isFinite(v)) return '—';

@@ -18,7 +18,7 @@ function _buildCreativeRankingThisMonth(){
     const a = areas[key];
     const code = (r['인타입']||'').trim();
     const kw = (r['소재명']||'').trim() || '(소재 미기재)';
-    if(!a.kws[kw]) a.kws[kw] = {kw, cost:0, imp:0, clk:0, db:0, contracts:0, perf:0, codes:new Set()};
+    if(!a.kws[kw]) a.kws[kw] = {kw, cost:0, imp:0, clk:0, reach:0, db:0, contracts:0, perf:0, codes:new Set()};
     if(code) a.kws[kw].codes.add(code);
 
     const rowCost = _cN(r['비용']);
@@ -30,6 +30,7 @@ function _buildCreativeRankingThisMonth(){
       a.kws[kw].cost += rowCost;
       a.kws[kw].imp  += _cN(r['노출수(열람수)']);
       a.kws[kw].clk  += _cN(r['클릭수']);
+      a.kws[kw].reach += _dispRowReach(r);
     }
   });
 
@@ -38,7 +39,7 @@ function _buildCreativeRankingThisMonth(){
     const key = `${map.media}||${map.area}`;
     if(!areas[key]) areas[key] = {media:map.media, area:map.area, kws:{}, codeLabelCost:{}};
     const a = areas[key];
-    if(!a.kws[map.kw]) a.kws[map.kw] = {kw:map.kw, cost:0, imp:0, clk:0, db:0, contracts:0, perf:0, codes:new Set()};
+    if(!a.kws[map.kw]) a.kws[map.kw] = {kw:map.kw, cost:0, imp:0, clk:0, reach:0, db:0, contracts:0, perf:0, codes:new Set()};
     a.kws[map.kw].codes.add(code);
     a.codeLabelCost[code] = {[map.kw]: 1}; // 소유권 판정용 더미 비용(실제 집계엔 미반영)
   });
@@ -80,7 +81,7 @@ function _buildCreativeRankingThisMonth(){
       const area = refAreaByMediaCode[`${prefixMedia.replace(/\s+/g,'')}||${code}`] || '미확인';
       const areaKey = `${prefixMedia}||${area}`;
       if(!areas[areaKey]) areas[areaKey] = {media:prefixMedia, area, kws:{}, codeLabelCost:{}};
-      if(!areas[areaKey].kws['미확인']) areas[areaKey].kws['미확인'] = {kw:'미확인', cost:0, imp:0, clk:0, db:0, contracts:0, perf:0, codes:new Set()};
+      if(!areas[areaKey].kws['미확인']) areas[areaKey].kws['미확인'] = {kw:'미확인', cost:0, imp:0, clk:0, reach:0, db:0, contracts:0, perf:0, codes:new Set()};
       areas[areaKey].kws['미확인'].codes.add(code);
       codeToKw[code] = {areaKey, kw:'미확인'};
     });
@@ -102,10 +103,10 @@ function _buildCreativeRankingThisMonth(){
   Object.values(areas).forEach(a=>{
     Object.values(a.kws).forEach(k=>{
       if(k.cost<=0 && k.db<=0) return; // 이번 달 활동 없는 소재는 랭킹에서 제외
-      const ctr = k.imp>0 ? Math.round(k.clk/k.imp*10000)/100 : null;
+      const ctr = _dispCtr(k.reach, k.clk);
       const dbcvr = k.clk>0 ? Math.round(k.db/k.clk*1000)/10 : null;
       const cpd = (k.db>0 && k.cost>0) ? Math.round(k.cost/k.db) : null;
-      list.push({media:a.media, area:a.area, kw:k.kw, cost:k.cost, imp:k.imp, clk:k.clk, db:k.db, ctr, dbcvr, cpd, codes:[...k.codes]});
+      list.push({media:a.media, area:a.area, kw:k.kw, cost:k.cost, imp:k.imp, clk:k.clk, reach:k.reach, db:k.db, ctr, dbcvr, cpd, codes:[...k.codes]});
     });
   });
   return list;
@@ -184,11 +185,12 @@ function _buildCreativeHistoryMatrix(media){
     const ym = (r['날짜']||'').slice(0,7);
     if(!a.kws[kw]) a.kws[kw] = {kw, codes:new Set(), months:{}};
     if(code) a.kws[kw].codes.add(code);
-    if(!a.kws[kw].months[ym]) a.kws[kw].months[ym] = {cost:0,imp:0,clk:0,db:0,contracts:0,perf:0};
+    if(!a.kws[kw].months[ym]) a.kws[kw].months[ym] = {cost:0,imp:0,clk:0,reach:0,db:0,contracts:0,perf:0};
     const rowCost = _cN(r['비용']);
     a.kws[kw].months[ym].cost += rowCost;
     a.kws[kw].months[ym].imp  += _cN(r['노출수(열람수)']);
     a.kws[kw].months[ym].clk  += _cN(r['클릭수']);
+    a.kws[kw].months[ym].reach += _dispRowReach(r);
     if(code){
       if(!a.codeLabelCost[code]) a.codeLabelCost[code] = {};
       a.codeLabelCost[code][kw] = (a.codeLabelCost[code][kw]||0) + rowCost;
@@ -257,7 +259,7 @@ function _buildCreativeHistoryMatrix(media){
     const ym = _normDS(r['상담등록일']||'').slice(0,7);
     if(!ym) return;
     const k = areas[target.area].kws[target.kw];
-    if(!k.months[ym]) k.months[ym] = {cost:0,imp:0,clk:0,db:0,contracts:0,perf:0};
+    if(!k.months[ym]) k.months[ym] = {cost:0,imp:0,clk:0,reach:0,db:0,contracts:0,perf:0};
     k.months[ym].db+=_dbCount(r);
     k.months[ym].contracts += Math.round(_cN(r['계약수']));
     k.months[ym].perf += _cN(r['평가업적']);
@@ -280,10 +282,10 @@ function _buildCreativeHistoryMatrix(media){
       months.forEach(ym=>{
         const m = k.months[ym];
         if(!m){ cellsByMonth[ym] = null; return; }
-        const ctr = m.imp>0 ? Math.round(m.clk/m.imp*10000)/100 : null;
+        const ctr = _dispCtr(m.reach, m.clk);
         const dbcvr = m.clk>0 ? Math.round(m.db/m.clk*1000)/10 : null;
         const cpd = (m.db>0 && m.cost>0) ? Math.round(m.cost/m.db) : null;
-        cellsByMonth[ym] = {cost:m.cost, imp:m.imp, clk:m.clk, db:m.db, ctr, dbcvr, cpd};
+        cellsByMonth[ym] = {cost:m.cost, imp:m.imp, clk:m.clk, reach:m.reach, db:m.db, ctr, dbcvr, cpd};
       });
       if(!Object.values(cellsByMonth).some(c=>c && (c.cost>0||c.db>0))) return;
       rowList.push({area, kw:k.kw, cellsByMonth});
@@ -299,17 +301,17 @@ function _buildCreativeHistoryMatrix(media){
   const areaList = Object.values(areaMap).map(a=>{
     const cellsByMonth = {};
     months.forEach(ym=>{
-      let cost=0,imp=0,clk=0,db=0;
+      let cost=0,imp=0,clk=0,reach=0,db=0;
       a.kws.forEach(k=>{
         const c = k.cellsByMonth[ym];
         if(!c) return;
-        cost+=c.cost; imp+=c.imp; clk+=c.clk; db+=c.db;
+        cost+=c.cost; imp+=c.imp; clk+=c.clk; reach+=(c.reach||0); db+=c.db;
       });
       if(cost<=0 && imp<=0 && clk<=0 && db<=0){ cellsByMonth[ym] = null; return; }
-      const ctr = imp>0 ? Math.round(clk/imp*10000)/100 : null;
+      const ctr = _dispCtr(reach, clk);
       const dbcvr = clk>0 ? Math.round(db/clk*1000)/10 : null;
       const cpd = (db>0 && cost>0) ? Math.round(cost/db) : null;
-      cellsByMonth[ym] = {cost,imp,clk,db,ctr,dbcvr,cpd};
+      cellsByMonth[ym] = {cost,imp,clk,reach,db,ctr,dbcvr,cpd};
     });
     a.kws.sort((x,y)=> (kwSortKey(x.kw)-kwSortKey(y.kw)) || x.kw.localeCompare(y.kw,'ko'));
     return {area:a.area, cellsByMonth, kws:a.kws};
@@ -433,11 +435,12 @@ function _renderCreativeDaily(info, monSel){
   const byDate = {};
   dayRows.forEach(r=>{
     const d = r['날짜'];
-    if(!byDate[d]) byDate[d] = {date:d, cost:0, imp:0, clk:0, snd:0, db:0};
+    if(!byDate[d]) byDate[d] = {date:d, cost:0, imp:0, clk:0, snd:0, reach:0, db:0};
     byDate[d].cost += _cN(r['비용']);
     byDate[d].imp  += _cN(r['노출수(열람수)']);
     byDate[d].clk  += _cN(r['클릭수']);
     byDate[d].snd  += _cN(r['발송수']);
+    byDate[d].reach += _dispRowReach(r);
   });
   // 일별 DB수/계약수 — 이 소재에 귀속된 인타입 코드 기준, 상담등록일로 매칭
   let totalContracts = 0;
@@ -447,7 +450,7 @@ function _renderCreativeDaily(info, monSel){
       if(!codeSet.has((r['인타입']||'').trim())) return;
       const d = _normDS(r['상담등록일']||'');
       if(!d.startsWith(monSel)) return;
-      if(!byDate[d]) byDate[d] = {date:d, cost:0, imp:0, clk:0, snd:0, db:0};
+      if(!byDate[d]) byDate[d] = {date:d, cost:0, imp:0, clk:0, snd:0, reach:0, db:0};
       byDate[d].db+=_dbCount(r);
       totalContracts += Math.round(_cN(r['계약수']));
     });
@@ -460,10 +463,10 @@ function _renderCreativeDaily(info, monSel){
     return;
   }
   const totalCost = days.reduce((s,d)=>s+d.cost,0);
-  const totalImp  = days.reduce((s,d)=>s+d.imp,0);
   const totalClk  = days.reduce((s,d)=>s+d.clk,0);
   const totalDb   = days.reduce((s,d)=>s+d.db,0);
-  const sumCtr   = totalImp>0 ? Math.round(totalClk/totalImp*10000)/100 : null;
+  const totalReach= days.reduce((s,d)=>s+(d.reach||0),0);
+  const sumCtr   = _dispCtr(totalReach, totalClk);
   const sumCpd   = totalDb>0 ? Math.round(totalCost/totalDb) : null;
   const sumDbcvr = totalClk>0 ? Math.round(totalDb/totalClk*1000)/10 : null;
   const sumCvr   = totalDb>0 ? Math.round(totalContracts/totalDb*1000)/10 : null;
@@ -485,7 +488,7 @@ function _renderCreativeDaily(info, monSel){
         </tr></thead>
         <tbody>
           ${days.map(d=>{
-            const ctr = d.imp>0 ? Math.round(d.clk/d.imp*10000)/100 : null;
+            const ctr = _dispCtr(d.reach, d.clk);
             const cpd = d.db>0 ? Math.round(d.cost/d.db) : null;
             const dbcvr = d.clk>0 ? Math.round(d.db/d.clk*1000)/10 : null;
             return `<tr>

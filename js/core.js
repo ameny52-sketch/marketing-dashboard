@@ -414,15 +414,29 @@ function _apiKeyword(month,s){
     if(c.includes('어린이'))return'C06';if(c.includes('운전'))return'C09';if(c.includes('보장'))return'C16';return'C01';
   };
   const rm={};
+  // 네이버 캠페인명에도 _C## 코드가 붙어 있어 구글/다음처럼 보종을 가를 수 있다
+  // (예: "2-굿리치몰 실비보험_C02" → C02 → 실비). 예전엔 이걸 안 쓰고 전부 '기타'로 뒀어서
+  // 키워드 표의 보종 필터가 네이버엔 아무 소용이 없었다.
+  // 행 키는 "키워드||매체||기기"이고 CRM엔 캠페인 정보가 없어, 보종을 키에 넣으면 DB를 어느 행에
+  // 붙여야 하는지 알 수 없어진다 — 그래서 키는 그대로 두고, 한 키워드가 캠페인 둘에 걸치면
+  // 광고비가 큰 쪽의 보종을 따른다 (2026년 데이터 기준 8,600개 조합 중 걸치는 것은 1건)
+  const nvCatCost={};
   nR.forEach(r=>{
-    const kw=r['키워드']||'',dev=r['PC/모바일 매체']||'',dt=r['일별']||'';
+    const kw=r['키워드']||'',dev=r['PC/모바일 매체']||'',dt=r['일별']||'',camp=r['캠페인']||'';
     const cost=Math.round(_cN(r['총비용'])),clk=Math.round(_cN(r['클릭수'])),imp=Math.round(_cN(r['노출수']));
     if(!kw)return;const device=dev==='모바일'?'모바일':'PC',key=`${kw}||네이버||${device}`;
-    if(!rm[key])rm[key]={keyword:kw,intype:'',sub_media:'네이버',device,cat:'기타',db:0,contracts:0,perf:0,contracts_cum:0,perf_cum:0,daily:{},cost:0,clicks:0,impressions:0,intype_detail:{}};
+    const cat=CAMP_CAT_MAP[exC(camp)||guC(camp)]||'기타';
+    if(!rm[key])rm[key]={keyword:kw,intype:'',sub_media:'네이버',device,cat,db:0,contracts:0,perf:0,contracts_cum:0,perf_cum:0,daily:{},cost:0,clicks:0,impressions:0,intype_detail:{}};
+    if(!nvCatCost[key])nvCatCost[key]={};
+    nvCatCost[key][cat]=(nvCatCost[key][cat]||0)+cost;
     rm[key].cost+=cost;rm[key].clicks+=clk;rm[key].impressions+=imp;
     const dk=_normDK(dt);
     if(!rm[key].daily[dk])rm[key].daily[dk]={cost:0,clicks:0,impressions:0,db:0,contracts:0,perf:0};
     rm[key].daily[dk].cost+=cost;rm[key].daily[dk].clicks+=clk;rm[key].daily[dk].impressions+=imp;
+  });
+  Object.entries(nvCatCost).forEach(([key,byCat])=>{
+    const top=Object.entries(byCat).sort((a,b)=>b[1]-a[1])[0];
+    if(top&&rm[key])rm[key].cat=top[0];
   });
   const addAd=(rows,mName,dCol,cCol,tax)=>{
     rows.forEach(r=>{

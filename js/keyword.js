@@ -140,6 +140,7 @@ function renderKwTable(){
     {key:'keyword',   label:'키워드'},
     {key:'sub_media', label:'매체'},
     {key:'device',    label:'기기'},
+    {key:'cat',       label:'보종'},
     {key:'cost',      label:'광고비(원)', r:true},
     {key:'impressions', label:'노출수', r:true},
     {key:'clicks',    label:'클릭수', r:true},
@@ -181,6 +182,7 @@ function renderKwTable(){
       <td class="cell-name">${r.keyword||'-'}</td>
       <td>${mediaPill}</td>
       <td>${devPill}</td>
+      <td class="cell-muted">${r.cat||'-'}</td>
       <td class="ta-right">${r.cost!=null?r.cost.toLocaleString():'-'}</td>
       <td class="ta-right">${r.impressions!=null?r.impressions.toLocaleString():'-'}</td>
       <td class="ta-right">${r.clicks!=null?r.clicks.toLocaleString():'-'}</td>
@@ -193,7 +195,7 @@ function renderKwTable(){
       <td class="ta-right">${dPerf?Math.round(dPerf).toLocaleString():'-'}</td>
       <td class="ta-right">${roasBadge(dRoas)}</td>
     </tr>`;
-  }).join('') || '<tr><td colspan="14" class="cell-empty">데이터 없음</td></tr>';
+  }).join('') || '<tr><td colspan="15" class="cell-empty">데이터 없음</td></tr>';
 
   // 페이지 네비게이션
   const nav = document.getElementById('kw-page-nav');
@@ -324,7 +326,7 @@ function downloadKwCsv(){
   const s = _kwTableCumMode ? ' ·누적' : '';
   // 컬럼 구성은 화면 표(renderKwTable의 cols)와 같은 순서로 맞춘다 —
   // 예전엔 노출수/평균CPC가 CSV에만 빠져 있어서 화면과 다운로드 결과가 서로 달랐다
-  const hdr = ['키워드','매체','기기','광고비','노출수','클릭수','평균CPC','DB수','DB단가','DB전환율',
+  const hdr = ['키워드','매체','기기','보종','광고비','노출수','클릭수','평균CPC','DB수','DB단가','DB전환율',
                `계약수${s}`,`계약률${s}`,`평가업적${s}`,`ROAS${s}`];
   const body = rows.map(r=>{
     const contracts=_kwCumVal(r,'contracts'), perf=_kwCumVal(r,'perf'), roas=_kwCumVal(r,'roas'), cvr=_kwCumVal(r,'cvr');
@@ -333,7 +335,7 @@ function downloadKwCsv(){
     const cpc = (r.clicks>0 && r.cost!=null) ? Math.round(r.cost/r.clicks) : null;
     const dbcvr = r.clicks>0 ? Math.round(r.db/r.clicks*1000)/10 : null;
     return [
-      r.keyword||'',r.sub_media,r.device,
+      r.keyword||'',r.sub_media,r.device,r.cat||'',
       r.cost!=null?r.cost:'', r.impressions!=null?r.impressions:'', r.clicks!=null?r.clicks:'',
       cpc!=null?cpc:'', r.db, r.cpd!=null?r.cpd:'',
       dbcvr!=null?dbcvr+'%':'',

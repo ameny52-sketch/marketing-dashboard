@@ -215,6 +215,12 @@ tbody td.cell-best{font-weight:700;color:#166534;background:#EAF3DE}
 .tbl-creative-daily thead th,.tbl-creative-daily tbody td{border-bottom:1px solid var(--border)}
 .tbl-creative-daily thead th{position:sticky;top:0;background:#fafaf8}
 
+/* 일별 표의 날짜 칸 요일 색 — 토요일 파랑 / 일요일 빨강 (달력과 같은 관습).
+   클래스는 core.js 의 _dowCls() 가 붙인다. tbody td(구체성 0,0,2)와 .tbl-creative-daily tbody td
+   를 확실히 이기도록 tbody td.x 형태로 쓰고 그 규칙들보다 뒤에 둔다 */
+tbody td.dt-sat{color:#2563eb}
+tbody td.dt-sun{color:#dc2626}
+
 /* ---- 디스플레이 영역별 성과 표 ---- */
 .cell-sub{color:var(--faint);font-size:12px}
 .cell-click{cursor:pointer}
@@ -271,7 +277,8 @@ tbody td.cell-empty{padding:2rem;text-align:center;color:var(--faint)}
 .dth--sep,.dtd--sep{border-right:1px solid var(--border)}
 /* 날짜(첫 열) — 가로 스크롤 시 왼쪽 고정 */
 #daily-tbody tr td.dtd-date{font-size:12px;text-align:center;color:var(--text);background:var(--surface);border-right:1px solid var(--border);border-bottom:1px solid var(--border);position:sticky;left:0;z-index:1}
-#daily-tbody tr td.dtd-date.is-weekend{color:#dc2626}
+#daily-tbody tr td.dtd-date.dt-sat{color:#2563eb}
+#daily-tbody tr td.dtd-date.dt-sun{color:#dc2626}
 /* 월 합계 행 */
 #daily-tbody tr.row-month-total{background:#eff4ff;font-weight:700}
 #daily-tbody tr.row-month-total td.dtd-date{background:#eff4ff;color:#ff9b00}

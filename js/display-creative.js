@@ -492,7 +492,7 @@ function _renderCreativeDaily(info, monSel){
             const cpd = d.db>0 ? Math.round(d.cost/d.db) : null;
             const dbcvr = d.clk>0 ? Math.round(d.db/d.clk*1000)/10 : null;
             return `<tr>
-            <td>${d.date}</td>
+            <td class="${_dowCls(d.date)}">${d.date}</td>
             <td class="num">${d.cost.toLocaleString()}</td>
             <td class="num">${d.imp.toLocaleString()}</td>
             <td class="num">${d.snd.toLocaleString()}</td>

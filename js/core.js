@@ -52,6 +52,14 @@ function _normDK(d){
   const n=_normDS(d);const m=n.match(/^(\d{4})-(\d{2})-(\d{2})/);
   return m?`${m[1]}.${m[2]}.${m[3]}.`:d;
 }
+// 날짜 문자열 → 요일 클래스 (토요일 파랑 / 일요일 빨강 — 한국 달력 표기 관습)
+// 일별 표마다 날짜 표기가 "2026-09-01" / "2026.09.01." 로 달라서 _normDS로 먼저 맞춘 뒤 판정한다
+function _dowCls(d){
+  const m=_normDS(d||'').match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(!m) return '';
+  const dw=new Date(+m[1],+m[2]-1,+m[3]).getDay();
+  return dw===6?'dt-sat':dw===0?'dt-sun':'';
+}
 function _filterMon(rows,col,monthLabel){
   if(!monthLabel)return rows;
   const m=monthLabel.match(/(\d{4})년\s*(\d{1,2})월/);if(!m)return rows;
@@ -1085,7 +1093,7 @@ function openDetail(idx){
       }).join('');
       return `<tr class="clickable" onclick="toggleDailyKwDetail('${rowCls}',this)">
         <td class="dk-caret">▸</td>
-        <td>${d.date} <span class="text-faint-sm">(키워드 ${d.kws.length}개)</span></td>
+        <td class="${_dowCls(d.date)}">${d.date} <span class="text-faint-sm">(키워드 ${d.kws.length}개)</span></td>
         <td class="num">${d.cost.toLocaleString()}</td>
         <td class="num">${d.clicks.toLocaleString()}</td>
         <td class="num">${d.impressions.toLocaleString()}</td>

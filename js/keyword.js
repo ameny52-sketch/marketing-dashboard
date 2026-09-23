@@ -231,7 +231,7 @@ function _kwDailyDetailTableHtml(r){
     const dbcvr = clicks>0 ? Math.round(db/clicks*1000)/10 : null;
     const cvr = db>0 ? Math.round(contracts/db*1000)/10 : null;
     return `<tr>
-      <td>${dk}</td>
+      <td class="${_dowCls(dk)}">${dk}</td>
       <td class="ta-right">${cost.toLocaleString()}</td>
       <td class="ta-right">${clicks.toLocaleString()}</td>
       <td class="ta-right">${imp.toLocaleString()}</td>
@@ -567,8 +567,10 @@ function renderDaily(){
     const totalCon=isMonthTotal?((cum?item.totalCon_cum:item.totalCon)||0):(pc_con+Object.values(crmDay).reduce((s,c)=>s+(c[conKey]||0),0));
     const totalPerf=isMonthTotal?((cum?item.totalPerf_cum:item.totalPerf)||0):(pc_perf+Object.values(crmDay).reduce((s,c)=>s+(c[perfKey]||0),0));
     const rowCls = isMonthTotal ? ' class="row-month-total"' : '';
-    const isWeekend = !isMonthTotal && item.pd &&
-      [0,6].includes(new Date(item.pd.year,item.pd.month-1,item.pd.day).getDay());
+    // 예전엔 토·일을 묶어 한 색(빨강)으로 칠했는데, 일별 상세 모달들과 맞추어 토요일은 파랑으로 나눐다
+    const dow = (!isMonthTotal && item.pd)
+      ? new Date(item.pd.year,item.pd.month-1,item.pd.day).getDay() : -1;
+    const dowCls = dow===6 ? ' dt-sat' : dow===0 ? ' dt-sun' : '';
     let crmCells='', crmCostSum=0;
     crmMedias.forEach(m=>{
       const c=crmDay[m]||{};
@@ -579,7 +581,7 @@ function renderDaily(){
     const totalCost=isMonthTotal?(item.totalCost||0):(pc_cost+naverCost+googleCost+daumCost+crmCostSum);
     const pcCells = showPc ? makeMediaCells(pc_db,pc_con,pc_perf,pc_cost) : '';
     const kwCells = kwMedias.length ? makeMediaCells(naverDb,naverCon,naverPerf,naverCost)+makeMediaCells(googleDb,googleCon,googlePerf,googleCost)+makeMediaCells(daumDb,daumCon,daumPerf,daumCost) : '';
-    return '<tr'+rowCls+'><td class="dtd-date'+(isWeekend?' is-weekend':'')+'">'+item.label+'</td>'+makeTotalCells(totalDb,totalCon,totalPerf,totalCost)+pcCells+kwCells+crmCells+'</tr>';
+    return '<tr'+rowCls+'><td class="dtd-date'+dowCls+'">'+item.label+'</td>'+makeTotalCells(totalDb,totalCon,totalPerf,totalCost)+pcCells+kwCells+crmCells+'</tr>';
   }
 
   document.getElementById('daily-tbody').innerHTML = allDays.map(item=>makeRow(item, item.type==='month-total')).join('');

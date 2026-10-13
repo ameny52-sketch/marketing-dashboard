@@ -92,10 +92,10 @@ function _buildMediaExportSums(media){
   // 리포트 인타입이 오타 등으로 안 걸린 코드는 참조표(매체/영역/소재)로 보정하고, 그마저도
   // 없으면 접두사로 매체만 확인해 "미확인" 영역에 담는다 (renderDisplayTab/_buildCreativeHistoryMatrix와 동일한 안전망)
   {
-    const normM = media.replace(/\s+/g,'');
+    const normM = _normMedia(media);
     const refByCode = {};
     (_displayIntypeRef||[]).forEach(r=>{
-      if((r['매체']||'').replace(/\s+/g,'')!==normM) return;
+      if(_normMedia(r['매체'])!==normM) return;
       const code=(r['인타입']||'').trim(), area=(r['영역']||'').trim(), kw=(r['소재']||'').trim();
       if(code && area && !refByCode[code]) refByCode[code] = {area, kw: kw||'미확인'};
     });

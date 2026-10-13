@@ -70,7 +70,7 @@ function _buildCreativeRankingThisMonth(){
   {
     const refAreaByMediaCode = {};
     (_displayIntypeRef||[]).forEach(r=>{
-      const m=(r['매체']||'').replace(/\s+/g,''), code=(r['인타입']||'').trim(), area=(r['영역']||'').trim();
+      const m=_normMedia(r['매체']), code=(r['인타입']||'').trim(), area=(r['영역']||'').trim();
       if(m && code && area) refAreaByMediaCode[`${m}||${code}`] = area;
     });
     (_displayCrmRaw||[]).forEach(r=>{
@@ -78,7 +78,7 @@ function _buildCreativeRankingThisMonth(){
       if(!code || codeToKw[code]) return;
       const prefixMedia = Object.entries(DISPLAY_INTYPE_PREFIX_MEDIA).find(([p])=>code.startsWith(p))?.[1];
       if(!prefixMedia) return;
-      const area = refAreaByMediaCode[`${prefixMedia.replace(/\s+/g,'')}||${code}`] || '미확인';
+      const area = refAreaByMediaCode[`${_normMedia(prefixMedia)}||${code}`] || '미확인';
       const areaKey = `${prefixMedia}||${area}`;
       if(!areas[areaKey]) areas[areaKey] = {media:prefixMedia, area, kws:{}, codeLabelCost:{}};
       if(!areas[areaKey].kws['미확인']) areas[areaKey].kws['미확인'] = {kw:'미확인', cost:0, imp:0, clk:0, reach:0, db:0, contracts:0, perf:0, codes:new Set()};
@@ -230,10 +230,10 @@ function _buildCreativeHistoryMatrix(media){
   // 없으면 접두사로 매체만 확인해 "미확인" 영역에 담는다 (renderDisplayTab과 동일한 안전망 —
   // 예: 리포트엔 A_kpaC0810으로 잘못 입력됐지만 참조표·CRM엔 A_kpaB0810으로 등록된 경우도 반영됨)
   {
-    const normM = media.replace(/\s+/g,'');
+    const normM = _normMedia(media);
     const refByCode = {};
     (_displayIntypeRef||[]).forEach(r=>{
-      if((r['매체']||'').replace(/\s+/g,'')!==normM) return;
+      if(_normMedia(r['매체'])!==normM) return;
       const code=(r['인타입']||'').trim(), area=(r['영역']||'').trim(), kw=(r['소재']||'').trim();
       if(code && area && !refByCode[code]) refByCode[code] = {area, kw: kw||'미확인'};
     });

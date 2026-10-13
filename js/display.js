@@ -202,7 +202,7 @@ function renderDisplayInsight(){
   {
     const refAreaByMediaCode = {};
     (_displayIntypeRef||[]).forEach(r=>{
-      const m=(r['매체']||'').replace(/\s+/g,''), code=(r['인타입']||'').trim(), area=(r['영역']||'').trim();
+      const m=_normMedia(r['매체']), code=(r['인타입']||'').trim(), area=(r['영역']||'').trim();
       if(m && code && area) refAreaByMediaCode[`${m}||${code}`] = area;
     });
     (_displayCrmRaw||[]).forEach(r=>{
@@ -210,7 +210,7 @@ function renderDisplayInsight(){
       if(!code || codeToGroup[code]) return;
       const prefixMedia = Object.entries(DISPLAY_INTYPE_PREFIX_MEDIA).find(([p])=>code.startsWith(p))?.[1];
       if(!prefixMedia) return;
-      const area = refAreaByMediaCode[`${prefixMedia.replace(/\s+/g,'')}||${code}`] || '미확인';
+      const area = refAreaByMediaCode[`${_normMedia(prefixMedia)}||${code}`] || '미확인';
       const key = `${prefixMedia}||${area}`;
       if(!groupMap[key]) groupMap[key] = {media:prefixMedia, area, cost:0, imp:0, clk:0, snd:0, reach:0, codes:new Set()};
       groupMap[key].codes.add(code);
@@ -491,10 +491,10 @@ function _displayPrevMonthTotals(media, prevKey, areaList){
     byDayArea[day][area].cost+=cost; byDayArea[day][area].imp+=imp; byDayArea[day][area].clk+=clk; byDayArea[day][area].reach+=reach;
   });
 
-  const normM = media.replace(/\s+/g,'');
+  const normM = _normMedia(media);
   const refAreaByCode = {};
   (_displayIntypeRef||[]).forEach(r=>{
-    if((r['매체']||'').replace(/\s+/g,'')===normM){
+    if(_normMedia(r['매체'])===normM){
       const c=(r['인타입']||'').trim(), a=(r['영역']||'').trim();
       if(c && a && !refAreaByCode[c]) refAreaByCode[c]=a;
     }
@@ -720,7 +720,7 @@ function _displayIntypeCodes(media, area){
   if(!_displayIntypeRef || !_displayIntypeRef.length) return [];
   const norm = s => (s||'').replace(/\s+/g,'');
   return _displayIntypeRef
-    .filter(r => norm(r['매체'])===norm(media) && norm(r['영역'])===norm(area))
+    .filter(r => _normMedia(r['매체'])===_normMedia(media) && norm(r['영역'])===norm(area))
     .map(r => (r['인타입']||'').trim())
     .filter(Boolean);
 }
@@ -823,7 +823,7 @@ function renderDisplayTab(){
     const refAreaByCode = {};
     const refKwByCode = {};
     _displayIntypeRef.forEach(r=>{
-      if(norm(r['매체'])!==norm(_displayMedia)) return;
+      if(_normMedia(r['매체'])!==_normMedia(_displayMedia)) return;
       const code = (r['인타입']||'').trim();
       const area = (r['영역']||'').trim();
       const kw = (r['소재']||'').trim();

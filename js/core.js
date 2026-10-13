@@ -52,6 +52,12 @@ function _normDK(d){
   const n=_normDS(d);const m=n.match(/^(\d{4})-(\d{2})-(\d{2})/);
   return m?`${m[1]}.${m[2]}.${m[3]}.`:d;
 }
+// 매체명 비교용 정규화 — 공백과 대소문자를 무시한다.
+// 인타입 참조표는 사람이 시트에 직접 입력해서 같은 매체가 "KT PASS" / "KT Pass" / "KTPASS" 로
+// 섞여 들어온다. 공백만 지우고 비교하면 "KT Pass" 행이 통째로 다른 매체 취급돼서, 참조표에
+// 분명히 등록했는데도 "미확인 DB" 경고가 계속 떴다.
+function _normMedia(s){ return (s||'').replace(/\s+/g,'').toLowerCase(); }
+
 // 날짜 문자열 → 요일 클래스 (토요일 파랑 / 일요일 빨강 — 한국 달력 표기 관습)
 // 일별 표마다 날짜 표기가 "2026-09-01" / "2026.09.01." 로 달라서 _normDS로 먼저 맞춘 뒤 판정한다
 function _dowCls(d){
